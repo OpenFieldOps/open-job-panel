@@ -11,15 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout frontend repo
         uses: actions/checkout@v4
 
+      - name: Clone backend repo
+        run: git clone https://github.com/open-inter/open-inter-api ../backend
+
       - name: Set up Bun runtime
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Install dependencies
+      - name: Install backend dependencies
+        working-directory: ../backend
+        run: bun install --frozen-lockfile
+
+      - name: Generate Drizzle types
+        working-directory: ../backend
+        run: bunx drizzle-kit generate
+
+      - name: Install frontend dependencies
         run: bun install --frozen-lockfile
 
       - name: Lint TypeScript
