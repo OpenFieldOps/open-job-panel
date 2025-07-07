@@ -39,3 +39,15 @@ bunx @chakra-ui/cli snippet add
 ```bash
 bun run dev
 ```
+
+### Run the Tests
+
+```bash
+bun run test
+```
+
+### Run the Linter
+
+```bash
+bun run lint
+```
