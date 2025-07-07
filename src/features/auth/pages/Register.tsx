@@ -1,4 +1,3 @@
-import { apiClient, ok } from "@/lib/apiClient";
 import {
   Button,
   Card,
@@ -14,15 +13,10 @@ import { useForm } from "react-hook-form";
 
 type Inputs = AuthModel.RegisterUserBody;
 
-export const Register = () => {
+export default function Register() {
   const { register, handleSubmit } = useForm<Inputs>();
 
-  const onSubmit = (data: Inputs) => {
-    apiClient.auth.register.post(data).then((res) => {
-      if (ok(res) && res.data) {
-      }
-    });
-  };
+  const onSubmit = () => {};
 
   return (
     <Flex justifyContent={"center"}>
@@ -71,4 +65,4 @@ export const Register = () => {
       </Card.Root>
     </Flex>
   );
-};
+}
