@@ -1,22 +1,31 @@
-import {
-  Button,
-  Card,
-  Field,
-  Flex,
-  HStack,
-  Input,
-  Separator,
-  Text,
-} from "@chakra-ui/react";
+import { userAtom } from "@/atoms/userAtom";
+import SeparatorWithTitle from "@/components/block/SeparatorWithTitle";
+import { ButtonLink } from "@/components/buttons/Button";
+import InputWithLabel from "@/components/form/InputWithLabel";
+import { apiClient, ok } from "@/lib/apiClient";
+import { Button, Card, Flex, HStack } from "@chakra-ui/react";
 import { AuthModel } from "backend/modules/auth/model";
+import { useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
-type Inputs = AuthModel.RegisterUserBody;
+type Inputs = AuthModel.RegisterUserBody & {
+  confirmPassword: string;
+};
 
 export default function Register() {
   const { register, handleSubmit } = useForm<Inputs>();
+  const setUser = useSetAtom(userAtom);
+  const navigate = useNavigate();
 
-  const onSubmit = () => {};
+  const onSubmit = (data: Inputs) => {
+    apiClient.auth.register.post(data).then((res) => {
+      if (ok(res) && res.data) {
+        setUser(res.data);
+        navigate("/private/interventions");
+      }
+    });
+  };
 
   return (
     <Flex justifyContent={"center"}>
@@ -33,34 +42,50 @@ export default function Register() {
           </Card.Description>
         </Card.Header>
         <Card.Body gap="2">
-          <HStack gap="2">
-            <Separator flex="1" />
-            <Text color="fg.subtle" textStyle="sm" whiteSpace="nowrap">
-              or sign up with
-            </Text>
-            <Separator flex="1" />
+          <HStack>
+            <InputWithLabel
+              label="Firstname"
+              placeholder="Your Firstname"
+              {...register("firstName")}
+            />
+            <InputWithLabel
+              label="Lastname"
+              placeholder="Your Lastname"
+              {...register("lastName")}
+            />
           </HStack>
-          <Field.Root>
-            <Field.Label>E-Mail</Field.Label>
-            <Input
-              type="email"
-              placeholder="Your E-Mail"
-              {...register("email")}
-            />
-          </Field.Root>
-          <Field.Root>
-            <Field.Label>Password</Field.Label>
-            <Input
-              type="password"
-              placeholder="Your Password"
-              {...register("password")}
-            />
-          </Field.Root>
+          <InputWithLabel
+            label="Username"
+            placeholder="Your Username"
+            {...register("username")}
+          />
+          <InputWithLabel
+            label="E-Main"
+            type="email"
+            placeholder="Your E-Mail"
+            {...register("email")}
+          />
+          <InputWithLabel
+            label="Password"
+            type="password"
+            placeholder="Your Password"
+            {...register("password")}
+          />
+          <InputWithLabel
+            label="Confirm Password"
+            type="password"
+            placeholder="Confirm Your Password"
+            {...register("confirmPassword")}
+          />
         </Card.Body>
-        <Card.Footer>
+        <Card.Footer flexDirection={"column"}>
           <Button type="submit" width="full">
             Create Account
           </Button>
+          <SeparatorWithTitle title="or sign in" />
+          <ButtonLink variant={"solid"} type="submit" width="full" to="/login">
+            Sign In
+          </ButtonLink>
         </Card.Footer>
       </Card.Root>
     </Flex>

@@ -25,7 +25,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "backend/*": ["../backend/src/*"]
-    }
+    },
+    "types": ["../backend/src/index.d.ts"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["../backend"]
 }

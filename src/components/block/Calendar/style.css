@@ -1,0 +1,54 @@
+.fc {
+  width: 100% !important;
+  height: 80vh !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+.fc-theme-standard td {
+  border: 0.3px solid #27272a;
+}
+
+.fc-timegrid-divider {
+  padding: 0 !important;
+  border: 0.3px solid #27272a;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 0.3px solid #27272a;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: 0.3px solid #27272a;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(255, 255, 255, 0.01) !important;
+}
+
+.fc .fc-timegrid-col.fc-day-today {
+  background-color: rgba(255, 255, 255, 0.01) !important;
+}
+
+.dark .fc-button {
+  background: #000000 !important;
+  border-color: #343434 !important;
+  color: #ffffff !important;
+}
+
+.light .fc-button {
+  background: #f7f7f7 !important;
+  border-color: #e4e4e4 !important;
+  color: #2b3f54 !important;
+}
+
+.fc-timegrid-event-harness-inset .fc-timegrid-event,
+.fc-timegrid-event.fc-event-mirror,
+.fc-timegrid-more-link {
+  box-shadow: none;
+}
+
+.fc-v-event {
+  border: solid 0.5px #27272a;
+}

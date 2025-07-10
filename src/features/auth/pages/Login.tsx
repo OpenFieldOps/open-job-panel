@@ -1,4 +1,7 @@
 import { userAtom } from "@/atoms/userAtom";
+import SeparatorWithTitle from "@/components/block/SeparatorWithTitle";
+import { ButtonLink } from "@/components/buttons/Button";
+import { toaster } from "@/components/ui/contants";
 import { apiClient, ok } from "@/lib/apiClient";
 import { Button, Card, Field, Flex, Input } from "@chakra-ui/react";
 import { AuthModel } from "backend/modules/auth/model";
@@ -16,8 +19,12 @@ export const Login = () => {
   const onSubmit = (data: Inputs) => {
     apiClient.auth.login.post(data).then((res) => {
       if (ok(res) && res.data) {
-        setUser(res.data.user);
-        navigate("/private/user/profile");
+        setUser(res.data);
+        navigate("/private/interventions");
+      } else {
+        toaster.error({
+          title: "Login failed",
+        });
       }
     });
   };
@@ -54,10 +61,19 @@ export const Login = () => {
             />
           </Field.Root>
         </Card.Body>
-        <Card.Footer>
+        <Card.Footer flexDirection={"column"}>
           <Button type="submit" width="full">
-            Create Account
+            Sign In
           </Button>
+          <SeparatorWithTitle title="or sign up" />
+          <ButtonLink
+            variant={"solid"}
+            type="submit"
+            width="full"
+            to="/register"
+          >
+            Sign Up
+          </ButtonLink>
         </Card.Footer>
       </Card.Root>
     </Flex>

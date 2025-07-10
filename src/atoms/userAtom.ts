@@ -1,12 +1,17 @@
 import type { UserModel } from "backend/modules/user/model";
-import { atom, useAtomValue } from "jotai";
+import { atom, createStore, useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-type UserAtom = UserModel.UserWithoutPassword | null;
+type UserAtom = UserModel.UserWithoutPassword;
 
-function fetchUserFromEnv(): UserAtom {
+type UserAuth = {
+  user: UserAtom;
+  token: string;
+};
+
+function fetchUserFromEnv(): UserAuth | null {
   const content = localStorage.getItem("user");
-  let currentUser: UserAtom = null;
+  let currentUser: UserAuth | null = null;
 
   if (content) {
     currentUser = JSON.parse(content);
@@ -14,13 +19,30 @@ function fetchUserFromEnv(): UserAtom {
   return currentUser;
 }
 
-export const userAtom = atomWithStorage<UserAtom>("user", fetchUserFromEnv());
-
-// Atom derive
-export const isUserConnectedAtom = atom((get) =>
-  get(userAtom) ? true : false
+export const userAtom = atomWithStorage<UserAuth | null>(
+  "user",
+  fetchUserFromEnv()
 );
 
+export const userStore = createStore();
+
+// Atom derive
+const isUserAuthenticatedAtom = atom((get) => (get(userAtom) ? true : false));
+
+const userIdAtom = atom((get) => get(userAtom)?.user.id as number);
+const userNameAtom = atom((get) => {
+  const user = get(userAtom) as UserAuth;
+
+  return {
+    firstName: user.user.firstName,
+    lastName: user.user.lastName,
+  };
+});
+
 // React Hooks
-export const useIsUserConnected = () => useAtomValue(isUserConnectedAtom);
-export const useIsUserNotConnected = () => !useAtomValue(isUserConnectedAtom);
+export const useIsUserAuthenticated = () =>
+  useAtomValue(isUserAuthenticatedAtom);
+
+export const useUserId = () => useAtomValue(userIdAtom);
+
+export const useUserName = () => useAtomValue(userNameAtom);
