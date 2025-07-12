@@ -1,38 +1,28 @@
 import { Button, ButtonGroup, Steps } from "@chakra-ui/react";
-import { InterventionModel } from "backend/modules/intervention/model";
-import {
-  interventionStatusInfo,
-  interventionStatusNotCompleted,
-} from "../constant";
+import { JobModel } from "backend/modules/job/model";
+import { jobStatusInfo, jobStatusNotCompleted } from "../constant";
 
-type InterventionStatusStepProps = {
-  onChange: (newStatus: InterventionModel.InterventionStatusString) => void;
-  status: InterventionModel.InterventionStatusString;
-  interventionId: number;
+type JobStatusStepProps = {
+  onChange: (newStatus: JobModel.JobStatusString) => void;
+  status: JobModel.JobStatusString;
 };
 
-export function InterventionStatusStep({
-  status,
-  onChange,
-}: InterventionStatusStepProps) {
-  const step = interventionStatusInfo.findIndex(
-    (step) => step.status === status
-  );
+export function JobStatusStep({ status, onChange }: JobStatusStepProps) {
+  const step = jobStatusInfo.findIndex((step) => step.status === status);
 
   return (
     <>
       <Steps.Root
         onStepChange={(newStep) =>
           onChange(
-            interventionStatusInfo[newStep.step]
-              .status as InterventionModel.InterventionStatusString
+            jobStatusInfo[newStep.step].status as JobModel.JobStatusString
           )
         }
-        count={interventionStatusInfo.length - 1}
+        count={jobStatusInfo.length - 1}
         step={step}
       >
         <Steps.List>
-          {interventionStatusNotCompleted.map((step, index) => (
+          {jobStatusNotCompleted.map((step, index) => (
             <Steps.Item key={index} index={index} title={step.title}>
               <Steps.Indicator />
               <Steps.Title>{step.title}</Steps.Title>
@@ -41,7 +31,7 @@ export function InterventionStatusStep({
           ))}
         </Steps.List>
         <Steps.CompletedContent>All steps are complete!</Steps.CompletedContent>
-        {interventionStatusNotCompleted.map((step, index) => (
+        {jobStatusNotCompleted.map((step, index) => (
           <Steps.Content key={index} index={index}>
             {step.description}
           </Steps.Content>

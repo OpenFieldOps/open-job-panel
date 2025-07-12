@@ -5,41 +5,33 @@ import {
   IconButtonDialog,
 } from "@/components/dialog/ButtonDialog";
 import { Plus } from "lucide-react";
-import InterventionCreateForm from "../components/InterventionCreateForm";
-import useInterventionList, {
-  type InterventionEventCalendar,
-} from "../hooks/useInterventionList";
 import Calendar from "@/components/block/Calendar/EventCalendar";
 import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
 import { apiClient, apiQueryCacheListUpdate } from "@/lib/apiClient";
-import { InterventionEditForm } from "../components/InterventionEditForm";
 import { useState } from "react";
-import type { InterventionModel } from "backend/modules/intervention/model";
+import type { JobModel } from "backend/modules/job/model";
 import { QueryCacheKey } from "@/app/queryClient";
-import { InterventionStatusBadge } from "../components/InterventionStatusBadge";
+import JobCreateForm from "../components/JobCreateForm";
+import { JobEditForm } from "../components/JobEditForm";
+import { JobStatusBadge } from "../components/JobStatusBadge";
+import useJobList, { type JobEventCalendar } from "../hooks/useJobList";
 
 function ToolBar() {
   const dialogState = useDialog();
 
   return (
     <PageTitleWithToolbar
-      title="Interventions"
+      title="Jobs"
       toolbar={
         <IconButtonDialog dialogState={dialogState} icon={<Plus />}>
-          <InterventionCreateForm
-            onCreated={() => dialogState.setOpen(false)}
-          />
+          <JobCreateForm onCreated={() => dialogState.setOpen(false)} />
         </IconButtonDialog>
       }
     />
   );
 }
 
-function InterventionEvent({
-  intervention,
-}: {
-  intervention: InterventionModel.Intervention;
-}) {
+function JobEvent({ job }: { job: JobModel.Job }) {
   return (
     <VStack
       h={"full"}
@@ -47,25 +39,21 @@ function InterventionEvent({
       alignItems={"left"}
       justifyContent={"space-between"}
     >
-      <Heading size={"sm"}>{intervention.title}</Heading>
+      <Heading size={"sm"}>{job.title}</Heading>
 
       <HStack justifyContent={"right"}>
-        <InterventionStatusBadge
-          status={
-            intervention.status as InterventionModel.InterventionStatusEnum
-          }
-        />
+        <JobStatusBadge status={job.status as JobModel.JobStatusEnum} />
       </HStack>
     </VStack>
   );
 }
 
-function InterventionListCalendar() {
-  const { interventions } = useInterventionList();
+function JobListCalendar() {
+  const { jobs } = useJobList();
 
   const dialog = useDialog();
 
-  const [interventionId, setInterventionId] = useState<number | null>(null);
+  const [jobId, setJobId] = useState<number | null>(null);
 
   return (
     <>
@@ -74,48 +62,45 @@ function InterventionListCalendar() {
           const start = startDate.toISOString();
           const end = endDate.toISOString();
 
-          apiClient.intervention.patch({
-            id: interventions[index].extendedProps.id,
+          apiClient.job.patch({
+            id: jobs[index].extendedProps.id,
             startDate: start,
             endDate: end,
           });
 
           apiQueryCacheListUpdate(
-            QueryCacheKey.InterventionList,
-            (oldData: InterventionEventCalendar[]) => {
+            QueryCacheKey.JobList,
+            (oldData: JobEventCalendar[]) => {
               oldData[index].start = start;
               oldData[index].end = end;
               return oldData;
             }
           );
         }}
-        renderEvent={(event: InterventionEventCalendar) => (
-          <InterventionEvent intervention={event.extendedProps} />
+        renderEvent={(event: JobEventCalendar) => (
+          <JobEvent job={event.extendedProps} />
         )}
-        events={interventions}
+        events={jobs}
         onEventClick={(event) => {
           dialog.setOpen(true);
-          setInterventionId(event.extendedProps.id);
+          setJobId(event.extendedProps.id);
         }}
       />
       <DialogContent dialogState={dialog}>
-        {interventionId && (
-          <InterventionEditForm
-            onSave={() => dialog.setOpen(false)}
-            interventionId={interventionId}
-          />
+        {jobId && (
+          <JobEditForm onSave={() => dialog.setOpen(false)} jobId={jobId} />
         )}
       </DialogContent>
     </>
   );
 }
 
-export default function InterventionListPage() {
+export default function JobListPage() {
   return (
     <PageContainer>
       <ToolBar />
       <Flex maxH={"100%"} w={"100%"}>
-        <InterventionListCalendar />
+        <JobListCalendar />
       </Flex>
     </PageContainer>
   );

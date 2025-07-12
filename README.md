@@ -18,9 +18,15 @@ To get started with this panel frontend:
 ### fill backend path
 
 - open tsconfig.app.json
-- change the `compilerOptions.paths["@backend/*"]` to the path of your backend
-  - for example, if your backend is in `../openinter-backend`, you would set it to `["../openinter-backend/src/*"]`
+- change the `compilerOptions.paths["@backend/*"]` to the path of the backend
+  - for example, if the backend is in `../openinter-backend`, you would set it to `["../openinter-backend/src/*"]`
   - use default value as a reference if you are not sure
+- change the `compilerOptions.types` to the path of the backend + types
+  - for example, if the backend is in `../backend/src/index.d.ts`, you would set it to `../backend/src/index.d.ts`
+  - use default value as a reference if you are not sure
+- exclude the backend path from the tsconfig.app.json
+  - add the backend path to the `exclude` array in tsconfig.app.json
+  - for example, if the backend is in `../openinter-backend`, you would add `../openinter-backend` to the `exclude` array
 
 ### Install Dependencies
 

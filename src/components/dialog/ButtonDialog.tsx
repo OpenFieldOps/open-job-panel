@@ -13,11 +13,11 @@ type DialogContentProps = {
   dialogState?: UseDialogReturn;
 } & PropsWithChildren;
 
-export const DialogContent = ({
+export function DialogContent({
   children,
   trigger,
   dialogState,
-}: DialogContentProps) => {
+}: DialogContentProps) {
   const content = (
     <>
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
@@ -42,24 +42,24 @@ export const DialogContent = ({
   } else {
     return <Dialog.Root>{content}</Dialog.Root>;
   }
-};
+}
 
 type TriggeredDialogProps = {
   dialogState?: UseDialogReturn;
   trigger: React.ReactNode;
 } & PropsWithChildren;
 
-export const TriggeredDialog = ({
+export function TriggeredDialog({
   children,
   dialogState,
   trigger,
-}: TriggeredDialogProps) => {
+}: TriggeredDialogProps) {
   return (
     <DialogContent dialogState={dialogState} trigger={trigger}>
       {children}
     </DialogContent>
   );
-};
+}
 
 type IconButtonDialogProps = {
   buttonProps?: ButtonProps;
@@ -67,12 +67,12 @@ type IconButtonDialogProps = {
   dialogState?: UseDialogReturn;
 } & PropsWithChildren;
 
-export const IconButtonDialog = ({
+export function IconButtonDialog({
   buttonProps,
   children,
   icon,
   dialogState,
-}: IconButtonDialogProps) => {
+}: IconButtonDialogProps) {
   return (
     <TriggeredDialog
       dialogState={dialogState}
@@ -85,4 +85,4 @@ export const IconButtonDialog = ({
       {children}
     </TriggeredDialog>
   );
-};
+}

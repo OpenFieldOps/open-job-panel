@@ -4,10 +4,10 @@ import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
-import type { InterventionModel } from "backend/modules/intervention/model";
+import { JobModel } from "backend/modules/job/model";
 import { useForm } from "react-hook-form";
-import { interventionAsCalendarEvent } from "../atoms";
-import type { InterventionEventCalendar } from "../hooks/useInterventionList";
+import { JobAsCalendarEvent } from "../atoms";
+import type { JobEventCalendar } from "../hooks/useJobList";
 import dayjs from "dayjs";
 
 type Inputs = {
@@ -15,13 +15,11 @@ type Inputs = {
   description: string;
 };
 
-type InterventionCreateFormProps = {
+type JobCreateFormProps = {
   onCreated: () => void;
 };
 
-export default function InterventionCreateForm({
-  onCreated,
-}: InterventionCreateFormProps) {
+export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
   const userId = useUserId();
   const {
     register,
@@ -29,7 +27,7 @@ export default function InterventionCreateForm({
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit = ({ title, description }: Inputs) => {
-    apiClient.intervention
+    apiClient.job
       .post({
         title,
         description,
@@ -39,12 +37,12 @@ export default function InterventionCreateForm({
       })
       .then((res) => {
         if (ok(res) && res.data) {
-          const intervention: InterventionModel.Intervention = res.data;
+          const job: JobModel.Job = res.data;
           apiQueryCacheListUpdate(
-            QueryCacheKey.InterventionList,
-            (oldData: InterventionEventCalendar[]) => [
+            QueryCacheKey.JobList,
+            (oldData: JobEventCalendar[]) => [
               ...oldData,
-              interventionAsCalendarEvent(intervention, oldData.length),
+              JobAsCalendarEvent(job, oldData.length),
             ]
           );
           onCreated();
@@ -52,19 +50,16 @@ export default function InterventionCreateForm({
       });
   };
   return (
-    <FormTemplate
-      onSubmit={handleSubmit(onSubmit)}
-      title="Create an intervention"
-    >
+    <FormTemplate onSubmit={handleSubmit(onSubmit)} title="Create an Job">
       <InputWithLabel
         label="Title"
-        placeholder="intervention title"
+        placeholder="Job title"
         {...register("title", { required: true, minLength: 3 })}
         error={errors.title?.type}
       />
       <TextAreaWithLabel
         label="Description"
-        placeholder="intervention description"
+        placeholder="Job description"
         {...register("description")}
         error={errors.description?.type}
       />

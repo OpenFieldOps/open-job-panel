@@ -46,6 +46,9 @@ export default function Calendar<T>({
             type: "timeGrid",
             duration: { days: 7 },
             scrollTime: "08:00:00",
+            slotMinTime: "06:00:00",
+            slotMaxTime: "22:00:00",
+            snapDuration: "00:30:00",
           },
         }}
         eventContent={(event) =>

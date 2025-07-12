@@ -15,10 +15,37 @@ export default tseslint.config([
       reactHooks.configs["recommended-latest"],
       reactRefresh.configs.vite,
     ],
+    rules: {
+      "@typescript-eslint/no-deprecated": "error",
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          selector: "typeLike",
+          format: ["PascalCase"],
+        },
+        {
+          selector: "parameter",
+          format: ["camelCase"],
+          leadingUnderscore: "allow",
+        },
+        {
+          selector: "variable",
+          format: ["camelCase", "UPPER_CASE"],
+        },
+      ],
+    },
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
+      parser: tseslint.parser,
+
+      parserOptions: {
+        project: "./tsconfig.eslint.json",
+        tsconfigRootDir: process.cwd(),
+        sourceType: "module",
+      },
     },
+
     ignores: ["src/components/ui/**"],
   },
 ]);

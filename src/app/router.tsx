@@ -1,7 +1,7 @@
 import { Login } from "@/features/auth/pages/Login";
 import Register from "@/features/auth/pages/Register";
 import AuthGuard from "@/features/guard/AuthGuard";
-import InterventionList from "@/features/interventions/pages/InterventionList";
+import JobList from "@/features/jobs/pages/JobList";
 import { RootContainer } from "@/features/Root";
 import Profile from "@/features/user/pages/Profile";
 import { createBrowserRouter } from "react-router-dom";
@@ -28,8 +28,8 @@ export const router = createBrowserRouter([
             element: <Profile />,
           },
           {
-            path: "interventions",
-            element: <InterventionList />,
+            path: "jobs",
+            element: <JobList />,
           },
         ],
       },

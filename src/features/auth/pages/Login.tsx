@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 type Inputs = AuthModel.LoginUserBody;
 
-export const Login = () => {
+export function Login() {
   const setUser = useSetAtom(userAtom);
   const { register, handleSubmit } = useForm<Inputs>();
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export const Login = () => {
     apiClient.auth.login.post(data).then((res) => {
       if (ok(res) && res.data) {
         setUser(res.data);
-        navigate("/private/interventions");
+        navigate("/private/jobs");
       } else {
         toaster.error({
           title: "Login failed",
@@ -78,4 +78,4 @@ export const Login = () => {
       </Card.Root>
     </Flex>
   );
-};
+}

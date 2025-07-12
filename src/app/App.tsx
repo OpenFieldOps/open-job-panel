@@ -7,19 +7,14 @@ import theme from "@/theme";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
 import { Toaster } from "@/components/ui/toaster";
-import { toaster } from "@/components/ui/contants";
 import { useHydrateAtoms } from "jotai/utils";
 import { queryClientAtom } from "jotai-tanstack-query";
 import type { PropsWithChildren } from "react";
 
-toaster.attrs.placement = "top-end";
-toaster.attrs.max = 4;
-toaster.attrs.duration = 1300;
-
-const HydrateAtoms = ({ children }: PropsWithChildren) => {
+function HydrateAtoms({ children }: PropsWithChildren) {
   useHydrateAtoms([[queryClientAtom, queryClient]]);
   return children;
-};
+}
 
 function App() {
   return (

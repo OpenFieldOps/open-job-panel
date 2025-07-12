@@ -22,7 +22,7 @@ export default function Register() {
     apiClient.auth.register.post(data).then((res) => {
       if (ok(res) && res.data) {
         setUser(res.data);
-        navigate("/private/interventions");
+        navigate("/private/jobs");
       }
     });
   };

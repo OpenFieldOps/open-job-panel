@@ -10,60 +10,55 @@ import {
 } from "@/lib/apiClient";
 import { Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { InterventionModel } from "backend/modules/intervention/model";
+import { JobModel } from "backend/modules/job/model";
 import { useForm } from "react-hook-form";
-import { InterventionStatusStep } from "./InterventionStatusStep";
-import type { InterventionEventCalendar } from "../hooks/useInterventionList";
+import type { JobEventCalendar } from "../hooks/useJobList";
 import { useEffect, useState } from "react";
-import { deleteIntervention } from "../query";
+import { JobStatusStep } from "./JobStatusStep";
+import { deleteJob } from "../query";
 
-type InterventionEditFormProps = {
-  interventionId: number;
+type JobEditFormProps = {
+  jobId: number;
   onSave: () => void;
 };
 
-export function InterventionEditForm({
-  interventionId,
-  onSave,
-}: InterventionEditFormProps) {
+export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const { isLoading, data } = useQuery({
-    queryKey: [QueryCacheKey.Intervention, interventionId],
-    queryFn: () => apiClient.intervention({ id: interventionId }).get(),
+    queryKey: [QueryCacheKey.Job, jobId],
+    queryFn: () => apiClient.job({ id: jobId }).get(),
   });
 
-  const [status, setStatus] =
-    useState<InterventionModel.InterventionStatusString>("pending");
+  const [status, setStatus] = useState<JobModel.JobStatusString>("pending");
 
   useEffect(() => {
     setStatus(data?.data?.status || "pending");
   }, [data?.data?.status]);
 
-  const { handleSubmit, register } =
-    useForm<InterventionModel.InterventionUpdateBody>();
+  const { handleSubmit, register } = useForm<JobModel.JobUpdateBody>();
 
-  const onSubmit = (input: InterventionModel.InterventionUpdateBody) => {
-    apiClient.intervention
+  const onSubmit = (input: JobModel.JobUpdateBody) => {
+    apiClient.job
       .patch({
-        id: interventionId,
+        id: jobId,
         title: input.title,
         description: input.description,
-        status: status as InterventionModel.InterventionStatusEnum,
+        status: status as JobModel.JobStatusEnum,
       })
       .then((res) => {
         if (ok(res)) {
           apiQueryCacheSingleUpdate(
-            QueryCacheKey.Intervention,
-            interventionId,
-            (oldData: InterventionModel.Intervention) => ({
+            QueryCacheKey.Job,
+            jobId,
+            (oldData: JobModel.Job) => ({
               ...oldData,
               ...input,
               status,
             })
           );
 
-          apiQueryCachSingleUpdateList<InterventionEventCalendar>(
-            QueryCacheKey.InterventionList,
-            interventionId,
+          apiQueryCachSingleUpdateList<JobEventCalendar>(
+            QueryCacheKey.JobList,
+            jobId,
             (el) => el.extendedProps.id,
             (el) => ({
               ...el,
@@ -80,32 +75,28 @@ export function InterventionEditForm({
   };
 
   if (isLoading) return <Spinner />;
-  if (!data?.data?.id) return <div>Intervention not found</div>;
+  if (!data?.data?.id) return <div>Job not found</div>;
 
   return (
     <FormTemplate
-      onDelete={() => deleteIntervention(data.data.id, onSave)}
+      onDelete={() => deleteJob(data.data.id, onSave)}
       onSubmit={handleSubmit(onSubmit)}
-      title="Edit intervention"
+      title="Edit Job"
       confirmText="Save"
     >
       <InputWithLabel
         label="Title"
-        placeholder="intervention title"
+        placeholder="Job title"
         defaultValue={data.data.title}
         {...register("title")}
       />
       <TextAreaWithLabel
         label="Description"
-        placeholder="intervention description"
+        placeholder="Job description"
         defaultValue={data.data.description}
         {...register("description")}
       />
-      <InterventionStatusStep
-        interventionId={data.data.id}
-        status={status}
-        onChange={setStatus}
-      />
+      <JobStatusStep status={status} onChange={setStatus} />
     </FormTemplate>
   );
 }

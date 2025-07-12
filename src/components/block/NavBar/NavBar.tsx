@@ -16,8 +16,8 @@ const defaultNavBarLinks: NavBarLink[] = [
 ];
 const authenticatedNavBarLinks: NavBarLink[] = [
   {
-    name: "Interventions",
-    path: "/private/interventions",
+    name: "Jobs",
+    path: "/private/jobs",
   },
 ];
 
