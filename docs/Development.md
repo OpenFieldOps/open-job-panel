@@ -26,3 +26,11 @@ This documentation explains best practices for developing the application, inclu
 - Each feature should have its own directory containing components, hooks, and atoms.
 
 > Note: The placement of generic components, hooks, and atoms in the folder structure is still under consideration. For example, they could be organized in a dedicated `generic` folder within `features`.
+
+## 5. Useful Resources
+
+- [React Query Documentation](https://tanstack.com/query/latest)
+- [Jotai Documentation](https://jotai.org/docs/introduction)
+- [React Documentation](https://react.dev/)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Eden Treaty (Elysia) Documentation](https://elysiajs.com/eden/treaty/overview.html)
