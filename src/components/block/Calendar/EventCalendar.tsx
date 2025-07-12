@@ -4,15 +4,23 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import "./style.css";
 import type { EventInput } from "@fullcalendar/core/index.js";
 
-export type IndexedEventSource = EventInput &
-  { extendedProps: { index: number } }[];
+type IndexedEvent<T> = EventInput & { extendedProps: { index: number } } & T;
 
-type CalendarProps = {
-  events: IndexedEventSource;
+export type IndexedEventSource<T> = IndexedEvent<T>[];
+
+type CalendarProps<T> = {
+  events: IndexedEventSource<T>;
   onEventUpdate: (eventIndex: number, newStart: Date, newEnd: Date) => void;
+  renderEvent: (event: IndexedEvent<T>) => React.ReactNode;
+  onEventClick: (event: IndexedEvent<T>) => void;
 };
 
-export default function Calendar({ events, onEventUpdate }: CalendarProps) {
+export default function Calendar<T>({
+  events,
+  onEventUpdate,
+  renderEvent,
+  onEventClick,
+}: CalendarProps<T>) {
   return (
     <>
       <FullCalendar
@@ -27,6 +35,9 @@ export default function Calendar({ events, onEventUpdate }: CalendarProps) {
           const eventProps = event.event.extendedProps;
           onEventUpdate(eventProps.index, event.event.start!, event.event.end!);
         }}
+        eventClick={(event) =>
+          onEventClick(event.event as T as IndexedEvent<T>)
+        }
         eventResizableFromStart={true}
         eventBackgroundColor="rgb(21, 21, 21)"
         initialView={"timeGridWeekDay"}
@@ -37,6 +48,9 @@ export default function Calendar({ events, onEventUpdate }: CalendarProps) {
             scrollTime: "08:00:00",
           },
         }}
+        eventContent={(event) =>
+          renderEvent(event.event as T as IndexedEvent<T>)
+        }
       />
     </>
   );

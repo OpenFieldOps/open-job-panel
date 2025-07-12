@@ -6,6 +6,7 @@ type FormTemplateProps = {
   title: string;
   confirmText?: string;
   onSubmit?: FormEventHandler;
+  onDelete?: () => void;
 } & PropsWithChildren;
 
 export default function FormTemplate({
@@ -13,13 +14,19 @@ export default function FormTemplate({
   confirmText = "Create",
   children,
   onSubmit,
+  onDelete,
 }: FormTemplateProps) {
   return (
     <form onSubmit={onSubmit}>
       <VStack gap={4}>
         <Heading>{title}</Heading>
         {children}
-        <RightContainer>
+        <RightContainer gap={4}>
+          {onDelete ? (
+            <Button variant={"outline"} onClick={onDelete}>
+              Delete
+            </Button>
+          ) : undefined}
           <Button type="submit">{confirmText}</Button>
         </RightContainer>
       </VStack>

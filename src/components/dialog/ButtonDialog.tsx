@@ -4,30 +4,23 @@ import {
   IconButton,
   Portal,
   type ButtonProps,
+  type UseDialogReturn,
 } from "@chakra-ui/react";
 import type { PropsWithChildren } from "react";
 
-type DialogState = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
-
 type DialogContentProps = {
-  trigger: React.ReactNode;
-  dialogState?: DialogState;
+  trigger?: React.ReactNode;
+  dialogState?: UseDialogReturn;
 } & PropsWithChildren;
 
-const DialogContent = ({
+export const DialogContent = ({
   children,
   trigger,
   dialogState,
 }: DialogContentProps) => {
-  return (
-    <Dialog.Root
-      open={dialogState?.open}
-      onOpenChange={({ open }) => dialogState?.setOpen(open)}
-    >
-      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
+  const content = (
+    <>
+      {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
@@ -39,32 +32,39 @@ const DialogContent = ({
           </Dialog.Content>
         </Dialog.Positioner>
       </Portal>
-    </Dialog.Root>
+    </>
   );
+
+  if (dialogState) {
+    return (
+      <Dialog.RootProvider value={dialogState}>{content}</Dialog.RootProvider>
+    );
+  } else {
+    return <Dialog.Root>{content}</Dialog.Root>;
+  }
 };
 
-// type DialogProps = {
-//   buttonProps?: ButtonProps;
-// } & PropsWithChildren;
+type TriggeredDialogProps = {
+  dialogState?: UseDialogReturn;
+  trigger: React.ReactNode;
+} & PropsWithChildren;
 
-// export const ButtonDialog = ({ buttonProps, children }: DialogProps) => {
-//   return (
-//     <DialogContent
-//       trigger={
-//         <Button variant="outline" {...buttonProps}>
-//           {buttonProps?.children || "Open Dialog"}
-//         </Button>
-//       }
-//     >
-//       {children}
-//     </DialogContent>
-//   );
-// };
+export const TriggeredDialog = ({
+  children,
+  dialogState,
+  trigger,
+}: TriggeredDialogProps) => {
+  return (
+    <DialogContent dialogState={dialogState} trigger={trigger}>
+      {children}
+    </DialogContent>
+  );
+};
 
 type IconButtonDialogProps = {
   buttonProps?: ButtonProps;
   icon: React.ReactNode;
-  dialogState?: DialogState;
+  dialogState?: UseDialogReturn;
 } & PropsWithChildren;
 
 export const IconButtonDialog = ({
@@ -74,7 +74,7 @@ export const IconButtonDialog = ({
   dialogState,
 }: IconButtonDialogProps) => {
   return (
-    <DialogContent
+    <TriggeredDialog
       dialogState={dialogState}
       trigger={
         <IconButton variant="outline" {...buttonProps}>
@@ -83,6 +83,6 @@ export const IconButtonDialog = ({
       }
     >
       {children}
-    </DialogContent>
+    </TriggeredDialog>
   );
 };

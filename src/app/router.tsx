@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
         element: <AuthGuard />,
         children: [
           {
-            path: "user/profile",
+            path: "profile",
             element: <Profile />,
           },
           {

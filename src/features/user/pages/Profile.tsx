@@ -1,3 +1,10 @@
+import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
+import PageContainer from "@/components/container/PageContainer";
+
 export default function Profile() {
-  return <div>Profile</div>;
+  return (
+    <PageContainer>
+      <PageTitleWithToolbar title="Profile" />
+    </PageContainer>
+  );
 }
