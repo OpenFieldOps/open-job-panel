@@ -1,0 +1,54 @@
+name: Release Frontend
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout frontend repo
+        uses: actions/checkout@v4
+
+      - name: Clone backend repo
+        run: git clone https://github.com/open-inter/open-inter-api ../backend
+
+      - name: Set up Bun runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install backend dependencies
+        working-directory: ../backend
+        run: bun install --frozen-lockfile
+
+      - name: Generate Drizzle types
+        working-directory: ../backend
+        run: bunx drizzle-kit generate
+
+      - name: Install frontend dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install chakra-ui snippet
+        run: bunx @chakra-ui/cli snippet add
+
+      - name: Lint TypeScript
+        run: bun run lint
+
+      - name: Run unit tests
+        run: bun run test
+
+      - name: Build for production
+        run: bun run build
+
+      - name: Archive dist
+        run: tar -czf frontend-dist.tar.gz -C dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: frontend-dist.tar.gz
+          token: ${{ secrets.GH_PAT }}

@@ -48,13 +48,10 @@ export function apiQueryCacheSingleUpdate<T>(
   id: Id,
   update: (oldData: T) => T
 ) {
-  const queryKey = queryClient
-    .getQueryCache()
-    .getAll()
-    .find((q) => q.queryKey[0] === key && q.queryKey[1] === id)
-    ?.queryKey as unknown[];
-
-  queryClient.setQueryData(queryKey, (oldData: ApiSucessResponse<T>) => {
+  queryClient.setQueryData([key, id], (oldData: ApiSucessResponse<T>) => {
+    if (!oldData) {
+      return oldData;
+    }
     return {
       ...oldData,
       data: update(oldData.data),
@@ -64,10 +61,9 @@ export function apiQueryCacheSingleUpdate<T>(
 
 export const getObjectIdFunc = (obj: { id: Id }) => obj.id;
 
-export function apiQueryCachSingleUpdateList<T>(
+export function apiQueryCacheSingleUpdateList<T extends { id: Id }>(
   key: QueryCacheKey,
   id: Id,
-  getId: (data: T) => Id,
   update: (oldData: T) => T
 ) {
   const queryKey = queryClient
@@ -78,7 +74,14 @@ export function apiQueryCachSingleUpdateList<T>(
   queryClient.setQueryData(queryKey, (oldData: ApiSucessResponse<T[]>) => {
     return {
       ...oldData,
-      data: oldData.data.map((el) => (getId(el) === id ? update(el) : el)),
+      data: oldData.data.map((el) => (el.id === id ? update(el) : el)),
     };
+  });
+}
+
+export function structuredUpdateFunc<T, N>(newData: N) {
+  return (old: T) => ({
+    ...old,
+    ...newData,
   });
 }

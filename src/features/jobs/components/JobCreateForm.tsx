@@ -6,7 +6,7 @@ import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
 import { JobModel } from "backend/modules/job/model";
 import { useForm } from "react-hook-form";
-import { JobAsCalendarEvent } from "../atoms";
+import { jobAsCalendarEvent } from "../atoms";
 import type { JobEventCalendar } from "../hooks/useJobList";
 import dayjs from "dayjs";
 
@@ -19,13 +19,15 @@ type JobCreateFormProps = {
   onCreated: () => void;
 };
 
-export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
+function useJobCreate({ onCreated }: JobCreateFormProps) {
   const userId = useUserId();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+
   const onSubmit = ({ title, description }: Inputs) => {
     apiClient.job
       .post({
@@ -42,15 +44,26 @@ export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
             QueryCacheKey.JobList,
             (oldData: JobEventCalendar[]) => [
               ...oldData,
-              JobAsCalendarEvent(job, oldData.length),
+              jobAsCalendarEvent(job, oldData.length),
             ]
           );
           onCreated();
         }
       });
   };
+
+  return {
+    register,
+    errors,
+    handleSubmit: handleSubmit(onSubmit),
+  };
+}
+
+export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
+  const { register, errors, handleSubmit } = useJobCreate({ onCreated });
+
   return (
-    <FormTemplate onSubmit={handleSubmit(onSubmit)} title="Create an Job">
+    <FormTemplate onSubmit={handleSubmit} title="Create an Job">
       <InputWithLabel
         label="Title"
         placeholder="Job title"

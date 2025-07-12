@@ -7,14 +7,13 @@ import {
 import { Plus } from "lucide-react";
 import Calendar from "@/components/block/Calendar/EventCalendar";
 import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
-import { apiClient, apiQueryCacheListUpdate } from "@/lib/apiClient";
 import { useState } from "react";
 import type { JobModel } from "backend/modules/job/model";
-import { QueryCacheKey } from "@/app/queryClient";
 import JobCreateForm from "../components/JobCreateForm";
 import { JobEditForm } from "../components/JobEditForm";
 import { JobStatusBadge } from "../components/JobStatusBadge";
 import useJobList, { type JobEventCalendar } from "../hooks/useJobList";
+import { updateJob } from "../query";
 
 function ToolBar() {
   const dialogState = useDialog();
@@ -62,20 +61,11 @@ function JobListCalendar() {
           const start = startDate.toISOString();
           const end = endDate.toISOString();
 
-          apiClient.job.patch({
+          updateJob({
             id: jobs[index].extendedProps.id,
             startDate: start,
             endDate: end,
           });
-
-          apiQueryCacheListUpdate(
-            QueryCacheKey.JobList,
-            (oldData: JobEventCalendar[]) => {
-              oldData[index].start = start;
-              oldData[index].end = end;
-              return oldData;
-            }
-          );
         }}
         renderEvent={(event: JobEventCalendar) => (
           <JobEvent job={event.extendedProps} />

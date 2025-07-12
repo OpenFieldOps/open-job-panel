@@ -10,8 +10,9 @@ export const jobSelectedPeriodAtom = atom({
   end: dayjs().add(6, "day").endOf("day"),
 });
 
-export function JobAsCalendarEvent(job: JobModel.Job, index: number) {
+export function jobAsCalendarEvent(job: JobModel.Job, index: number) {
   return {
+    id: job.id,
     start: job.startDate,
     end: job.endDate,
     extendedProps: { ...job, index },
@@ -37,7 +38,7 @@ export const jobsAtom = atomWithQuery((get) => {
       if (res.data) {
         return {
           ...res,
-          data: res.data.map((job, index) => JobAsCalendarEvent(job, index)),
+          data: res.data.map((job, index) => jobAsCalendarEvent(job, index)),
         };
       }
 

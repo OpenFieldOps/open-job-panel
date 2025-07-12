@@ -14,6 +14,7 @@ export default function useJobList() {
 }
 
 export type JobEventCalendar = {
+  id: number;
   start: string;
   end: string;
   extendedProps: JobModel.Job & { index: number };

@@ -32,5 +32,6 @@ This documentation explains best practices for developing the application, inclu
 - [React Query Documentation](https://tanstack.com/query/latest)
 - [Jotai Documentation](https://jotai.org/docs/introduction)
 - [React Documentation](https://react.dev/)
+- [React Hook Form](https://react-hook-form.com/get-started)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 - [Eden Treaty (Elysia) Documentation](https://elysiajs.com/eden/treaty/overview.html)

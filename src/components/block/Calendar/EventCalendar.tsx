@@ -4,7 +4,10 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import "./style.css";
 import type { EventInput } from "@fullcalendar/core/index.js";
 
-type IndexedEvent<T> = EventInput & { extendedProps: { index: number } } & T;
+type IndexedEvent<T> = Omit<EventInput, "id"> & {
+  id: number;
+  extendedProps: { index: number };
+} & T;
 
 export type IndexedEventSource<T> = IndexedEvent<T>[];
 
@@ -25,7 +28,7 @@ export default function Calendar<T>({
     <>
       <FullCalendar
         allDaySlot={false}
-        events={events}
+        events={events as Omit<IndexedEvent<T>, "id">[]}
         forceEventDuration
         plugins={[timeGridPlugin, interactionPlugin]}
         editable

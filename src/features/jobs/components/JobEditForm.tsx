@@ -2,20 +2,15 @@ import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
-import {
-  apiClient,
-  apiQueryCacheSingleUpdate,
-  apiQueryCachSingleUpdateList,
-  ok,
-} from "@/lib/apiClient";
+import { apiClient } from "@/lib/apiClient";
 import { Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { JobModel } from "backend/modules/job/model";
 import { useForm } from "react-hook-form";
-import type { JobEventCalendar } from "../hooks/useJobList";
 import { useEffect, useState } from "react";
 import { JobStatusStep } from "./JobStatusStep";
-import { deleteJob } from "../query";
+import { deleteJob, updateJob } from "../query";
+import { areObjectLeftKeysEqual } from "@/utils/object";
 
 type JobEditFormProps = {
   jobId: number;
@@ -37,41 +32,18 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const { handleSubmit, register } = useForm<JobModel.JobUpdateBody>();
 
   const onSubmit = (input: JobModel.JobUpdateBody) => {
-    apiClient.job
-      .patch({
-        id: jobId,
-        title: input.title,
-        description: input.description,
-        status: status as JobModel.JobStatusEnum,
-      })
-      .then((res) => {
-        if (ok(res)) {
-          apiQueryCacheSingleUpdate(
-            QueryCacheKey.Job,
-            jobId,
-            (oldData: JobModel.Job) => ({
-              ...oldData,
-              ...input,
-              status,
-            })
-          );
-
-          apiQueryCachSingleUpdateList<JobEventCalendar>(
-            QueryCacheKey.JobList,
-            jobId,
-            (el) => el.extendedProps.id,
-            (el) => ({
-              ...el,
-              extendedProps: {
-                ...el.extendedProps,
-                ...input,
-                status,
-              },
-            })
-          );
-          onSave();
-        }
-      });
+    const body = {
+      id: jobId,
+      title: input.title,
+      description: input.description,
+      status: status as JobModel.JobStatusEnum,
+    };
+    // check if body has is same as data.data
+    if (areObjectLeftKeysEqual(body, data?.data)) {
+      onSave();
+      return;
+    }
+    updateJob(body, onSave);
   };
 
   if (isLoading) return <Spinner />;
@@ -95,6 +67,12 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
         placeholder="Job description"
         defaultValue={data.data.description}
         {...register("description")}
+      />
+      <InputWithLabel
+        label="Location"
+        placeholder="Job location"
+        defaultValue={data.data.location}
+        {...register("location")}
       />
       <JobStatusStep status={status} onChange={setStatus} />
     </FormTemplate>
