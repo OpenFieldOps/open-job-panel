@@ -45,7 +45,7 @@ jobs:
         run: bun run build
 
       - name: Archive dist
-        run: tar -czf frontend-dist.tar.gz -C dist
+        run: tar -czf frontend-dist.tar.gz dist
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
