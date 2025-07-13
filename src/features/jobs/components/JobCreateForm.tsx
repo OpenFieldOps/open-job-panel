@@ -33,8 +33,8 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
       .post({
         title,
         description,
-        startDate: new Date().toISOString(),
-        endDate: dayjs().add(3, "hour").toISOString(),
+        startDate: dayjs().set("hour", 9).toISOString(),
+        endDate: dayjs().set("hour", 12).toISOString(),
         assignedTo: userId,
       })
       .then((res) => {
