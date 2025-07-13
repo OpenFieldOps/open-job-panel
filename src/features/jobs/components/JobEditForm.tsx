@@ -17,6 +17,35 @@ type JobEditFormProps = {
   onSave: () => void;
 };
 
+import { Tabs } from "@chakra-ui/react";
+import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu";
+
+function Jobtabs() {
+  return (
+    <Tabs.Root defaultValue="members">
+      <Tabs.List>
+        <Tabs.Trigger value="members">
+          <LuUser />
+          Members
+        </Tabs.Trigger>
+        <Tabs.Trigger value="projects">
+          <LuFolder />
+          Projects
+        </Tabs.Trigger>
+        <Tabs.Trigger value="tasks">
+          <LuSquareCheck />
+          Settings
+        </Tabs.Trigger>
+      </Tabs.List>
+      <Tabs.Content value="members">Manage your team members</Tabs.Content>
+      <Tabs.Content value="projects">Manage your projects</Tabs.Content>
+      <Tabs.Content value="tasks">
+        Manage your tasks for freelancers
+      </Tabs.Content>
+    </Tabs.Root>
+  );
+}
+
 export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const { isLoading, data } = useQuery({
     queryKey: [QueryCacheKey.Job, jobId],
@@ -56,6 +85,7 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
       title="Edit Job"
       confirmText="Save"
     >
+      <Jobtabs />
       <InputWithLabel
         label="Title"
         placeholder="Job title"
