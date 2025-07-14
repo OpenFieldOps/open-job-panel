@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "bunx biome lint src && tsc -b --noEmit",
+    "test": "bun test",
     "preview": "vite preview"
   },
   "dependencies": {
