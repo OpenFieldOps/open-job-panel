@@ -1,22 +1,28 @@
 import { Button, ButtonGroup, Steps } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
+import { useMemo } from "react";
 import { jobStatusInfo, jobStatusNotCompleted } from "../constant";
 
 type JobStatusStepProps = {
   onChange: (newStatus: JobModel.JobStatusString) => void;
-  status: JobModel.JobStatusString;
+  defaultStatus?: JobModel.JobStatusString;
 };
 
-export function JobStatusStep({ status, onChange }: JobStatusStepProps) {
-  const step = jobStatusInfo.findIndex((step) => step.status === status);
-
+export function JobStatusStep({ onChange, defaultStatus }: JobStatusStepProps) {
+  const defaultStepIndex = useMemo(() => {
+    if (!defaultStatus) return 0;
+    const index = jobStatusInfo.findIndex(
+      (step) => step.status === defaultStatus
+    );
+    return index === -1 ? 0 : index;
+  }, [defaultStatus]);
   return (
     <Steps.Root
       count={jobStatusInfo.length - 1}
       onStepChange={(newStep) =>
         onChange(jobStatusInfo[newStep.step].status as JobModel.JobStatusString)
       }
-      step={step}
+      defaultStep={defaultStepIndex}
     >
       <Steps.List>
         {jobStatusNotCompleted.map((step, index) => (

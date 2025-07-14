@@ -3,11 +3,11 @@ import { Outlet } from "react-router-dom";
 import { useUserRole } from "@/atoms/userAtom";
 
 type RoleGuardProps = {
-  role: UserModel.UserRole;
+  userRole: UserModel.UserRole;
 };
 
-export default function RoleGuard({ role }: RoleGuardProps) {
-  const userRole = useUserRole();
-  if (userRole === role) return <Outlet />;
+export default function RoleGuard({ userRole }: RoleGuardProps) {
+  const userRoleFetched = useUserRole();
+  if (userRole === userRoleFetched) return <Outlet />;
   return <div>Access Denied</div>;
 }

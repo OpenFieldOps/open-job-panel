@@ -41,7 +41,7 @@ function JobEvent({ job }: { job: JobModel.Job }) {
       <Heading size={"sm"}>{job.title}</Heading>
 
       <HStack justifyContent={"right"}>
-        <JobStatusBadge status={job.status as JobModel.JobStatusEnum} />
+        <JobStatusBadge status={job.status} />
       </HStack>
     </VStack>
   );

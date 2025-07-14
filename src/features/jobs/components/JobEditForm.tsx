@@ -1,6 +1,5 @@
 import { Spinner } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useUserRole } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
@@ -24,12 +23,6 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const role = useUserRole();
 
   const { isLoading, job } = useJob({ jobId });
-
-  const [status, setStatus] = useState<JobModel.JobStatusString>("pending");
-
-  useEffect(() => {
-    setStatus(job?.status || "pending");
-  }, [job?.status]);
 
   const { handleSubmit, register, setValue } = useForm<Inputs>();
 
@@ -78,7 +71,10 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
           />
         </FieldWithLabel>
       )}
-      <JobStatusStep onChange={setStatus} status={status} />
+      <JobStatusStep
+        onChange={(status) => setValue("status", status)}
+        defaultStatus={job.status}
+      />
     </FormTemplate>
   );
 }

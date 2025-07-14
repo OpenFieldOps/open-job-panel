@@ -1,4 +1,3 @@
-import { UserModel } from "backend/modules/user/model";
 import { createBrowserRouter } from "react-router-dom";
 import AdminDashboard from "@/features/admin/pages/AdminDashboard";
 import AdminOperatorsList from "@/features/admin/pages/AdminOperatorsList";
@@ -37,7 +36,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "admin",
-            element: <RoleGuard role={UserModel.UserRoleEnum.admin} />,
+            element: <RoleGuard userRole="admin" />,
             children: [
               { path: "operators", element: <AdminOperatorsList /> },
               { path: "dashboard", element: <AdminDashboard /> },

@@ -3,10 +3,10 @@ import type { JobModel } from "backend/modules/job/model";
 import { jobStatusInfo } from "../constant";
 
 type JobStatusBadgeProps = {
-  status: JobModel.JobStatusEnum;
+  status: JobModel.JobStatusString;
 };
 
-function getBadgeText(status: JobModel.JobStatusEnum): string {
+function getBadgeText(status: JobModel.JobStatusString): string {
   return (
     jobStatusInfo.find((info) => info.status === status)?.title || "Unknown"
   );

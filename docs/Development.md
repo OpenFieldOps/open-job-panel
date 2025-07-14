@@ -20,6 +20,12 @@ This documentation explains best practices for developing the application, inclu
 - Define global state in the `/src/features/${feature}/atoms.ts` file.
 - Prefer wrapping global state in custom hooks for better encapsulation.
 
+## 3.1 Backend Imports
+
+- From the backend, no imports should be made except for type-only imports using `import type { ... }`.
+- This ensures that only type definitions are shared between the backend and frontend, preventing unwanted coupling at the runtime code level.
+- It also ensures that there are no backend dependencies to resolve, which could otherwise increase the frontend bundle size.
+
 ## 4. Folder Structure
 
 - Organize features in the `/src/features/${feature}` directory.

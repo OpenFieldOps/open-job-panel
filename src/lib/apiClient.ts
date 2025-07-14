@@ -16,7 +16,6 @@ export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
 		};
 	},
 });
-
 type HttpResponse = {
 	status: number;
 };
