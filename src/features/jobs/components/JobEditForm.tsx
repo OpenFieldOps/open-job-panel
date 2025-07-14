@@ -1,26 +1,17 @@
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner, Tabs } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
+import { Folder, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useUserRole } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import FieldWithLabel from "@/components/form/FieldWithLabel";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
-import { apiClient } from "@/lib/apiClient";
-import { Flex, Spinner } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { JobModel } from "backend/modules/job/model";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { JobStatusStep } from "./JobStatusStep";
-import { deleteJob, updateJob } from "../query";
 import OperatorSelect from "@/features/admin/components/OperatorSelect";
 import { areObjectLeftKeysEqual } from "@/utils/object";
 import useJob from "../hooks/useJob";
 import { deleteJob, updateJob } from "../query";
 import { JobStatusStep } from "./JobStatusStep";
-import { Tabs } from "@chakra-ui/react";
-import { Folder, User } from "lucide-react";
 
 type JobEditFormProps = {
   jobId: number;
@@ -52,6 +43,8 @@ export function Jobtabs({ jobId, onSave }: JobEditFormProps) {
     </Tabs.Root>
   );
 }
+
+type Inputs = JobModel.JobUpdateBody;
 
 export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const role = useUserRole();
@@ -113,9 +106,5 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   );
 }
 function Files() {
-  return (
-    <>
-      <Flex h={"40vh"}>{/* TODO: Display job files  */}</Flex>
-    </>
-  );
+  return <Flex h={"40vh"}>{/* TODO: Display job files  */}</Flex>;
 }
