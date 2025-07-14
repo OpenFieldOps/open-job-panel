@@ -1,5 +1,7 @@
-import { expect, test } from "vitest";
+import { describe, expect, it } from "bun:test";
 
-test("Should Test Passed", () => {
-  expect(true).toEqual(true);
+describe("Test Suite", () => {
+	it("Should Test Passed", () => {
+		expect(true).toEqual(true);
+	});
 });

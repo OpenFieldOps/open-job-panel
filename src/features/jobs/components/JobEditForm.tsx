@@ -1,5 +1,9 @@
-import { QueryCacheKey } from "@/app/queryClient";
+import { Spinner } from "@chakra-ui/react";
+import type { JobModel } from "backend/modules/job/model";
+import { useForm } from "react-hook-form";
+import { useUserRole } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
+import FieldWithLabel from "@/components/form/FieldWithLabel";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { apiClient } from "@/lib/apiClient";
@@ -10,15 +14,18 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { JobStatusStep } from "./JobStatusStep";
 import { deleteJob, updateJob } from "../query";
+import OperatorSelect from "@/features/admin/components/OperatorSelect";
 import { areObjectLeftKeysEqual } from "@/utils/object";
+import useJob from "../hooks/useJob";
+import { deleteJob, updateJob } from "../query";
+import { JobStatusStep } from "./JobStatusStep";
+import { Tabs } from "@chakra-ui/react";
+import { Folder, User } from "lucide-react";
 
 type JobEditFormProps = {
   jobId: number;
   onSave: () => void;
 };
-
-import { Tabs } from "@chakra-ui/react";
-import { Folder, User } from "lucide-react";
 
 export function Jobtabs({ jobId, onSave }: JobEditFormProps) {
   return (
@@ -46,64 +53,62 @@ export function Jobtabs({ jobId, onSave }: JobEditFormProps) {
   );
 }
 
-function JobEditForm({ jobId, onSave }: JobEditFormProps) {
-  const { isLoading, data } = useQuery({
-    queryKey: [QueryCacheKey.Job, jobId],
-    queryFn: () => apiClient.job({ id: jobId }).get(),
-  });
+export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
+  const role = useUserRole();
 
-  const [status, setStatus] = useState<JobModel.JobStatusString>("pending");
+  const { isLoading, job } = useJob({ jobId });
 
-  useEffect(() => {
-    setStatus(data?.data?.status || "pending");
-  }, [data?.data?.status]);
+  const { handleSubmit, register, setValue } = useForm<Inputs>();
 
-  const { handleSubmit, register } = useForm<JobModel.JobUpdateBody>();
-
-  const onSubmit = (input: JobModel.JobUpdateBody) => {
-    const body = {
-      id: jobId,
-      title: input.title,
-      description: input.description,
-      status: status as JobModel.JobStatusEnum,
-    };
-    // check if body has is same as data.data
-    if (areObjectLeftKeysEqual(body, data?.data)) {
+  const onSubmit = (input: Inputs) => {
+    if (areObjectLeftKeysEqual(input, job)) {
       onSave();
       return;
     }
-    updateJob(body, onSave);
+    input.id = jobId;
+    updateJob(input, onSave);
   };
 
   if (isLoading) return <Spinner />;
-  if (!data?.data?.id) return <div>Job not found</div>;
+  if (!job?.id) return <div>Job not found</div>;
 
   return (
     <FormTemplate
-      onDelete={() => deleteJob(data.data.id, onSave)}
+      confirmText="Save"
+      onDelete={() => deleteJob(job.id, onSave)}
       onSubmit={handleSubmit(onSubmit)}
       title="Edit Job"
-      confirmText="Save"
     >
       <InputWithLabel
+        defaultValue={job.title}
         label="Title"
         placeholder="Job title"
-        defaultValue={data.data.title}
         {...register("title")}
       />
       <TextAreaWithLabel
+        defaultValue={job.description}
         label="Description"
         placeholder="Job description"
-        defaultValue={data.data.description}
         {...register("description")}
       />
       <InputWithLabel
+        defaultValue={job.location}
         label="Location"
         placeholder="Job location"
-        defaultValue={data.data.location}
         {...register("location")}
       />
-      <JobStatusStep status={status} onChange={setStatus} />
+      {role === "admin" && (
+        <FieldWithLabel label="Operator">
+          <OperatorSelect
+            onChange={(id) => setValue("assignedTo", id)}
+            defaultValue={job.assignedTo}
+          />
+        </FieldWithLabel>
+      )}
+      <JobStatusStep
+        onChange={(status) => setValue("status", status)}
+        defaultStatus={job.status}
+      />
     </FormTemplate>
   );
 }

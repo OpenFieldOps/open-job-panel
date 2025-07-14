@@ -1,14 +1,14 @@
+import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
+import type { JobModel } from "backend/modules/job/model";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import Calendar from "@/components/block/Calendar/EventCalendar";
 import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
 import PageContainer from "@/components/container/PageContainer";
 import {
   DialogContent,
   IconButtonDialog,
 } from "@/components/dialog/ButtonDialog";
-import { Plus } from "lucide-react";
-import Calendar from "@/components/block/Calendar/EventCalendar";
-import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
-import { useState } from "react";
-import type { JobModel } from "backend/modules/job/model";
 import JobCreateForm from "../components/JobCreateForm";
 import { Jobtabs } from "../components/JobEditForm";
 import { JobStatusBadge } from "../components/JobStatusBadge";
@@ -41,7 +41,7 @@ function JobEvent({ job }: { job: JobModel.Job }) {
       <Heading size={"sm"}>{job.title}</Heading>
 
       <HStack justifyContent={"right"}>
-        <JobStatusBadge status={job.status as JobModel.JobStatusEnum} />
+        <JobStatusBadge status={job.status} />
       </HStack>
     </VStack>
   );

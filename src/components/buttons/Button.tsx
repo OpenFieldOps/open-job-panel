@@ -1,5 +1,5 @@
 import { Button, IconButton, type ButtonProps } from "@chakra-ui/react";
-import { type PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 
 type ButtonLinkProps = ButtonProps & PropsWithChildren & { to: string };

@@ -6,15 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . && tsc -b --noEmit",
-    "test": "vitest run",
+    "lint": "bunx biome lint src && tsc -b --noEmit",
+    "test": "bun test",
     "preview": "vite preview"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.22.0",
     "@elysiajs/eden": "^1.3.2",
     "@emotion/react": "^11.14.0",
-    "@fullcalendar/core": "^6.1.18",
     "@fullcalendar/interaction": "^6.1.18",
     "@fullcalendar/react": "^6.1.18",
     "@fullcalendar/timegrid": "^6.1.18",
@@ -31,18 +30,15 @@
     "react-router-dom": "^7.6.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
+    "@biomejs/biome": "2.1.1",
+    "@types/node": "^24.0.13",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react-swc": "^3.10.2",
-    "eslint": "^9.31.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "rollup-plugin-visualizer": "^6.0.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.36.0",
     "vite": "^7.0.4",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }

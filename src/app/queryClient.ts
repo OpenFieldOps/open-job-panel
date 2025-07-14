@@ -12,6 +12,8 @@ export const queryClient = new QueryClient({
 });
 
 export enum QueryCacheKey {
-  Job,
-  JobList,
+  Job = 0,
+  JobList = 1,
+  Operator = 2,
+  OperatorList = 3,
 }

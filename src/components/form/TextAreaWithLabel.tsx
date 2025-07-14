@@ -1,5 +1,5 @@
-import { errorTypeAsErrorMessage } from "@/utils/error";
-import { Field, Textarea, type TextareaProps } from "@chakra-ui/react";
+import { Textarea, type TextareaProps } from "@chakra-ui/react";
+import FieldWithLabel from "./FieldWithLabel";
 
 type TextAreaWithLabelProps = TextareaProps &
   React.RefAttributes<HTMLTextAreaElement> & {
@@ -8,13 +8,9 @@ type TextAreaWithLabelProps = TextareaProps &
   };
 
 export default function TextAreaWithLabel(props: TextAreaWithLabelProps) {
-  const error = props.error ? errorTypeAsErrorMessage(props.error) : undefined;
-
   return (
-    <Field.Root invalid={!!props.error}>
-      <Field.Label>{props.label}</Field.Label>
-      <Textarea {...props} />
-      {error && <Field.ErrorText>{error}</Field.ErrorText>}
-    </Field.Root>
+    <FieldWithLabel {...props}>
+      <Textarea />
+    </FieldWithLabel>
   );
 }

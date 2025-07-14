@@ -1,6 +1,6 @@
+import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import "./style.css";
 import type { EventInput } from "@fullcalendar/core/index.js";
 
@@ -25,39 +25,35 @@ export default function Calendar<T>({
   onEventClick,
 }: CalendarProps<T>) {
   return (
-    <>
-      <FullCalendar
-        allDaySlot={false}
-        events={events as Omit<IndexedEvent<T>, "id">[]}
-        forceEventDuration
-        plugins={[timeGridPlugin, interactionPlugin]}
-        editable
-        eventStartEditable
-        eventDurationEditable
-        eventChange={(event) => {
-          const eventProps = event.event.extendedProps;
-          onEventUpdate(eventProps.index, event.event.start!, event.event.end!);
-        }}
-        eventClick={(event) =>
-          onEventClick(event.event as T as IndexedEvent<T>)
+    <FullCalendar
+      allDaySlot={false}
+      editable
+      eventBackgroundColor="rgb(21, 21, 21)"
+      eventChange={(event) => {
+        const eventProps = event.event.extendedProps;
+        if (event.event.start && event.event.end) {
+          onEventUpdate(eventProps.index, event.event.start, event.event.end);
         }
-        eventResizableFromStart={true}
-        eventBackgroundColor="rgb(21, 21, 21)"
-        initialView={"timeGridWeekDay"}
-        views={{
-          timeGridWeekDay: {
-            type: "timeGrid",
-            duration: { days: 7 },
-            scrollTime: "08:00:00",
-            slotMinTime: "06:00:00",
-            slotMaxTime: "22:00:00",
-            snapDuration: "00:30:00",
-          },
-        }}
-        eventContent={(event) =>
-          renderEvent(event.event as T as IndexedEvent<T>)
-        }
-      />
-    </>
+      }}
+      eventClick={(event) => onEventClick(event.event as T as IndexedEvent<T>)}
+      eventContent={(event) => renderEvent(event.event as T as IndexedEvent<T>)}
+      eventDurationEditable
+      eventResizableFromStart={true}
+      eventStartEditable
+      events={events as Omit<IndexedEvent<T>, "id">[]}
+      forceEventDuration
+      initialView={"timeGridWeekDay"}
+      plugins={[timeGridPlugin, interactionPlugin]}
+      views={{
+        timeGridWeekDay: {
+          type: "timeGrid",
+          duration: { days: 7 },
+          scrollTime: "08:00:00",
+          slotMinTime: "06:00:00",
+          slotMaxTime: "22:00:00",
+          snapDuration: "00:30:00",
+        },
+      }}
+    />
   );
 }
