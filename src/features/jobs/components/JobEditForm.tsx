@@ -21,7 +21,6 @@ import { Tabs } from "@chakra-ui/react";
 import { Folder, User } from "lucide-react";
 
 export function Jobtabs({ jobId, onSave }: JobEditFormProps) {
-  console.log(jobId);
   return (
     <Tabs.Root defaultValue="members">
       <Tabs.List>
