@@ -39,9 +39,8 @@ export function DialogContent({
     return (
       <Dialog.RootProvider value={dialogState}>{content}</Dialog.RootProvider>
     );
-  } else {
-    return <Dialog.Root>{content}</Dialog.Root>;
   }
+    return <Dialog.Root>{content}</Dialog.Root>;
 }
 
 type TriggeredDialogProps = {

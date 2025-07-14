@@ -4,6 +4,19 @@
 
 To get started with this panel frontend:
 
+## Install with docker
+
+```bash
+git clone  https://github.com/OpenFieldOps/open-job-panel
+cd open-job-panel
+```
+
+- Before running the docker command, fill your backend url in the `.env` file.
+
+```bash
+docker compose up --build
+```
+
 ### Setup Requirements
 
 - Bun: [bun website](https://bun.sh/)

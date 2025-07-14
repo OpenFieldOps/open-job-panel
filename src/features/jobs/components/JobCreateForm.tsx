@@ -4,7 +4,7 @@ import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
-import { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/model";
 import { useForm } from "react-hook-form";
 import { jobAsCalendarEvent } from "../atoms";
 import type { JobEventCalendar } from "../hooks/useJobList";

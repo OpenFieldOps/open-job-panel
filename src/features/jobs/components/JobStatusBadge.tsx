@@ -1,5 +1,5 @@
 import { Badge } from "@chakra-ui/react";
-import { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/model";
 import { jobStatusInfo } from "../constant";
 
 type JobStatusBadgeProps = {
@@ -14,10 +14,8 @@ function getBadgeText(status: JobModel.JobStatusEnum): string {
 
 export function JobStatusBadge({ status }: JobStatusBadgeProps) {
   return (
-    <>
-      <Badge variant={"outline"} bg={"Background"}>
-        {getBadgeText(status)}
-      </Badge>
-    </>
+    <Badge bg={"Background"} variant={"outline"}>
+      {getBadgeText(status)}
+    </Badge>
   );
 }

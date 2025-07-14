@@ -1,16 +1,16 @@
+import { Spinner } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import type { JobModel } from "backend/modules/job/model";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { apiClient } from "@/lib/apiClient";
-import { Spinner } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { JobModel } from "backend/modules/job/model";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { JobStatusStep } from "./JobStatusStep";
-import { deleteJob, updateJob } from "../query";
 import { areObjectLeftKeysEqual } from "@/utils/object";
+import { deleteJob, updateJob } from "../query";
+import { JobStatusStep } from "./JobStatusStep";
 
 type JobEditFormProps = {
   jobId: number;
@@ -36,9 +36,10 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
       id: jobId,
       title: input.title,
       description: input.description,
+      location: input.location,
       status: status as JobModel.JobStatusEnum,
     };
-    // check if body has is same as data.data
+
     if (areObjectLeftKeysEqual(body, data?.data)) {
       onSave();
       return;
@@ -51,30 +52,30 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
 
   return (
     <FormTemplate
+      confirmText="Save"
       onDelete={() => deleteJob(data.data.id, onSave)}
       onSubmit={handleSubmit(onSubmit)}
       title="Edit Job"
-      confirmText="Save"
     >
       <InputWithLabel
+        defaultValue={data.data.title}
         label="Title"
         placeholder="Job title"
-        defaultValue={data.data.title}
         {...register("title")}
       />
       <TextAreaWithLabel
+        defaultValue={data.data.description}
         label="Description"
         placeholder="Job description"
-        defaultValue={data.data.description}
         {...register("description")}
       />
       <InputWithLabel
+        defaultValue={data.data.location}
         label="Location"
         placeholder="Job location"
-        defaultValue={data.data.location}
         {...register("location")}
       />
-      <JobStatusStep status={status} onChange={setStatus} />
+      <JobStatusStep onChange={setStatus} status={status} />
     </FormTemplate>
   );
 }

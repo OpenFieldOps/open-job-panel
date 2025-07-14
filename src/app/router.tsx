@@ -1,10 +1,14 @@
+import { UserModel } from "backend/modules/user/model";
+import { createBrowserRouter } from "react-router-dom";
+import AdminDashboard from "@/features/admin/pages/AdminDashboard";
+import AdminOperatorsList from "@/features/admin/pages/AdminOperatorsList";
 import { Login } from "@/features/auth/pages/Login";
 import Register from "@/features/auth/pages/Register";
 import AuthGuard from "@/features/guard/AuthGuard";
+import RoleGuard from "@/features/guard/RoleGuard";
 import JobList from "@/features/jobs/pages/JobList";
 import { RootContainer } from "@/features/Root";
 import Profile from "@/features/user/pages/Profile";
-import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +34,14 @@ export const router = createBrowserRouter([
           {
             path: "jobs",
             element: <JobList />,
+          },
+          {
+            path: "admin",
+            element: <RoleGuard role={UserModel.UserRoleEnum.admin} />,
+            children: [
+              { path: "operators", element: <AdminOperatorsList /> },
+              { path: "dashboard", element: <AdminDashboard /> },
+            ],
           },
         ],
       },

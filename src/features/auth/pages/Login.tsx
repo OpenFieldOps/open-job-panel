@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/buttons/Button";
 import { toaster } from "@/components/ui/contants";
 import { apiClient, ok } from "@/lib/apiClient";
 import { Button, Card, Field, Flex, Input } from "@chakra-ui/react";
-import { AuthModel } from "backend/modules/auth/model";
+import type { AuthModel } from "backend/modules/auth/model";
 import { useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
