@@ -3,7 +3,7 @@ import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { apiClient } from "@/lib/apiClient";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { JobModel } from "backend/modules/job/model";
 import { useForm } from "react-hook-form";
@@ -18,27 +18,28 @@ type JobEditFormProps = {
 };
 
 import { Tabs } from "@chakra-ui/react";
-import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu";
+import { Folder, User } from "lucide-react";
 
-function Jobtabs() {
+export function Jobtabs({ jobId, onSave }: JobEditFormProps) {
+  console.log(jobId);
   return (
     <Tabs.Root defaultValue="members">
       <Tabs.List>
         <Tabs.Trigger value="members">
-          <LuUser />
-          Members
+          <User />
+          State job
         </Tabs.Trigger>
         <Tabs.Trigger value="projects">
-          <LuFolder />
-          Projects
-        </Tabs.Trigger>
-        <Tabs.Trigger value="tasks">
-          <LuSquareCheck />
-          Settings
+          <Folder />
+          Documents
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content value="members">Manage your team members</Tabs.Content>
-      <Tabs.Content value="projects">Manage your projects</Tabs.Content>
+      <Tabs.Content value="members">
+        <JobEditForm jobId={jobId} onSave={onSave} />
+      </Tabs.Content>
+      <Tabs.Content value="projects">
+        <Files />
+      </Tabs.Content>
       <Tabs.Content value="tasks">
         Manage your tasks for freelancers
       </Tabs.Content>
@@ -46,7 +47,7 @@ function Jobtabs() {
   );
 }
 
-export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
+function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const { isLoading, data } = useQuery({
     queryKey: [QueryCacheKey.Job, jobId],
     queryFn: () => apiClient.job({ id: jobId }).get(),
@@ -85,7 +86,6 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
       title="Edit Job"
       confirmText="Save"
     >
-      <Jobtabs />
       <InputWithLabel
         label="Title"
         placeholder="Job title"
@@ -106,5 +106,12 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
       />
       <JobStatusStep status={status} onChange={setStatus} />
     </FormTemplate>
+  );
+}
+function Files() {
+  return (
+    <>
+      <Flex h={"40vh"}>{/* TODO: Display job files  */}</Flex>
+    </>
   );
 }

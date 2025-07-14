@@ -10,7 +10,7 @@ import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import type { JobModel } from "backend/modules/job/model";
 import JobCreateForm from "../components/JobCreateForm";
-import { JobEditForm } from "../components/JobEditForm";
+import { Jobtabs } from "../components/JobEditForm";
 import { JobStatusBadge } from "../components/JobStatusBadge";
 import useJobList, { type JobEventCalendar } from "../hooks/useJobList";
 import { updateJob } from "../query";
@@ -78,7 +78,7 @@ function JobListCalendar() {
       />
       <DialogContent dialogState={dialog}>
         {jobId && (
-          <JobEditForm onSave={() => dialog.setOpen(false)} jobId={jobId} />
+          <Jobtabs onSave={() => dialog.setOpen(false)} jobId={jobId} />
         )}
       </DialogContent>
     </>
