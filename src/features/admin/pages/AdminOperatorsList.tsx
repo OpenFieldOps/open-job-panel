@@ -1,13 +1,11 @@
 import { Card, useDialog } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
 import type { UserModel } from "backend/modules/user/model";
 import { Plus } from "lucide-react";
-import { QueryCacheKey } from "@/app/queryClient";
 import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
 import PageContainer from "@/components/container/PageContainer";
 import { IconButtonDialog } from "@/components/dialog/ButtonDialog";
-import { apiClient } from "@/lib/apiClient";
 import OperatorCreateForm from "../components/OperatorCreateForm";
+import useOperators from "../hooks/useOperators";
 
 function UserCard({ firstName, lastName, email }: UserModel.UserInfo) {
   return (
@@ -27,10 +25,7 @@ function UserCard({ firstName, lastName, email }: UserModel.UserInfo) {
 
 export default function AdminOperatorsList() {
   const dialog = useDialog();
-  const { data: operators } = useQuery({
-    queryKey: [QueryCacheKey.OperatorList],
-    queryFn: () => apiClient.user["assigned-users"].get(),
-  });
+  const { operators } = useOperators();
   return (
     <PageContainer>
       <PageTitleWithToolbar
@@ -45,7 +40,7 @@ export default function AdminOperatorsList() {
           </IconButtonDialog>
         }
       />
-      {operators?.data?.map((operator) => (
+      {operators.map((operator) => (
         <UserCard key={operator.id} {...operator} />
       ))}
     </PageContainer>
