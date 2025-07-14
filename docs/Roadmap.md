@@ -12,6 +12,7 @@
 | Job Status          | Track jobs: upcoming / in progress / overdue / completed | 🟨 In Progress |
 | Admin Dashboard     | Filterable and sortable job list                         | ⬜ To Do       |
 | Calendar View       | Jobs shown by date and technician                        | 🟨 In Progress |
+| User Management     | User profle (avatar, password reset, etc...)             | ⬜ To Do       |
 
 ---
 

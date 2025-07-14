@@ -1,12 +1,13 @@
 import { Button, Heading, VStack } from "@chakra-ui/react";
-import RightContainer from "../container/RightContainer";
 import type { FormEventHandler, PropsWithChildren } from "react";
+import RightContainer from "../container/RightContainer";
 
 type FormTemplateProps = {
   title: string;
   confirmText?: string;
   onSubmit?: FormEventHandler;
   onDelete?: () => void;
+  disableSubmit?: boolean;
 } & PropsWithChildren;
 
 export default function FormTemplate({
@@ -15,6 +16,7 @@ export default function FormTemplate({
   children,
   onSubmit,
   onDelete,
+  disableSubmit = false,
 }: FormTemplateProps) {
   return (
     <form onSubmit={onSubmit}>
@@ -27,7 +29,7 @@ export default function FormTemplate({
               Delete
             </Button>
           ) : undefined}
-          <Button type="submit">{confirmText}</Button>
+          {disableSubmit ? null : <Button type="submit">{confirmText}</Button>}
         </RightContainer>
       </VStack>
     </form>

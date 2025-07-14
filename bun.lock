@@ -12,6 +12,7 @@
         "@fullcalendar/timegrid": "^6.1.18",
         "@tanstack/query-core": "^5.83.0",
         "@tanstack/react-query": "^5.83.0",
+        "@welldone-software/why-did-you-render": "^10.0.1",
         "dayjs": "^1.11.13",
         "jotai": "^2.12.5",
         "jotai-tanstack-query": "^0.9.2",
@@ -281,6 +282,8 @@
 
     "@vitejs/plugin-react-swc": ["@vitejs/plugin-react-swc@3.10.2", "", { "dependencies": { "@rolldown/pluginutils": "1.0.0-beta.11", "@swc/core": "^1.11.31" }, "peerDependencies": { "vite": "^4 || ^5 || ^6 || ^7.0.0-beta.0" } }, "sha512-xD3Rdvrt5LgANug7WekBn1KhcvLn1H3jNBfJRL3reeOIua/WnZOEV5qi5qIBq5T8R0jUDmRtxuvk4bPhzGHDWw=="],
 
+    "@welldone-software/why-did-you-render": ["@welldone-software/why-did-you-render@10.0.1", "", { "dependencies": { "lodash": "^4" }, "peerDependencies": { "react": "^19" } }, "sha512-tMgGkt30iVYeLMUKExNmtm019QgyjLtA7lwB0QAizYNEuihlCG2eoAWBBaz/bDeI7LeqAJ9msC6hY3vX+JB97g=="],
+
     "@zag-js/accordion": ["@zag-js/accordion@1.18.2", "", { "dependencies": { "@zag-js/anatomy": "1.18.2", "@zag-js/core": "1.18.2", "@zag-js/dom-query": "1.18.2", "@zag-js/types": "1.18.2", "@zag-js/utils": "1.18.2" } }, "sha512-d9hCE7ECTPk1YrEq/6DwedArWUkSFzB/av9ocensXs2QTq9tr/FOEIWpkG+2YnIAwm9HneXV5R+9APRPqMS7ug=="],
 
     "@zag-js/anatomy": ["@zag-js/anatomy@1.18.2", "", {}, "sha512-GxwOUfSDrnwU4oROohKBy0TRKPlYjD0dhuFHo52ZJLSPDkr8H8DlE/y3rFlb6BaGVO/bHjCUeJlaZzZgIpFK0g=="],
@@ -508,6 +511,8 @@
     "json-parse-even-better-errors": ["json-parse-even-better-errors@2.3.1", "", {}, "sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w=="],
 
     "lines-and-columns": ["lines-and-columns@1.2.4", "", {}, "sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg=="],
+
+    "lodash": ["lodash@4.17.21", "", {}, "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="],
 
     "lucide-react": ["lucide-react@0.525.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ=="],
 

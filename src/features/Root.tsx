@@ -1,6 +1,6 @@
-import NavBar from "@/components/block/NavBar/NavBar";
 import { Flex } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
+import NavBar from "@/components/block/NavBar/NavBar";
 
 export function RootContainer() {
   return (

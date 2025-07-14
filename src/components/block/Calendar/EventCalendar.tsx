@@ -16,6 +16,7 @@ type CalendarProps<T> = {
   onEventUpdate: (eventIndex: number, newStart: Date, newEnd: Date) => void;
   renderEvent: (event: IndexedEvent<T>) => React.ReactNode;
   onEventClick: (event: IndexedEvent<T>) => void;
+  isReadOnly?: boolean;
 };
 
 export default function Calendar<T>({
@@ -23,11 +24,12 @@ export default function Calendar<T>({
   onEventUpdate,
   renderEvent,
   onEventClick,
+  isReadOnly = false,
 }: CalendarProps<T>) {
   return (
     <FullCalendar
       allDaySlot={false}
-      editable
+      editable={!isReadOnly}
       eventBackgroundColor="rgb(21, 21, 21)"
       eventChange={(event) => {
         const eventProps = event.event.extendedProps;
@@ -37,9 +39,9 @@ export default function Calendar<T>({
       }}
       eventClick={(event) => onEventClick(event.event as T as IndexedEvent<T>)}
       eventContent={(event) => renderEvent(event.event as T as IndexedEvent<T>)}
-      eventDurationEditable
-      eventResizableFromStart={true}
-      eventStartEditable
+      eventDurationEditable={!isReadOnly}
+      eventResizableFromStart={!isReadOnly}
+      eventStartEditable={!isReadOnly}
       events={events as Omit<IndexedEvent<T>, "id">[]}
       forceEventDuration
       initialView={"timeGridWeekDay"}

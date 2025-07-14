@@ -2,6 +2,7 @@ import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useUserRole } from "@/atoms/userAtom";
 import Calendar from "@/components/block/Calendar/EventCalendar";
 import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
 import PageContainer from "@/components/container/PageContainer";
@@ -9,6 +10,7 @@ import {
   DialogContent,
   IconButtonDialog,
 } from "@/components/dialog/ButtonDialog";
+import OperatorJobEditForm from "@/features/operator/components/OperatorJobEdit";
 import JobCreateForm from "../components/JobCreateForm";
 import { JobEditForm } from "../components/JobEditForm";
 import { JobStatusBadge } from "../components/JobStatusBadge";
@@ -17,14 +19,17 @@ import { updateJob } from "../query";
 
 function ToolBar() {
   const dialogState = useDialog();
+  const role = useUserRole();
 
   return (
     <PageTitleWithToolbar
       title="Jobs"
       toolbar={
-        <IconButtonDialog dialogState={dialogState} icon={<Plus />}>
-          <JobCreateForm onCreated={() => dialogState.setOpen(false)} />
-        </IconButtonDialog>
+        role === "admin" ? (
+          <IconButtonDialog dialogState={dialogState} icon={<Plus />}>
+            <JobCreateForm onCreated={() => dialogState.setOpen(false)} />
+          </IconButtonDialog>
+        ) : undefined
       }
     />
   );
@@ -33,6 +38,7 @@ function ToolBar() {
 function JobEvent({ job }: { job: JobModel.Job }) {
   return (
     <VStack
+      cursor={"pointer"}
       h={"full"}
       p={2}
       alignItems={"left"}
@@ -50,13 +56,21 @@ function JobEvent({ job }: { job: JobModel.Job }) {
 function JobListCalendar() {
   const { jobs } = useJobList();
 
+  const role = useUserRole();
+
   const dialog = useDialog();
 
   const [jobId, setJobId] = useState<number | null>(null);
 
+  const openJobDialog = (id: number) => {
+    setJobId(id);
+    dialog.setOpen(true);
+  };
+
   return (
     <>
       <Calendar
+        isReadOnly={role !== "admin"}
         onEventUpdate={(index, startDate, endDate) => {
           const start = startDate.toISOString();
           const end = endDate.toISOString();
@@ -72,14 +86,16 @@ function JobListCalendar() {
         )}
         events={jobs}
         onEventClick={(event) => {
-          dialog.setOpen(true);
-          setJobId(event.extendedProps.id);
+          openJobDialog(event.extendedProps.id);
         }}
       />
       <DialogContent dialogState={dialog}>
-        {jobId && (
-          <JobEditForm onSave={() => dialog.setOpen(false)} jobId={jobId} />
-        )}
+        {jobId &&
+          (role === "admin" ? (
+            <JobEditForm onSave={() => dialog.setOpen(false)} jobId={jobId} />
+          ) : (
+            <OperatorJobEditForm jobId={jobId} />
+          ))}
       </DialogContent>
     </>
   );

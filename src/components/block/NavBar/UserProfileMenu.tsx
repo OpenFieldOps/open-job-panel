@@ -16,11 +16,11 @@ function ProfileMenuItem({ label, onClick }: ProfileMenuItemProps) {
   );
 }
 
-const userLinkes = [
-  { label: "Profile", path: "/private/profile" },
+const userLinkes = [{ label: "Profile", path: "/private/profile" }];
+const adminLinkes = [
+  { label: "Dashboard", path: "/private/admin/dashboard" },
   { label: "Operators", path: "/private/admin/operators" },
 ];
-const adminLinkes = [{ label: "Dashboard", path: "/private/admin/dashboard" }];
 
 export function UserProfileMenuButton() {
   const setUser = useSetAtom(userAtom);
