@@ -1,13 +1,13 @@
-import { userAtom } from "@/atoms/userAtom";
-import SeparatorWithTitle from "@/components/block/SeparatorWithTitle";
-import { ButtonLink } from "@/components/buttons/Button";
-import InputWithLabel from "@/components/form/InputWithLabel";
-import { apiClient, ok } from "@/lib/apiClient";
 import { Button, Card, Flex, HStack } from "@chakra-ui/react";
 import type { AuthModel } from "backend/modules/auth/model";
 import { useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { userAtom } from "@/atoms/userAtom";
+import SeparatorWithTitle from "@/components/block/SeparatorWithTitle";
+import { ButtonLink } from "@/components/buttons/Button";
+import InputWithLabel from "@/components/form/InputWithLabel";
+import { apiClient, ok } from "@/lib/apiClient";
 
 type Inputs = AuthModel.RegisterUserBody & {
   confirmPassword: string;
@@ -71,7 +71,7 @@ export default function Register() {
             label="Password"
             type="password"
             placeholder="Your Password"
-            {...register("password")}
+            {...register("password", {})}
           />
           <InputWithLabel
             label="Confirm Password"

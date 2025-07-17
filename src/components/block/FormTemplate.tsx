@@ -3,11 +3,12 @@ import type { FormEventHandler, PropsWithChildren } from "react";
 import RightContainer from "../container/RightContainer";
 
 type FormTemplateProps = {
-  title: string;
+  title?: string;
   confirmText?: string;
   onSubmit?: FormEventHandler;
   onDelete?: () => void;
   disableSubmit?: boolean;
+  trigger?: React.ReactNode;
 } & PropsWithChildren;
 
 export default function FormTemplate({
@@ -17,6 +18,7 @@ export default function FormTemplate({
   onSubmit,
   onDelete,
   disableSubmit = false,
+  trigger,
 }: FormTemplateProps) {
   return (
     <form onSubmit={onSubmit}>
@@ -29,7 +31,11 @@ export default function FormTemplate({
               Delete
             </Button>
           ) : undefined}
-          {disableSubmit ? null : <Button type="submit">{confirmText}</Button>}
+          {disableSubmit ? null : trigger ? (
+            trigger
+          ) : (
+            <Button type="submit">{confirmText}</Button>
+          )}
         </RightContainer>
       </VStack>
     </form>

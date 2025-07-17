@@ -11,7 +11,6 @@ RUN bun install --frozen-lockfile
 WORKDIR /app
 COPY . .
 RUN bun install --frozen-lockfile
-RUN bunx @chakra-ui/cli snippet add
 
 RUN bun run build
 

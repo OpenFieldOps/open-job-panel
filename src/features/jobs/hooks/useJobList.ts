@@ -1,21 +1,22 @@
-import { useAtom, useAtomValue } from "jotai";
-import { jobsAtom, jobSelectedPeriodAtom } from "../atoms";
 import type { JobModel } from "backend/modules/job/model";
+import { useAtom, useAtomValue } from "jotai";
+import { jobSelectedPeriodAtom, jobsAtom } from "../atoms";
 
 export default function useJobList() {
-  const { data, isLoading } = useAtomValue(jobsAtom);
-  const [period, setPeriod] = useAtom(jobSelectedPeriodAtom);
-  return {
-    period,
-    setPeriod,
-    jobs: data?.data || [],
-    isLoading,
-  };
+	const { data, isLoading } = useAtomValue(jobsAtom);
+	const [period, setPeriod] = useAtom(jobSelectedPeriodAtom);
+
+	return {
+		jobs: data?.data || [],
+		isLoading,
+		period,
+		setPeriod,
+	};
 }
 
 export type JobEventCalendar = {
-  id: number;
-  start: string;
-  end: string;
-  extendedProps: JobModel.Job & { index: number };
+	id: number;
+	start: string;
+	end: string;
+	extendedProps: JobModel.Job & { index: number };
 };

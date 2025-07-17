@@ -31,7 +31,7 @@ function useOperatorCreate({ onCreated }: OperatorCreateProps) {
     apiClient.user["create-user"].post(body).then((res) => {
       if (ok(res)) {
         apiQueryCacheListAdd(
-          QueryCacheKey.OperatorList,
+          [QueryCacheKey.OperatorList],
           res.data as UserModel.UserInfo
         );
         onCreated();

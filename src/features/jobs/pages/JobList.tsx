@@ -1,5 +1,6 @@
 import { Flex, Heading, HStack, useDialog, VStack } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
+import dayjs from "dayjs";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useUserRole } from "@/atoms/userAtom";
@@ -10,9 +11,8 @@ import {
   DialogContent,
   IconButtonDialog,
 } from "@/components/dialog/ButtonDialog";
-import OperatorJobEditForm from "@/features/operator/components/OperatorJobEdit";
 import JobCreateForm from "../components/JobCreateForm";
-import { JobEditForm } from "../components/JobEditForm";
+import JobDialogContent from "../components/JobDialogContent";
 import { JobStatusBadge } from "../components/JobStatusBadge";
 import useJobList, { type JobEventCalendar } from "../hooks/useJobList";
 import { updateJob } from "../query";
@@ -54,7 +54,7 @@ function JobEvent({ job }: { job: JobModel.Job }) {
 }
 
 function JobListCalendar() {
-  const { jobs } = useJobList();
+  const { jobs, setPeriod } = useJobList();
 
   const role = useUserRole();
 
@@ -88,14 +88,20 @@ function JobListCalendar() {
         onEventClick={(event) => {
           openJobDialog(event.extendedProps.id);
         }}
+        onDateSet={(arg) =>
+          setPeriod({
+            start: dayjs(arg.start),
+            end: dayjs(arg.end),
+          })
+        }
       />
       <DialogContent dialogState={dialog}>
-        {jobId &&
-          (role === "admin" ? (
-            <JobEditForm onSave={() => dialog.setOpen(false)} jobId={jobId} />
-          ) : (
-            <OperatorJobEditForm jobId={jobId} />
-          ))}
+        {jobId && (
+          <JobDialogContent
+            jobId={jobId}
+            onSave={() => dialog.setOpen(false)}
+          />
+        )}
       </DialogContent>
     </>
   );

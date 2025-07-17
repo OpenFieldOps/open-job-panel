@@ -1,14 +1,17 @@
 import { treaty } from "@elysiajs/eden";
 import type { App } from "backend/index";
 import { type QueryCacheKey, queryClient } from "@/app/queryClient";
-import { userAtom, userStore } from "@/atoms/userAtom";
+import { appStore } from "@/app/store";
+import { userAtom } from "@/atoms/userAtom";
 import type { ApiSucessResponse } from "@/types/api";
 
 type Id = number | string;
 
+export type AppCacheKey = [QueryCacheKey, ...unknown[]];
+
 export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
 	onRequest() {
-		const user = userStore.get(userAtom);
+		const user = appStore.get(userAtom);
 		return {
 			headers: {
 				authorization: user ? user.token : "",
@@ -26,15 +29,10 @@ export function ok(response: HttpResponse) {
 }
 
 export function apiQueryCacheListUpdate<T>(
-	key: QueryCacheKey,
+	key: AppCacheKey,
 	update: (oldData: T) => T,
 ) {
-	const queryKey = queryClient
-		.getQueryCache()
-		.getAll()
-		.find((q) => q.queryKey[0] === key)?.queryKey as unknown[];
-
-	queryClient.setQueryData(queryKey, (oldData: ApiSucessResponse<T>) => {
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
 		return {
 			...oldData,
 			data: update(oldData.data),
@@ -43,11 +41,10 @@ export function apiQueryCacheListUpdate<T>(
 }
 
 export function apiQueryCacheSingleUpdate<T>(
-	key: QueryCacheKey,
-	id: Id,
+	key: AppCacheKey,
 	update: (oldData: T) => T,
 ) {
-	queryClient.setQueryData([key, id], (oldData: ApiSucessResponse<T>) => {
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
 		if (!oldData) {
 			return oldData;
 		}
@@ -61,16 +58,14 @@ export function apiQueryCacheSingleUpdate<T>(
 export const getObjectIdFunc = (obj: { id: Id }) => obj.id;
 
 export function apiQueryCacheSingleUpdateList<T extends { id: Id }>(
-	key: QueryCacheKey,
+	key: AppCacheKey,
 	id: Id,
 	update: (oldData: T) => T,
 ) {
-	const queryKey = queryClient
-		.getQueryCache()
-		.getAll()
-		.find((q) => q.queryKey[0] === key)?.queryKey as unknown[];
-
-	queryClient.setQueryData(queryKey, (oldData: ApiSucessResponse<T[]>) => {
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
+		if (!oldData) {
+			return oldData;
+		}
 		return {
 			...oldData,
 			data: oldData.data.map((el) => (el.id === id ? update(el) : el)),
@@ -79,18 +74,25 @@ export function apiQueryCacheSingleUpdateList<T extends { id: Id }>(
 }
 
 export function apiQueryCacheListAdd<T extends { id: Id }>(
-	key: QueryCacheKey,
+	key: AppCacheKey,
 	newData: T,
 ) {
-	const queryKey = queryClient
-		.getQueryCache()
-		.getAll()
-		.find((q) => q.queryKey[0] === key)?.queryKey as unknown[];
-
-	queryClient.setQueryData(queryKey, (oldData: ApiSucessResponse<T[]>) => {
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
 		return {
 			...oldData,
 			data: [...oldData.data, newData],
+		};
+	});
+}
+
+export function apiQueryCacheListDelete<T extends { id: Id }>(
+	key: AppCacheKey,
+	id: Id,
+) {
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
+		return {
+			...oldData,
+			data: [...oldData.data.filter((el) => el.id !== id)],
 		};
 	});
 }

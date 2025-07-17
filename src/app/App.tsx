@@ -1,4 +1,5 @@
 import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider as JotaiProvider } from "jotai/react";
 import { useHydrateAtoms } from "jotai/utils";
 import { queryClientAtom } from "jotai-tanstack-query";
@@ -9,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import theme from "@/theme";
 import { queryClient } from "./queryClient";
 import { router } from "./router";
+import { appStore } from "./store";
 
 function HydrateAtoms({ children }: PropsWithChildren) {
   useHydrateAtoms([[queryClientAtom, queryClient]]);
@@ -18,7 +20,9 @@ function HydrateAtoms({ children }: PropsWithChildren) {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <JotaiProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+
+      <JotaiProvider store={appStore}>
         <HydrateAtoms>
           <Provider theme={theme}>
             <Toaster />

@@ -5,10 +5,12 @@ import { atomWithQuery } from "jotai-tanstack-query";
 import { QueryCacheKey } from "@/app/queryClient";
 import { apiClient } from "@/lib/apiClient";
 
-export const jobSelectedPeriodAtom = atom({
+const defaultAtom = {
 	start: dayjs().startOf("day"),
-	end: dayjs().add(6, "day").endOf("day"),
-});
+	end: dayjs().add(7, "day"),
+};
+
+export const jobSelectedPeriodAtom = atom(defaultAtom);
 
 export function jobAsCalendarEvent(job: JobModel.Job, index: number) {
 	return {
@@ -20,18 +22,15 @@ export function jobAsCalendarEvent(job: JobModel.Job, index: number) {
 }
 
 export const jobsAtom = atomWithQuery((get) => {
-	const period = get(jobSelectedPeriodAtom);
-
-	const start = period.start.toISOString();
-	const end = period.end.toISOString();
+	const { start, end } = get(jobSelectedPeriodAtom);
 
 	return {
-		queryKey: [QueryCacheKey.JobList, start, end],
+		queryKey: [QueryCacheKey.JobList, start.date(), end.date()] as const,
 		queryFn: async () => {
 			const res = await apiClient.job.get({
 				query: {
-					start,
-					end,
+					start: start.toISOString(),
+					end: end.toISOString(),
 				},
 			});
 

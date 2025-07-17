@@ -43,7 +43,6 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
       confirmText="Save"
       onDelete={() => deleteJob(job.id, onSave)}
       onSubmit={handleSubmit(onSubmit)}
-      title="Edit Job"
     >
       <InputWithLabel
         defaultValue={job.title}

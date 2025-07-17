@@ -2,7 +2,7 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
-import type { EventInput } from "@fullcalendar/core/index.js";
+import type { DatesSetArg, EventInput } from "@fullcalendar/core/index.js";
 
 type IndexedEvent<T> = Omit<EventInput, "id"> & {
   id: number;
@@ -17,6 +17,7 @@ type CalendarProps<T> = {
   renderEvent: (event: IndexedEvent<T>) => React.ReactNode;
   onEventClick: (event: IndexedEvent<T>) => void;
   isReadOnly?: boolean;
+  onDateSet?: (arg: DatesSetArg) => void;
 };
 
 export default function Calendar<T>({
@@ -25,11 +26,13 @@ export default function Calendar<T>({
   renderEvent,
   onEventClick,
   isReadOnly = false,
+  onDateSet,
 }: CalendarProps<T>) {
   return (
     <FullCalendar
       allDaySlot={false}
       editable={!isReadOnly}
+      datesSet={onDateSet}
       eventBackgroundColor="rgb(21, 21, 21)"
       eventChange={(event) => {
         const eventProps = event.event.extendedProps;

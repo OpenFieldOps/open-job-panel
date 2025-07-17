@@ -1,14 +1,15 @@
-import { QueryCacheKey } from "@/app/queryClient";
+import type { JobModel } from "backend/modules/job/model";
+import { useAtomValue } from "jotai";
+import { useForm } from "react-hook-form";
 import { useUserId } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
+import { toaster } from "@/components/ui/contants";
 import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
-import type { JobModel } from "backend/modules/job/model";
-import { useForm } from "react-hook-form";
-import { jobAsCalendarEvent } from "../atoms";
+import { jobAsCalendarEvent, jobSelectedPeriodAtom } from "../atoms";
 import type { JobEventCalendar } from "../hooks/useJobList";
-import dayjs from "dayjs";
+import { getJobsListKey } from "../query";
 
 type Inputs = {
   title: string;
@@ -20,6 +21,7 @@ type JobCreateFormProps = {
 };
 
 function useJobCreate({ onCreated }: JobCreateFormProps) {
+  const value = useAtomValue(jobSelectedPeriodAtom);
   const userId = useUserId();
 
   const {
@@ -33,20 +35,23 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
       .post({
         title,
         description,
-        startDate: dayjs().set("hour", 9).toISOString(),
-        endDate: dayjs().set("hour", 12).toISOString(),
+        startDate: value.start.clone().set("hour", 9).toISOString(),
+        endDate: value.start.clone().set("hour", 12).toISOString(),
         assignedTo: userId,
       })
       .then((res) => {
         if (ok(res) && res.data) {
           const job: JobModel.Job = res.data;
           apiQueryCacheListUpdate(
-            QueryCacheKey.JobList,
+            getJobsListKey(),
             (oldData: JobEventCalendar[]) => [
               ...oldData,
               jobAsCalendarEvent(job, oldData.length),
             ]
           );
+          toaster.success({
+            title: "Job created",
+          });
           onCreated();
         }
       });

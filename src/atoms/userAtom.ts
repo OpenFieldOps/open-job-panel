@@ -1,5 +1,5 @@
 import type { UserModel } from "backend/modules/user/model";
-import { atom, createStore, useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 type UserAtom = UserModel.UserWithoutPassword;
@@ -10,6 +10,9 @@ type UserAuth = {
 };
 
 function fetchUserFromEnv(): UserAuth | null {
+	if (import.meta.env.NODE_ENV === "test") {
+		return null;
+	}
 	const content = localStorage.getItem("user");
 	let currentUser: UserAuth | null = null;
 
@@ -23,8 +26,6 @@ export const userAtom = atomWithStorage<UserAuth | null>(
 	"user",
 	fetchUserFromEnv(),
 );
-
-export const userStore = createStore();
 
 // Atom derive
 const isUserAuthenticatedAtom = atom((get) => !!get(userAtom));

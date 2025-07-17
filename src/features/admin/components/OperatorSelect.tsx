@@ -1,4 +1,5 @@
 import { Combobox, useFilter, useListCollection } from "@chakra-ui/react";
+import type { UserModel } from "backend/modules/user/model";
 import { useEffect, useMemo } from "react";
 import useOperators from "../hooks/useOperators";
 
@@ -12,14 +13,15 @@ export default function OperatorSelect({
   defaultValue,
 }: OperatorSelectProps) {
   const { contains } = useFilter({ sensitivity: "base" });
-  const { operators } = useOperators();
 
   const { collection, filter, set } = useListCollection({
-    initialItems: operators,
+    initialItems: [] as UserModel.UserInfo[],
     filter: contains,
     itemToString: (item) => item.firstName,
     itemToValue: (item) => item.id.toString(),
   });
+
+  const { operators } = useOperators({ enabled: true });
 
   useEffect(() => {
     set(operators);
@@ -33,7 +35,7 @@ export default function OperatorSelect({
     <Combobox.Root
       collection={collection}
       onInputValueChange={(e) => {
-        if (e.inputValue.length <= 2) {
+        if (e.inputValue.length < 3) {
           return;
         }
         const id = operators.find(
