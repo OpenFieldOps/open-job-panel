@@ -62,7 +62,7 @@ export default function Register() {
             {...register("username")}
           />
           <InputWithLabel
-            label="E-Main"
+            label="E-Mail"
             type="email"
             placeholder="Your E-Mail"
             {...register("email")}

@@ -1,24 +1,36 @@
-import { Card, Separator } from "@chakra-ui/react";
-import { Heading } from "lucide-react";
+import { Card, Heading, HStack, Separator } from "@chakra-ui/react";
+
+import type { PropsWithChildren } from "react";
 
 type DashboardBlockProps = {
   title: string;
-  content: React.ReactNode;
   actions?: React.ReactNode;
-};
+  toolbar?: React.ReactNode;
+} & PropsWithChildren;
 
 export function DashboardBlock({
   title,
-  content,
+  children,
   actions,
+  toolbar,
 }: DashboardBlockProps) {
   return (
-    <Card.Root>
-      <Card.Header>
+    <Card.Root maxH={"300px"}>
+      <Card.Header
+        p={2}
+        px={4}
+        h={"50px"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        flexDirection={"row"}
+      >
         <Heading size="md">{title}</Heading>
-        <Separator />
+        <HStack gap={2}>{toolbar}</HStack>
       </Card.Header>
-      <Card.Body>{content}</Card.Body>
+      <Separator />
+      <Card.Body p={0} h={"full"} w={"full"}>
+        {children}
+      </Card.Body>
       <Card.Footer>{actions}</Card.Footer>
     </Card.Root>
   );

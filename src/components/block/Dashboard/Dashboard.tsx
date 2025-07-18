@@ -3,10 +3,21 @@ import DashboardJobsBlock from "@/features/admin/components/Dashboard/DashboardJ
 
 export default function Dashboard() {
   return (
-    <Box p={6}>
+    <Box p={6} w={"full"}>
       <Heading mb={6}>Dashboard</Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
-        <DashboardJobsBlock />
+      <SimpleGrid w={"full"} columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
+        <DashboardJobsBlock
+          title="Jobs in progress"
+          query={{
+            status: "in_progress",
+          }}
+        />
+        <DashboardJobsBlock
+          title="Jobs in pending"
+          query={{
+            status: "pending",
+          }}
+        />
       </SimpleGrid>
     </Box>
   );

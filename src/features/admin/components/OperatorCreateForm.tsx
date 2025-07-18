@@ -68,6 +68,7 @@ export default function OperatorCreateForm({ onCreated }: OperatorCreateProps) {
       <InputWithLabel
         label="Email"
         type="email"
+        placeholder="operator email"
         {...register("email", { required: true, pattern: emailRegex })}
         error={errors.email?.type}
       />

@@ -1,4 +1,4 @@
-import { Card, useDialog } from "@chakra-ui/react";
+import { Button, Card, useDialog } from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/model";
 import { Plus } from "lucide-react";
 import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
@@ -19,6 +19,10 @@ function UserCard({ firstName, lastName, email }: UserModel.UserInfo) {
           {`Operator: ${firstName} ${lastName} (${email})`}
         </Card.Description>
       </Card.Body>
+      <Card.Footer justifyContent={"flex-end"}>
+        <Button variant={"outline"}>Delete</Button>
+        <Button variant={"outline"}>Edit</Button>
+      </Card.Footer>
     </Card.Root>
   );
 }
