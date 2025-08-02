@@ -20,10 +20,14 @@ export function Login() {
     apiClient.auth.login.post(data).then((res) => {
       if (ok(res) && res.data) {
         setUser(res.data);
+        toaster.success({
+          title: "Login successful",
+          description: "You are now logged in.",
+        });
         navigate("/private/jobs");
       } else {
         toaster.error({
-          title: "Login failed",
+          title: "Email or password is incorrect",
         });
       }
     });

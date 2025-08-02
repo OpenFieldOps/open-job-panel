@@ -1,7 +1,12 @@
-import { Avatar, Menu } from "@chakra-ui/react";
+import { HStack, Menu } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
+import { Moon, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { userAtom, useUserAuth } from "@/atoms/userAtom";
+import { userAtom, useUserRole } from "@/atoms/userAtom";
+import { OutlineButton } from "@/components/buttons/Button";
+import { useColorMode } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/contants";
+import { CurrentUserAvatar } from "@/features/user/components/UserAvatar";
 
 type ProfileMenuItemProps = {
   label: string;
@@ -25,14 +30,20 @@ const adminLinkes = [
 export function UserProfileMenuButton() {
   const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
-  const { role, firstName, lastName } = useUserAuth();
+  const role = useUserRole();
+  const { setColorMode } = useColorMode();
+  const logout = () => {
+    setUser(null);
+    toaster.success({
+      title: "Logout successful",
+      description: "You have been logged out.",
+    });
+    navigate("/login");
+  };
   return (
     <Menu.Root>
       <Menu.Trigger>
-        <Avatar.Root cursor={"pointer"}>
-          <Avatar.Fallback name={`${firstName} ${lastName}`} />
-          <Avatar.Image />
-        </Avatar.Root>
+        <CurrentUserAvatar />
       </Menu.Trigger>
 
       <Menu.Positioner>
@@ -53,7 +64,17 @@ export function UserProfileMenuButton() {
               />
             ))}
           <Menu.Separator />
-          <ProfileMenuItem label="Logout" onClick={() => setUser(null)} />
+          <ProfileMenuItem label="Logout" onClick={logout} />
+          <Menu.Separator />
+
+          <HStack justifyContent={"center"} alignItems={"center"} gap={2}>
+            <OutlineButton onClick={() => setColorMode("light")}>
+              <Sun />
+            </OutlineButton>
+            <OutlineButton onClick={() => setColorMode("dark")}>
+              <Moon />
+            </OutlineButton>
+          </HStack>
         </Menu.Content>
       </Menu.Positioner>
     </Menu.Root>

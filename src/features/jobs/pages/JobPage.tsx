@@ -1,0 +1,24 @@
+import { X } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
+import { OutlineIconButton } from "@/components/buttons/Button";
+import PageContainer from "@/components/container/PageContainer";
+import JobDialogContent from "../components/JobDialogContent/JobDialogContent";
+
+export default function JobPage() {
+  const { jobId } = useParams<"jobId">();
+  const navigate = useNavigate();
+  return (
+    <PageContainer>
+      <PageTitleWithToolbar
+        title="Job Details"
+        toolbar={
+          <OutlineIconButton onClick={() => navigate(-1)}>
+            <X />
+          </OutlineIconButton>
+        }
+      />
+      <JobDialogContent jobId={Number(jobId)} onSave={() => navigate(-1)} />
+    </PageContainer>
+  );
+}

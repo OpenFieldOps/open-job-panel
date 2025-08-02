@@ -1,15 +1,16 @@
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import "./style.css";
+import "./style.scss";
 import type { DatesSetArg, EventInput } from "@fullcalendar/core/index.js";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 type IndexedEvent<T> = Omit<EventInput, "id"> & {
   id: number;
   extendedProps: { index: number };
 } & T;
 
-export type IndexedEventSource<T> = IndexedEvent<T>[];
+type IndexedEventSource<T> = IndexedEvent<T>[];
 
 type CalendarProps<T> = {
   events: IndexedEventSource<T>;
@@ -18,6 +19,7 @@ type CalendarProps<T> = {
   onEventClick: (event: IndexedEvent<T>) => void;
   isReadOnly?: boolean;
   onDateSet?: (arg: DatesSetArg) => void;
+  isOneDay?: boolean;
 };
 
 export default function Calendar<T>({
@@ -27,18 +29,24 @@ export default function Calendar<T>({
   onEventClick,
   isReadOnly = false,
   onDateSet,
+  isOneDay = false,
 }: CalendarProps<T>) {
+  const color = useColorModeValue("rgb(35, 35, 35)", "rgb(24, 24, 24)");
+
   return (
     <FullCalendar
       allDaySlot={false}
       editable={!isReadOnly}
       datesSet={onDateSet}
-      eventBackgroundColor="rgb(21, 21, 21)"
+      eventBackgroundColor={color}
       eventChange={(event) => {
         const eventProps = event.event.extendedProps;
         if (event.event.start && event.event.end) {
           onEventUpdate(eventProps.index, event.event.start, event.event.end);
         }
+      }}
+      headerToolbar={{
+        right: "prev,next",
       }}
       eventClick={(event) => onEventClick(event.event as T as IndexedEvent<T>)}
       eventContent={(event) => renderEvent(event.event as T as IndexedEvent<T>)}
@@ -52,11 +60,12 @@ export default function Calendar<T>({
       views={{
         timeGridWeekDay: {
           type: "timeGrid",
-          duration: { days: 7 },
+          duration: { days: isOneDay ? 1 : 7 },
           scrollTime: "08:00:00",
           slotMinTime: "06:00:00",
           slotMaxTime: "22:00:00",
           snapDuration: "00:30:00",
+          eventMaxStack: 2,
         },
       }}
     />

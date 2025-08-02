@@ -1,5 +1,5 @@
 import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
-import DashboardJobsBlock from "@/features/admin/components/Dashboard/DashboardJobsBlock";
+import DashboardJobsBlock from "@/features/admin/components/DashboardJobsBlock";
 
 export default function Dashboard() {
   return (
@@ -9,7 +9,7 @@ export default function Dashboard() {
         <DashboardJobsBlock
           title="Jobs in progress"
           query={{
-            status: "in_progress",
+            status: "inProgress",
           }}
         />
         <DashboardJobsBlock

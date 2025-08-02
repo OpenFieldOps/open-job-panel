@@ -1,11 +1,11 @@
-import { Button, FileUpload } from "@chakra-ui/react";
+import { Button, FileUpload, type FileUploadRootProps } from "@chakra-ui/react";
 import { Upload } from "lucide-react";
 
 type FileInputProps = {
   onUpload: (file: File) => void;
-};
+} & FileUploadRootProps;
 
-export default function FileInput({ onUpload }: FileInputProps) {
+export default function FileInput({ onUpload, ...props }: FileInputProps) {
   const onFileAccept = (file: File[]) => {
     const first = file.pop();
     if (!first) return;
@@ -17,6 +17,7 @@ export default function FileInput({ onUpload }: FileInputProps) {
       maxFiles={10}
       w={"fit"}
       accept={["image/png"]}
+      {...props}
     >
       <FileUpload.HiddenInput />
       <FileUpload.Trigger asChild>

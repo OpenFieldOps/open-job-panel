@@ -1,10 +1,7 @@
-import type { IconButtonProps, SpanProps } from "@chakra-ui/react";
-import { ClientOnly, IconButton, Skeleton, Span } from "@chakra-ui/react";
-import { Moon, Sun } from "lucide-react";
 import type { ThemeProviderProps } from "next-themes";
 import { ThemeProvider, useTheme } from "next-themes";
 
-export interface ColorModeProviderProps extends ThemeProviderProps {}
+interface ColorModeProviderProps extends ThemeProviderProps {}
 
 export function ColorModeProvider(props: ColorModeProviderProps) {
   return (
@@ -12,9 +9,9 @@ export function ColorModeProvider(props: ColorModeProviderProps) {
   );
 }
 
-export type ColorMode = "light" | "dark";
+type ColorMode = "light" | "dark";
 
-export interface UseColorModeReturn {
+interface UseColorModeReturn {
   colorMode: ColorMode;
   setColorMode: (colorMode: ColorMode) => void;
   toggleColorMode: () => void;
@@ -36,60 +33,4 @@ export function useColorMode(): UseColorModeReturn {
 export function useColorModeValue<T>(light: T, dark: T) {
   const { colorMode } = useColorMode();
   return colorMode === "dark" ? dark : light;
-}
-
-export function ColorModeIcon() {
-  const { colorMode } = useColorMode();
-  return colorMode === "dark" ? <Moon /> : <Sun />;
-}
-
-interface ColorModeButtonProps extends Omit<IconButtonProps, "aria-label"> {}
-
-export function ColorModeButton(props: ColorModeButtonProps) {
-  const { toggleColorMode } = useColorMode();
-  return (
-    <ClientOnly fallback={<Skeleton boxSize="8" />}>
-      <IconButton
-        aria-label="Toggle color mode"
-        onClick={toggleColorMode}
-        size="sm"
-        variant="ghost"
-        {...props}
-        css={{
-          _icon: {
-            width: "5",
-            height: "5",
-          },
-        }}
-      >
-        <ColorModeIcon />
-      </IconButton>
-    </ClientOnly>
-  );
-}
-
-export function LightMode(props: SpanProps) {
-  return (
-    <Span
-      className="chakra-theme light"
-      color="fg"
-      colorPalette="gray"
-      colorScheme="light"
-      display="contents"
-      {...props}
-    />
-  );
-}
-
-export function DarkMode(props: SpanProps) {
-  return (
-    <Span
-      className="chakra-theme dark"
-      color="fg"
-      colorPalette="gray"
-      colorScheme="dark"
-      display="contents"
-      {...props}
-    />
-  );
 }

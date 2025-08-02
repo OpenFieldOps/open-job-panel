@@ -7,11 +7,11 @@
 | Feature             | Description                                              | Status         |
 | ------------------- | -------------------------------------------------------- | -------------- |
 | Authentication      | Admin and technician login system                        | ✅ Done        |
-| Operator Management | Create and manage technician accounts with roles         | ⬜ To Do       |
-| Job Creation        | Form to create jobs with type, client, and date          | 🟨 In Progress |
+| Operator Management | Create and manage technician accounts with roles         | 🟨 In Progress |
+| Job Creation        | Form to create jobs with type, client, and date          | ✅ Done        |
 | Job Status          | Track jobs: upcoming / in progress / overdue / completed | 🟨 In Progress |
-| Admin Dashboard     | Filterable and sortable job list                         | ⬜ To Do       |
-| Calendar View       | Jobs shown by date and technician                        | 🟨 In Progress |
+| Admin Dashboard     | Filterable and sortable job list                         | 🟨 In Progress |
+| Calendar View       | Jobs shown by date and technician                        | ✅ Done        |
 | User Management     | User profle (avatar, password reset, etc...)             | ⬜ To Do       |
 
 ---
@@ -46,11 +46,11 @@
 
 ## Phase 5 – Security & Deployment
 
-| Feature          | Description                               | Status   |
-| ---------------- | ----------------------------------------- | -------- |
-| JWT/OAuth2       | Secure authentication flow                | ⬜ To Do |
-| Tests            | Unit & integration tests (API + UI)       | ⬜ To Do |
-| CI/CD            | Continuous deployment (e.g., Vercel, Bun) | ⬜ To Do |
-| Backup & Monitor | Data backups and live system monitoring   | ⬜ To Do |
+| Feature          | Description                               | Status         |
+| ---------------- | ----------------------------------------- | -------------- |
+| JWT/OAuth2       | Secure authentication flow                | 🟨 In Progress |
+| Tests            | Unit & integration tests (API + UI)       | ⬜ To Do       |
+| CI/CD            | Continuous deployment (e.g., Vercel, Bun) | ⬜ To Do       |
+| Backup & Monitor | Data backups and live system monitoring   | ⬜ To Do       |
 
 ---

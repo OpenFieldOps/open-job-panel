@@ -1,9 +1,9 @@
 import {
+  type ButtonProps,
   CloseButton,
   Dialog,
   IconButton,
   Portal,
-  type ButtonProps,
   type UseDialogReturn,
 } from "@chakra-ui/react";
 import type { PropsWithChildren } from "react";
@@ -11,12 +11,16 @@ import type { PropsWithChildren } from "react";
 type DialogContentProps = {
   trigger?: React.ReactNode;
   dialogState?: UseDialogReturn;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 } & PropsWithChildren;
 
 export function DialogContent({
   children,
   trigger,
   dialogState,
+  open,
+  setOpen,
 }: DialogContentProps) {
   const content = (
     <>
@@ -40,7 +44,14 @@ export function DialogContent({
       <Dialog.RootProvider value={dialogState}>{content}</Dialog.RootProvider>
     );
   }
-    return <Dialog.Root>{content}</Dialog.Root>;
+  return (
+    <Dialog.Root
+      onOpenChange={setOpen ? (details) => setOpen(details.open) : undefined}
+      open={open}
+    >
+      {content}
+    </Dialog.Root>
+  );
 }
 
 type TriggeredDialogProps = {

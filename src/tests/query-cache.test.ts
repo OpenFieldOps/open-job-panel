@@ -84,10 +84,12 @@ describe("API Client Tests", () => {
 		apiQueryCacheSingleUpdateList<FakeData>(
 			[QueryCacheKey.JobList],
 			1,
-			(oldData) => ({
-				...oldData,
-				name: `${oldData.name} Updated`,
-			}),
+			(oldData) => {
+				if (!oldData) {
+					throw new Error("Old data is undefined");
+				}
+				return { ...oldData, name: "Job 1 Updated" };
+			},
 		);
 
 		const updatedData = getCacheValue<ApiSucessResponse<FakeData[]>>([

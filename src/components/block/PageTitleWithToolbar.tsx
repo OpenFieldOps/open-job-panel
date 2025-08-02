@@ -1,7 +1,7 @@
 import { Flex, Heading, HStack } from "@chakra-ui/react";
 import type React from "react";
 
-type PageTitleWithToolbarProps = {
+export type PageTitleWithToolbarProps = {
   title?: string;
   toolbar?: React.ReactNode;
 };

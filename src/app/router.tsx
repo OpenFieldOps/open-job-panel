@@ -6,6 +6,7 @@ import Register from "@/features/auth/pages/Register";
 import AuthGuard from "@/features/guard/AuthGuard";
 import RoleGuard from "@/features/guard/RoleGuard";
 import JobList from "@/features/jobs/pages/JobList";
+import JobPage from "@/features/jobs/pages/JobPage";
 import { RootContainer } from "@/features/Root";
 import Profile from "@/features/user/pages/Profile";
 
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
           {
             path: "jobs",
             element: <JobList />,
+          },
+          {
+            path: "jobs/:jobId",
+            element: <JobPage />,
           },
           {
             path: "admin",

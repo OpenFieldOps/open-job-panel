@@ -26,3 +26,6 @@ dist-ssr
 scripts/release.sh
 ./scripts/release.sh
 frontend-dist.tar.gz
+./stats.html
+# Million Lint
+.million

@@ -5,6 +5,8 @@ import { toaster } from "@/components/ui/contants";
 import {
 	type AppCacheKey,
 	apiClient,
+	apiQueryCacheListAdd,
+	apiQueryCacheListDelete,
 	apiQueryCacheListUpdate,
 	apiQueryCacheSingleUpdate,
 	apiQueryCacheSingleUpdateList,
@@ -34,6 +36,59 @@ export function deleteJob(jobId: number, onSuccess: () => void) {
 		});
 }
 
+export function createJobTask(jobId: number, title: string, onOk: () => void) {
+	apiClient.job.task
+		.post({
+			jobId,
+			title,
+		})
+		.then((res) => {
+			if (ok(res) && res.data) {
+				apiQueryCacheListAdd([QueryCacheKey.JobTasks, jobId], res.data);
+				onOk();
+			}
+		});
+}
+
+export function deleteJobTask(taskId: number, jobId: number, onOk: () => void) {
+	apiClient.job["delete-task"]
+		.delete({
+			taskId,
+			jobId,
+		})
+		.then((res) => {
+			if (ok(res)) {
+				apiQueryCacheListDelete([QueryCacheKey.JobTasks, jobId], taskId);
+				onOk();
+			}
+		});
+}
+
+export function toggleJobTask(
+	taskId: number,
+	jobId: number,
+	completed: boolean,
+	onOk: () => void,
+) {
+	apiClient.job.task
+		.patch({
+			completed,
+			id: taskId,
+		})
+		.then((res) => {
+			if (ok(res)) {
+				apiQueryCacheSingleUpdateList<JobModel.JobTask>(
+					[QueryCacheKey.JobTasks, jobId] as const,
+					taskId,
+					structuredUpdateFunc({
+						completed: completed,
+					}),
+				);
+				onOk();
+			}
+		});
+}
+
 export function getJobsListKey(): AppCacheKey {
 	const period = appStore.get(jobSelectedPeriodAtom);
 	return [
@@ -58,15 +113,21 @@ export async function updateJob(
 		apiQueryCacheSingleUpdateList<JobEventCalendar>(
 			getJobsListKey(),
 			body.id,
-			(old) => ({
-				...old,
-				start: body.startDate ? body.startDate : old.start,
-				end: body.endDate ? body.endDate : old.end,
-				extendedProps: {
-					...old.extendedProps,
-					...body,
-				},
-			}),
+			(old) => {
+				if (!old) {
+					throw new Error("Job not found in cache");
+				}
+				return {
+					...old,
+					id: old.id,
+					start: body.startDate ? body.startDate : old.start,
+					end: body.endDate ? body.endDate : old.end,
+					extendedProps: {
+						...old.extendedProps,
+						...body,
+					},
+				};
+			},
 		);
 		toaster.success({
 			title: "Job updated",

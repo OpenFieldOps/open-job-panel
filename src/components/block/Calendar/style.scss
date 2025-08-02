@@ -4,6 +4,31 @@
   max-width: 100% !important;
   max-height: 100% !important;
 }
+
+.fc-timegrid-more-link {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 0.3px solid #27272a !important;
+}
+
+.fc-popover {
+  background: #000000 !important;
+}
+
+.fc-popover .fc-popover-header {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-bottom: 0.3px solid #27272a;
+}
+
+.fc-popover .fc-popover-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
 .fc-theme-standard td {
   border: 0.3px solid #27272a;
 }

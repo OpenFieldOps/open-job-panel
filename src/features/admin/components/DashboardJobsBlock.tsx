@@ -16,7 +16,7 @@ export default function DashboardJobsBlock({
   title,
 }: DashboardJobsBlockProps) {
   const { jobs, isLoading, key } = useJobQuery(query);
-  const { openJob, modal } = useJobModal();
+  const { openJob, JobEdit } = useJobModal();
 
   if (isLoading) return <Spinner />;
   if (!jobs || jobs.length <= 0)
@@ -27,7 +27,7 @@ export default function DashboardJobsBlock({
     );
   return (
     <DashboardBlock title={title} toolbar={<RefreshButton queryKey={key} />}>
-      {modal}
+      <JobEdit />
       <Table.ScrollArea borderWidth="1px" rounded="md" h={"full"}>
         <Table.Root size="sm" stickyHeader>
           <Table.Header>

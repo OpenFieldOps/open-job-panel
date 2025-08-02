@@ -1,60 +1,83 @@
 import type { UserModel } from "backend/modules/user/model";
 import { atom, useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { appStore } from "@/app/store";
+import { apiClient, ok } from "@/lib/apiClient";
 
 type UserAtom = UserModel.UserWithoutPassword;
 
-type UserAuth = {
-	user: UserAtom;
-	token: string;
+export type UserAuth = {
+  user: UserAtom;
+  token: string;
 };
 
-function fetchUserFromEnv(): UserAuth | null {
-	if (import.meta.env.NODE_ENV === "test") {
-		return null;
-	}
-	const content = localStorage.getItem("user");
-	let currentUser: UserAuth | null = null;
+function fetchUserFromLocalStorage(): UserAuth | null {
+  if (import.meta.env.NODE_ENV === "test") {
+    return null;
+  }
+  const content = localStorage.getItem("user");
+  let currentUser: UserAuth | null = null;
 
-	if (content) {
-		currentUser = JSON.parse(content);
-	}
-	return currentUser;
+  if (content) {
+    currentUser = JSON.parse(content);
+    setTimeout(refreshUser, 50);
+  }
+  return currentUser;
 }
 
 export const userAtom = atomWithStorage<UserAuth | null>(
-	"user",
-	fetchUserFromEnv(),
+  "user",
+  fetchUserFromLocalStorage()
 );
+
+function refreshUser() {
+  apiClient.auth.me
+    .get()
+    .then((response) => {
+      if (ok(response) && response.data) {
+        appStore.set(userAtom, (user) => {
+          if (user) {
+            return {
+              token: user.token,
+              user: response.data,
+            };
+          }
+          return null;
+        });
+      } else {
+        appStore.set(userAtom, null);
+      }
+    })
+    .catch(() => {
+      appStore.set(userAtom, null);
+    });
+}
+
+setInterval(() => {
+  if (appStore.get(userAtom)) {
+    refreshUser();
+  }
+}, 1000 * 60 * 5);
 
 // Atom derive
 const isUserAuthenticatedAtom = atom((get) => !!get(userAtom));
 
 const userIdAtom = atom((get) => get(userAtom)?.user.id as number);
-const userNameAtom = atom((get) => {
-	const user = get(userAtom) as UserAuth;
 
-	return {
-		firstName: user.user.firstName,
-		lastName: user.user.lastName,
-	};
-});
 const userRoleAtom = atom((get) => {
-	return get(userAtom)?.user.role as UserModel.UserRole;
+  return get(userAtom)?.user.role as UserModel.UserRole;
 });
 
 // React Hooks
 export const useIsUserAuthenticated = () =>
-	useAtomValue(isUserAuthenticatedAtom);
+  useAtomValue(isUserAuthenticatedAtom);
 
 export const useUserId = () => useAtomValue(userIdAtom);
 
-export const useUserName = () => useAtomValue(userNameAtom);
-
 export const useUserRole = () => {
-	return useAtomValue(userRoleAtom);
+  return useAtomValue(userRoleAtom);
 };
 
 export const useUserAuth = () => {
-	return useAtomValue(userAtom)?.user as UserModel.UserWithoutPassword;
+  return useAtomValue(userAtom)?.user as UserModel.UserWithoutPassword;
 };

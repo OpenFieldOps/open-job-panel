@@ -1,5 +1,5 @@
-import { useIsUserAuthenticated } from "@/atoms/userAtom";
 import { Navigate, Outlet } from "react-router-dom";
+import { useIsUserAuthenticated } from "@/atoms/userAtom";
 
 export default function AuthGuard() {
   const isUserAuthenticated = useIsUserAuthenticated();

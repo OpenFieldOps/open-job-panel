@@ -10,8 +10,10 @@ type RefreshButtonProps = ButtonProps & {
 
 export default function RefreshButton(props: RefreshButtonProps) {
   const isLoading = props.isLoading === undefined ? false : props.isLoading;
+  const disabled = props.disabled || isLoading;
   return (
     <IconButton
+      disabled={disabled}
       onClick={() =>
         queryClient.invalidateQueries({
           queryKey: props.queryKey,

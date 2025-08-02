@@ -1,7 +1,7 @@
 import { Combobox, useFilter, useListCollection } from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/model";
 import { useEffect, useMemo } from "react";
-import useOperators from "../hooks/useOperators";
+import useOperators from "../../admin/hooks/useOperators";
 
 type OperatorSelectProps = {
   onChange?: (userId: number) => void;

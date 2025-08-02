@@ -13,8 +13,6 @@ type Inputs = AuthModel.RegisterUserBody & {
   confirmPassword: string;
 };
 
-export function NewUserForm() {}
-
 export default function Register() {
   const { register, handleSubmit } = useForm<Inputs>();
   const setUser = useSetAtom(userAtom);

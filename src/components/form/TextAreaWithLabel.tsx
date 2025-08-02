@@ -1,5 +1,5 @@
 import { Textarea, type TextareaProps } from "@chakra-ui/react";
-import FieldWithLabel from "./FieldWithLabel";
+import { FieldWithLabel } from "./FieldWithLabel";
 
 type TextAreaWithLabelProps = TextareaProps &
   React.RefAttributes<HTMLTextAreaElement> & {

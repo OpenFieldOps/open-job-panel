@@ -1,34 +1,46 @@
 import { Button, ButtonGroup, Steps } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
-import { useMemo } from "react";
-import { jobStatusInfo, jobStatusNotCompleted } from "../constant";
+import { CheckCircle, Clock, Loader2, SquareCheck } from "lucide-react";
+import { useState } from "react";
+import {
+  jobStatusIndexMap,
+  jobStatusInfo,
+  jobStatusNotCompleted,
+} from "../constant";
 
 type JobStatusStepProps = {
   onChange: (newStatus: JobModel.JobStatusString) => void;
   defaultStatus?: JobModel.JobStatusString;
 };
 
+const jobStatusIconMap: Record<JobModel.JobStatusString, React.ReactNode> = {
+  scheduled: <Clock />,
+  inProgress: <Loader2 />,
+  pending: <SquareCheck />,
+  completed: <CheckCircle />,
+};
+
 export function JobStatusStep({ onChange, defaultStatus }: JobStatusStepProps) {
-  const defaultStepIndex = useMemo(() => {
-    if (!defaultStatus) return 0;
-    const index = jobStatusInfo.findIndex(
-      (step) => step.status === defaultStatus
-    );
-    return index === -1 ? 0 : index;
-  }, [defaultStatus]);
+  const [stepIndex, setStepIndex] = useState(
+    jobStatusIndexMap[defaultStatus || jobStatusInfo[0].status]
+  );
+
   return (
     <Steps.Root
+      w={"full"}
       count={jobStatusInfo.length - 1}
-      onStepChange={(newStep) =>
-        onChange(jobStatusInfo[newStep.step].status as JobModel.JobStatusString)
-      }
-      defaultStep={defaultStepIndex}
+      onStepChange={(newStep) => {
+        onChange(
+          jobStatusInfo[newStep.step].status as JobModel.JobStatusString
+        );
+        setStepIndex(newStep.step);
+      }}
+      step={stepIndex}
     >
       <Steps.List>
         {jobStatusNotCompleted.map((step, index) => (
           <Steps.Item index={index} key={step.status} title={step.title}>
-            <Steps.Indicator />
-            <Steps.Title>{step.title}</Steps.Title>
+            <Steps.Indicator>{jobStatusIconMap[step.status]}</Steps.Indicator>
             <Steps.Separator />
           </Steps.Item>
         ))}
@@ -44,7 +56,13 @@ export function JobStatusStep({ onChange, defaultStatus }: JobStatusStepProps) {
           <Button>Previous</Button>
         </Steps.PrevTrigger>
         <Steps.NextTrigger asChild>
-          <Button>Next</Button>
+          <Button>
+            {stepIndex < jobStatusInfo.length - 2
+              ? "Next"
+              : stepIndex === jobStatusInfo.length - 1
+              ? "Completed"
+              : "Finish"}
+          </Button>
         </Steps.NextTrigger>
       </ButtonGroup>
     </Steps.Root>

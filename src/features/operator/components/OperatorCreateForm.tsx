@@ -55,12 +55,14 @@ export default function OperatorCreateForm({ onCreated }: OperatorCreateProps) {
         <InputWithLabel
           label="First Name"
           placeholder="First Name"
+          autoComplete="given-name"
           {...register("firstName", { required: true, minLength: 2 })}
           error={errors.firstName?.type}
         />
         <InputWithLabel
           label="Last Name"
           placeholder="Last Name"
+          autoComplete="family-name"
           {...register("lastName", { required: true, minLength: 2 })}
           error={errors.lastName?.type}
         />
@@ -69,12 +71,14 @@ export default function OperatorCreateForm({ onCreated }: OperatorCreateProps) {
         label="Email"
         type="email"
         placeholder="operator email"
+        autoComplete="email"
         {...register("email", { required: true, pattern: emailRegex })}
         error={errors.email?.type}
       />
       <InputWithLabel
         label="Username"
         placeholder="Username"
+        autoComplete="username"
         {...register("username", { required: true, minLength: 3 })}
         error={errors.username?.type}
       />
@@ -82,6 +86,7 @@ export default function OperatorCreateForm({ onCreated }: OperatorCreateProps) {
         label="Password"
         placeholder="Password"
         type="password"
+        autoComplete="new-password"
         {...register("password", { required: true, minLength: 6 })}
         error={errors.password?.type}
       />

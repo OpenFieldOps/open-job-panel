@@ -4,11 +4,10 @@ import {
   HStack,
   Input,
   Spinner,
-  Tabs,
   VStack,
 } from "@chakra-ui/react";
 import type { FileModel } from "backend/modules/models/FileModel";
-import { Download, Edit, Folder, SquareCheck, Trash } from "lucide-react";
+import { Download, Trash } from "lucide-react";
 import { useState } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
 import { useUserRole } from "@/atoms/userAtom";
@@ -16,62 +15,13 @@ import FormTemplate from "@/components/block/FormTemplate";
 import { OutlineIconButton } from "@/components/buttons/Button";
 import FileInput from "@/components/form/FileInput";
 import { toaster } from "@/components/ui/contants";
-import OperatorJobEditForm from "@/features/operator/components/OperatorJobEdit";
+import { useJobDocuments } from "@/features/jobs/hooks/useJobDocument";
 import {
   apiClient,
   apiQueryCacheListAdd,
   apiQueryCacheListDelete,
   ok,
 } from "@/lib/apiClient";
-import { useJobDocuments } from "../hooks/useJobDocument";
-import { JobEditForm } from "./JobEditForm";
-
-type JobDialogContantProps = {
-  jobId: number;
-  onSave: () => void;
-};
-
-export default function JobDialogContent({
-  jobId,
-  onSave,
-}: JobDialogContantProps) {
-  const role = useUserRole();
-  return (
-    <Tabs.Root lazyMount defaultValue="edit" w={"full"}>
-      <Tabs.List justifyContent={"center"}>
-        <Tabs.Trigger value="edit">
-          <Edit />
-          Edit
-        </Tabs.Trigger>
-        <Tabs.Trigger value="documents">
-          <Folder />
-          Documents
-        </Tabs.Trigger>
-        <Tabs.Trigger value="tasks">
-          <SquareCheck />
-          Tasks
-        </Tabs.Trigger>
-      </Tabs.List>
-      <Tabs.Content value="edit" justifyContent={"center"}>
-        {role === "admin" ? (
-          <JobEditForm jobId={jobId} onSave={onSave} />
-        ) : (
-          <OperatorJobEditForm jobId={jobId} />
-        )}
-      </Tabs.Content>
-      <Tabs.Content value="documents">
-        <DocumentsTab jobId={jobId} />
-      </Tabs.Content>
-      <Tabs.Content value="tasks">
-        <TasksTab />
-      </Tabs.Content>
-    </Tabs.Root>
-  );
-}
-
-function TasksTab() {
-  return <FormTemplate confirmText="Add"></FormTemplate>;
-}
 
 function deleteJobFile(jobId: number, fileId: string) {
   apiClient.job["delete-document"]
@@ -151,7 +101,7 @@ function DocumentsList({ documents, jobId }: DocumentsListProps) {
   return <p>No documents found.</p>;
 }
 
-function DocumentsTab({ jobId }: { jobId: number }) {
+export function JobDialogDocumentsTab({ jobId }: { jobId: number }) {
   const { documents, isLoading } = useJobDocuments({ jobId });
   const [search, setSearch] = useState("");
 
@@ -176,13 +126,14 @@ function DocumentsTab({ jobId }: { jobId: number }) {
   );
 
   return (
-    <FormTemplate trigger={<FileInput onUpload={onUploadFile} />}>
+    <FormTemplate trigger={<FileInput mt={4} onUpload={onUploadFile} />}>
       <Input
+        id="job-documents-search"
         placeholder="Search documents"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <VStack overflowY={"scroll"} maxH={"55vh"} w={"full"} gap={2}>
+      <VStack overflowY={"scroll"} maxH={"47vh"} w={"full"} gap={2}>
         <DocumentsList jobId={jobId} documents={filteredDocuments} />
       </VStack>
     </FormTemplate>
