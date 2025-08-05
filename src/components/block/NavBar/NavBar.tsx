@@ -36,8 +36,6 @@ export default function NavBar() {
     ? authenticatedNavBarLinks
     : defaultNavBarLinks;
 
-  console.log("render navbar");
-
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} p={4}>
       <HStack gap={4}>

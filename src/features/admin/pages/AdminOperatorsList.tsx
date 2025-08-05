@@ -5,14 +5,14 @@ import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
 import PageContainer from "@/components/container/PageContainer";
 import ConfirmAlertDialog from "@/components/dialog/ConfirmAlertDialog";
 import { toaster } from "@/components/ui/contants";
+import OperatorCreateDialogTrigger from "@/features/operator/components/OperatorDialogTrigger";
 import { UserAvatar } from "@/features/user/components/UserAvatar";
 import { apiClient, apiQueryCacheListDelete, ok } from "@/lib/apiClient";
 import { OperatorEditDialogTrigger } from "../../operator/components/OperatorEditForm";
 import useOperators from "../hooks/useOperators";
-import OperatorCreateDialogTrigger from "@/features/operator/components/OperatorDialogTrigger";
 
 function deleteOperator(userId: number) {
-  apiClient.user["assigned-users"]({
+  apiClient.user["delete-assigned-users"]({
     userId,
   })
     .delete()
@@ -64,7 +64,7 @@ function UserCard({
           <strong>Email:</strong> {email}
         </Card.Description>
 
-        <HStack justifyContent={"flex-end"}>
+        <HStack justifyContent={"flex-end"} mt={2}>
           <ConfirmAlertDialog
             onConfirm={() => {
               deleteOperator(id);

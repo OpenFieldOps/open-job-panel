@@ -98,6 +98,15 @@ export function apiQueryCacheListDelete<T extends { id: Id }>(
   });
 }
 
+export function apiQueryCacheListDeleteAll(key: AppCacheKey) {
+  queryClient.setQueryData(key, (oldData: ApiSucessResponse<unknown[]>) => {
+    return {
+      ...oldData,
+      data: [],
+    };
+  });
+}
+
 export function structuredUpdateFunc<T, N>(newData: N) {
   return (old: T) => ({
     ...old,

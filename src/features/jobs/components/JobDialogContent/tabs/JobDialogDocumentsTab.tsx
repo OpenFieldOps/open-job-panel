@@ -7,14 +7,15 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import type { FileModel } from "backend/modules/models/FileModel";
-import { Download, Trash } from "lucide-react";
+import { Download } from "lucide-react";
 import { useState } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
-import { useUserRole } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import { OutlineIconButton } from "@/components/buttons/Button";
 import FileInput from "@/components/form/FileInput";
+import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
+import { WithRole } from "@/features/guard/WithRole";
 import { useJobDocuments } from "@/features/jobs/hooks/useJobDocument";
 import {
   apiClient,
@@ -41,7 +42,6 @@ function DocumentCard({
   id,
   jobId,
 }: FileModel.DbFile & { jobId: number }) {
-  const role = useUserRole();
   const data = async () => {
     const res = await apiClient.file({ id }).get();
 
@@ -60,11 +60,11 @@ function DocumentCard({
         <HStack gap={4} justify={"space-between"}>
           {fileName}
           <HStack gap={2}>
-            {role === "admin" && (
-              <OutlineIconButton onClick={() => deleteJobFile(jobId, id)}>
-                <Trash />
-              </OutlineIconButton>
-            )}
+            <WithRole.admin>
+              <OutlineTrashIconButton
+                onClick={() => deleteJobFile(jobId, id)}
+              />
+            </WithRole.admin>
             <DownloadTrigger
               data={data}
               fileName={fileName}

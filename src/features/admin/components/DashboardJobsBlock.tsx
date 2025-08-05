@@ -21,13 +21,17 @@ export default function DashboardJobsBlock({
   if (isLoading) return <Spinner />;
   if (!jobs || jobs.length <= 0)
     return (
-      <DashboardBlock title={title} toolbar={<RefreshButton queryKey={key} />}>
+      <DashboardBlock
+        p={2}
+        title={title}
+        toolbar={<RefreshButton queryKey={key} />}
+      >
         <Text p={2}>No data available</Text>
       </DashboardBlock>
     );
   return (
     <DashboardBlock title={title} toolbar={<RefreshButton queryKey={key} />}>
-      <JobEdit />
+      {JobEdit}
       <Table.ScrollArea borderWidth="1px" rounded="md" h={"full"}>
         <Table.Root size="sm" stickyHeader>
           <Table.Header>

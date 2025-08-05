@@ -1,16 +1,23 @@
-import { Combobox, useFilter, useListCollection } from "@chakra-ui/react";
+import {
+  Combobox,
+  type InputProps,
+  useFilter,
+  useListCollection,
+} from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/model";
 import { useEffect, useMemo } from "react";
 import useOperators from "../../admin/hooks/useOperators";
 
 type OperatorSelectProps = {
-  onChange?: (userId: number) => void;
+  onChange?: (userId: number | null) => void;
   defaultValue?: number;
+  inputProps?: InputProps;
 };
 
 export default function OperatorSelect({
   onChange,
   defaultValue,
+  inputProps,
 }: OperatorSelectProps) {
   const { contains } = useFilter({ sensitivity: "base" });
 
@@ -33,24 +40,29 @@ export default function OperatorSelect({
 
   return (
     <Combobox.Root
+      lazyMount
       collection={collection}
       onInputValueChange={(e) => {
-        if (e.inputValue.length < 3) {
+        if (e.reason === "clear-trigger") {
+          onChange?.(null);
+          filter("");
           return;
         }
-        const id = operators.find(
-          (item) => item.firstName === e.inputValue
-        )?.id;
-        if (id && onChange) {
-          onChange(id);
+
+        if (e.inputValue.length >= 3) {
+          const operator = operators.find(
+            (item) => item.firstName === e.inputValue
+          );
+          if (operator?.id) onChange?.(operator.id);
+          filter(e.inputValue);
         }
-        filter(e.inputValue);
       }}
     >
       <Combobox.Control>
         <Combobox.Input
           placeholder="Type to search"
           defaultValue={defaultOperatorFirstName}
+          {...inputProps}
         />
         <Combobox.IndicatorGroup>
           <Combobox.ClearTrigger />

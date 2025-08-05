@@ -74,8 +74,12 @@ export const useIsUserAuthenticated = () =>
 
 export const useUserId = () => useAtomValue(userIdAtom);
 
-export const useUserRole = () => {
-  return useAtomValue(userRoleAtom);
+export const useUserIs = (role: UserModel.UserRole) => {
+  return useAtomValue(userRoleAtom) === role;
+};
+
+export const useUserIsNot = (role: UserModel.UserRole) => {
+  return useAtomValue(userRoleAtom) !== role;
 };
 
 export const useUserAuth = () => {

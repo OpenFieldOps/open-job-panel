@@ -20,3 +20,9 @@ export enum QueryCacheKey {
   OperatorList = 6,
   Notifications = 7,
 }
+
+export function BuildQueryCacheKey(
+  ...args: [QueryCacheKey, number | string]
+): [QueryCacheKey, number | string] {
+  return [args[0], args[1]];
+}

@@ -6,12 +6,11 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
-import { Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useUserRole } from "@/atoms/userAtom";
+import { useUserIs } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
-import { OutlineIconButton } from "@/components/buttons/Button";
 import { FieldWithError } from "@/components/form/FieldWithLabel";
+import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
 import { useJobTasks } from "@/features/jobs/hooks/useJobTasks";
 import {
@@ -29,11 +28,11 @@ type CreateJobTaskInputs = {
 };
 
 export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
-  const role = useUserRole();
-
   const { tasks, isLoading } = useJobTasks({
     jobId,
   });
+
+  const canDelete = useUserIs("admin");
 
   const {
     register,
@@ -69,6 +68,7 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
   if (isLoading) {
     return <Spinner />;
   }
+
   if (!tasks || tasks.length === 0) {
     return (
       <FormTemplate confirmText="Add" trigger={trigger} onSubmit={onSubmit}>
@@ -77,7 +77,6 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
     );
   }
 
-  const canDelete = role === "admin";
   return (
     <FormTemplate scrollable trigger={trigger} onSubmit={onSubmit}>
       {tasks.map((task) => (
@@ -118,17 +117,15 @@ function TaskCard({ task, jobId, canDelete }: TaskCardProps) {
         <CheckboxCard.Indicator />
       </CheckboxCard.Control>
       {canDelete ? (
-        <OutlineIconButton
+        <OutlineTrashIconButton
           onClick={() =>
-            deleteJobTask(task.id, task.jobId, () => {
+            deleteJobTask(task.id, task.jobId, () =>
               toaster.success({
                 title: "Task deleted",
-              });
-            })
+              })
+            )
           }
-        >
-          <Trash2 />
-        </OutlineIconButton>
+        />
       ) : null}
     </CheckboxCard.Root>
   );

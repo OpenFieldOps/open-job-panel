@@ -29,3 +29,9 @@ frontend-dist.tar.gz
 ./stats.html
 # Million Lint
 .million
+
+.firebaserc
+/firebase-debug.log
+/firebase.json
+/.firebase
+.env.production

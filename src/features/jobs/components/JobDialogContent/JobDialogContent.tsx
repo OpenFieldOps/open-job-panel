@@ -1,6 +1,6 @@
 import { Tabs } from "@chakra-ui/react";
 import { Edit, Folder, SquareCheck } from "lucide-react";
-import { useUserRole } from "@/atoms/userAtom";
+import { WithRole } from "@/features/guard/WithRole";
 import OperatorJobEditForm from "@/features/operator/components/OperatorJobEdit";
 import { JobEditForm } from "../JobEditForm";
 import { JobDialogDocumentsTab } from "./tabs/JobDialogDocumentsTab";
@@ -15,7 +15,6 @@ export default function JobDialogContent({
   jobId,
   onSave,
 }: JobDialogContantProps) {
-  const role = useUserRole();
   return (
     <Tabs.Root lazyMount defaultValue="edit" w={"full"}>
       <Tabs.List justifyContent={"center"}>
@@ -33,11 +32,12 @@ export default function JobDialogContent({
         </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content value="edit" justifyContent={"center"} w={"full"}>
-        {role === "admin" ? (
+        <WithRole.admin>
           <JobEditForm jobId={jobId} onSave={onSave} />
-        ) : (
+        </WithRole.admin>
+        <WithRole.operator>
           <OperatorJobEditForm jobId={jobId} onSave={onSave} />
-        )}
+        </WithRole.operator>
       </Tabs.Content>
       <Tabs.Content value="documents">
         <JobDialogDocumentsTab jobId={jobId} />

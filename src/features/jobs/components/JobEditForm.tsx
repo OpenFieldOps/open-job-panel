@@ -64,7 +64,7 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
       <HStack w={"full"} justifyContent="space-between" alignItems={"center"}>
         <FieldWithLabel label="Operator">
           <OperatorSelect
-            onChange={(id) => setValue("assignedTo", id)}
+            onChange={(id) => setValue("assignedTo", id as number)}
             defaultValue={job.assignedTo}
           />
         </FieldWithLabel>

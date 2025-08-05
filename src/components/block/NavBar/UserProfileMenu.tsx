@@ -2,10 +2,11 @@ import { HStack, Menu } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import { Moon, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { userAtom, useUserRole } from "@/atoms/userAtom";
+import { userAtom } from "@/atoms/userAtom";
 import { OutlineButton } from "@/components/buttons/Button";
 import { useColorMode } from "@/components/ui/color-mode";
 import { toaster } from "@/components/ui/contants";
+import { WithRole } from "@/features/guard/WithRole";
 import { CurrentUserAvatar } from "@/features/user/components/UserAvatar";
 
 type ProfileMenuItemProps = {
@@ -25,12 +26,12 @@ const userLinkes = [{ label: "Profile", path: "/private/profile" }];
 const adminLinkes = [
   { label: "Dashboard", path: "/private/admin/dashboard" },
   { label: "Operators", path: "/private/admin/operators" },
+  { label: "Clients", path: "/private/admin/clients" },
 ];
 
 export function UserProfileMenuButton() {
   const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
-  const role = useUserRole();
   const { setColorMode } = useColorMode();
   const logout = () => {
     setUser(null);
@@ -55,14 +56,16 @@ export function UserProfileMenuButton() {
               onClick={() => navigate(link.path)}
             />
           ))}
-          {role === "admin" &&
-            adminLinkes.map((link) => (
+          <WithRole.admin>
+            {adminLinkes.map((link) => (
               <ProfileMenuItem
                 key={link.label}
                 label={link.label}
                 onClick={() => navigate(link.path)}
               />
             ))}
+          </WithRole.admin>
+
           <Menu.Separator />
           <ProfileMenuItem label="Logout" onClick={logout} />
           <Menu.Separator />

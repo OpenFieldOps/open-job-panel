@@ -2,22 +2,27 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DialogContent } from "@/components/dialog/ButtonDialog";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { when } from "@/utils/conditionaly";
 import JobDialogContent from "../components/JobDialogContent/JobDialogContent";
 
 export function useJobModal() {
   const [jobId, setJobId] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  const JobEdit = () =>
-    !isMobile && (
+  const JobEditMemo = useMemo(() => {
+    return when(
+      !isMobile && jobId !== null,
       <DialogContent open={open} setOpen={setOpen}>
-        {jobId && (
-          <JobDialogContent jobId={jobId} onSave={() => setOpen(false)} />
-        )}
+        <JobDialogContent
+          jobId={jobId as number}
+          onSave={() => setOpen(false)}
+        />
       </DialogContent>
     );
+  }, [jobId, open, isMobile]);
+
+  const navigate = useNavigate();
 
   const openJob = useMemo(() => {
     return (id: number) => {
@@ -31,7 +36,7 @@ export function useJobModal() {
   }, [isMobile, navigate]);
 
   return {
-    JobEdit,
+    JobEdit: JobEditMemo,
     openJob,
   };
 }

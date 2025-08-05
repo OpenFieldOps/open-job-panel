@@ -1,3 +1,4 @@
+import { Separator } from "@chakra-ui/react";
 import { X } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
@@ -19,6 +20,7 @@ export default function JobPage() {
         }
       />
       <JobDialogContent jobId={Number(jobId)} onSave={() => navigate(-1)} />
+      <Separator />
     </PageContainer>
   );
 }

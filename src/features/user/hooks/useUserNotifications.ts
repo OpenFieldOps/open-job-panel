@@ -1,13 +1,39 @@
 import { useQuery } from "@tanstack/react-query";
-import { UserNotificationModel } from "backend/modules/notification/model";
+import type { UserNotificationModel } from "backend/modules/notification/model";
 import { QueryCacheKey } from "@/app/queryClient";
-import { apiClient } from "@/lib/apiClient";
+import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
 
-UserNotificationModel.UserNotificationType;
 export default function useUserNotifications() {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [QueryCacheKey.Notifications],
     queryFn: async () => await apiClient.notification.get(),
+    refetchOnMount: true,
+    refetchInterval: 10000 * 3, // Refetch every 30 seconds
   });
-  return { notifications: data?.data || [] };
+  const haveNewNotifications = data?.data?.some(
+    (notification) => !notification.isRead
+  );
+  const readAllNotifications = async () => {
+    const response = await apiClient.notification.read.put();
+    if (ok(response)) {
+      // Invalidate the query to refetch notifications
+      apiQueryCacheListUpdate<UserNotificationModel.UserNotification[]>(
+        [QueryCacheKey.Notifications],
+        (oldData) => {
+          return oldData.map((notification) => ({
+            ...notification,
+            isRead: true,
+          }));
+        }
+      );
+    }
+  };
+  return {
+    notifications: data?.data || [],
+    isLoading,
+    haveNewNotifications,
+    readAllNotifications,
+  };
 }
+
+export type UseUserNotificationReturn = ReturnType<typeof useUserNotifications>;

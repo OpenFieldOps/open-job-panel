@@ -2,8 +2,13 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.scss";
+import { HStack, Text, VStack } from "@chakra-ui/react";
 import type { DatesSetArg, EventInput } from "@fullcalendar/core/index.js";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { type RefObject, useRef } from "react";
+import { OutlineIconButton } from "@/components/buttons/Button";
 import { useColorModeValue } from "@/components/ui/color-mode";
+import { formatSingleDate, formatWeekRange } from "@/utils/time";
 
 type IndexedEvent<T> = Omit<EventInput, "id"> & {
   id: number;
@@ -20,7 +25,14 @@ type CalendarProps<T> = {
   isReadOnly?: boolean;
   onDateSet?: (arg: DatesSetArg) => void;
   isOneDay?: boolean;
+  leftToolbar?: React.ReactNode;
+  rightToolbar?: React.ReactNode;
+  displayDate?: boolean;
 };
+
+function getApi(calendarRef: RefObject<FullCalendar | null> | null = null) {
+  return calendarRef?.current?.getApi();
+}
 
 export default function Calendar<T>({
   events,
@@ -30,44 +42,78 @@ export default function Calendar<T>({
   isReadOnly = false,
   onDateSet,
   isOneDay = false,
+  leftToolbar,
+  rightToolbar,
+  displayDate = false,
 }: CalendarProps<T>) {
   const color = useColorModeValue("rgb(35, 35, 35)", "rgb(24, 24, 24)");
+  const calendarRef = useRef<FullCalendar>(null);
 
   return (
-    <FullCalendar
-      allDaySlot={false}
-      editable={!isReadOnly}
-      datesSet={onDateSet}
-      eventBackgroundColor={color}
-      eventChange={(event) => {
-        const eventProps = event.event.extendedProps;
-        if (event.event.start && event.event.end) {
-          onEventUpdate(eventProps.index, event.event.start, event.event.end);
+    <VStack h={"full"} w={"full"}>
+      <HStack w={"full"} justifyContent={"space-between"}>
+        <HStack>
+          {leftToolbar}
+          {displayDate && (
+            <Text fontSize="lg" fontWeight="bold">
+              {!isOneDay
+                ? formatWeekRange(getApi(calendarRef)?.getDate())
+                : formatSingleDate(getApi(calendarRef)?.getDate())}
+            </Text>
+          )}
+        </HStack>
+        <HStack>
+          {rightToolbar}
+          <OutlineIconButton onClick={() => getApi(calendarRef)?.prev()}>
+            <ArrowLeft />
+          </OutlineIconButton>
+          <OutlineIconButton onClick={() => getApi(calendarRef)?.next()}>
+            <ArrowRight />
+          </OutlineIconButton>
+        </HStack>
+      </HStack>
+      <FullCalendar
+        ref={calendarRef}
+        allDaySlot={false}
+        editable={!isReadOnly}
+        datesSet={onDateSet}
+        eventBackgroundColor={color}
+        eventChange={(event) => {
+          onEventUpdate(
+            event.event.extendedProps.index,
+            event.event.start as Date,
+            event.event.end as Date
+          );
+        }}
+        headerToolbar={{
+          right: "",
+          left: "",
+        }}
+        eventClick={(event) =>
+          onEventClick(event.event as T as IndexedEvent<T>)
         }
-      }}
-      headerToolbar={{
-        right: "prev,next",
-      }}
-      eventClick={(event) => onEventClick(event.event as T as IndexedEvent<T>)}
-      eventContent={(event) => renderEvent(event.event as T as IndexedEvent<T>)}
-      eventDurationEditable={!isReadOnly}
-      eventResizableFromStart={!isReadOnly}
-      eventStartEditable={!isReadOnly}
-      events={events as Omit<IndexedEvent<T>, "id">[]}
-      forceEventDuration
-      initialView={"timeGridWeekDay"}
-      plugins={[timeGridPlugin, interactionPlugin]}
-      views={{
-        timeGridWeekDay: {
-          type: "timeGrid",
-          duration: { days: isOneDay ? 1 : 7 },
-          scrollTime: "08:00:00",
-          slotMinTime: "06:00:00",
-          slotMaxTime: "22:00:00",
-          snapDuration: "00:30:00",
-          eventMaxStack: 2,
-        },
-      }}
-    />
+        eventContent={(event) =>
+          renderEvent(event.event as T as IndexedEvent<T>)
+        }
+        eventDurationEditable={!isReadOnly}
+        eventResizableFromStart={!isReadOnly}
+        eventStartEditable={!isReadOnly}
+        events={events as Omit<IndexedEvent<T>, "id">[]}
+        forceEventDuration
+        initialView={"timeGridWeekDay"}
+        plugins={[timeGridPlugin, interactionPlugin]}
+        views={{
+          timeGridWeekDay: {
+            type: "timeGrid",
+            duration: { days: isOneDay ? 1 : 7 },
+            scrollTime: "08:00:00",
+            slotMinTime: "06:00:00",
+            slotMaxTime: "22:00:00",
+            snapDuration: "00:30:00",
+            eventMaxStack: 1,
+          },
+        }}
+      />
+    </VStack>
   );
 }

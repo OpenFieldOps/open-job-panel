@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import AdminClientList from "@/features/admin/pages/AdminClientList";
 import AdminDashboard from "@/features/admin/pages/AdminDashboard";
 import AdminOperatorsList from "@/features/admin/pages/AdminOperatorsList";
 import { Login } from "@/features/auth/pages/Login";
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
             element: <RoleGuard userRole="admin" />,
             children: [
               { path: "operators", element: <AdminOperatorsList /> },
+              { path: "clients", element: <AdminClientList /> },
               { path: "dashboard", element: <AdminDashboard /> },
             ],
           },

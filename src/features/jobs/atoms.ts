@@ -1,6 +1,6 @@
 import type { JobModel } from "backend/modules/job/model";
 import dayjs from "dayjs";
-import { atom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { QueryCacheKey } from "@/app/queryClient";
 import { apiClient } from "@/lib/apiClient";
@@ -45,13 +45,3 @@ export const jobsAtom = atomWithQuery((get) => {
     },
   };
 });
-
-const isJobListLoadingAtom = atom((get) => {
-  const query = get(jobsAtom);
-  return query.isLoading || query.isFetching;
-});
-
-export const useJobListLoading = () => {
-  const isLoading = useAtomValue(isJobListLoadingAtom);
-  return isLoading;
-};
