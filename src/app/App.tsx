@@ -10,6 +10,7 @@ import theme from "@/theme";
 import { queryClient } from "./queryClient";
 import { router } from "./router";
 import { appStore } from "./store";
+import "./localisationService";
 
 function HydrateAtoms({ children }: PropsWithChildren) {
   useHydrateAtoms([[queryClientAtom, queryClient]]);

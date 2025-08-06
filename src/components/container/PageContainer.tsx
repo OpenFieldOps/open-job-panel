@@ -14,7 +14,7 @@ export default function PageContainer({
   toolbar,
 }: PageContainerProps) {
   return (
-    <VStack gap={4} px={4} maxW={"100%"} h={"full"} maxH={"100%"}>
+    <VStack gap={4} px={4} pb={4} maxW={"100%"} h={"full"} maxH={"100%"}>
       {toolbar && <PageTitleWithToolbar {...toolbar} />}
       {card ? <Card.Root p={6}>{children}</Card.Root> : children}
     </VStack>

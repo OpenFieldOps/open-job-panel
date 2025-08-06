@@ -1,8 +1,9 @@
-import { Spinner, Table, Text } from "@chakra-ui/react";
+import { Table } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
-import { DashboardBlock } from "@/components/block/Dashboard/DashboardBlocks/DashboardBlock";
 import { OutlineButton } from "@/components/buttons/Button";
 import RefreshButton from "@/components/buttons/RefreshButton";
+import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
+import { jobStatusInfoMap } from "@/features/jobs/constant";
 import { useJobModal } from "@/features/jobs/hooks/useJobModal";
 import { useJobQuery } from "@/features/jobs/hooks/useJobQuery";
 
@@ -18,21 +19,15 @@ export default function DashboardJobsBlock({
   const { jobs, isLoading, key } = useJobQuery(query);
   const { openJob, JobEdit } = useJobModal();
 
-  if (isLoading) return <Spinner />;
-  if (!jobs || jobs.length <= 0)
-    return (
-      <DashboardBlock
-        p={2}
-        title={title}
-        toolbar={<RefreshButton queryKey={key} />}
-      >
-        <Text p={2}>No data available</Text>
-      </DashboardBlock>
-    );
   return (
-    <DashboardBlock title={title} toolbar={<RefreshButton queryKey={key} />}>
+    <DashboardBlock
+      isLoading={isLoading}
+      dataAvailable={jobs.length > 0}
+      title={title}
+      toolbar={<RefreshButton queryKey={key} />}
+    >
       {JobEdit}
-      <Table.ScrollArea borderWidth="1px" rounded="md" h={"full"}>
+      <Table.ScrollArea borderWidth="1px" h={"full"}>
         <Table.Root size="sm" stickyHeader>
           <Table.Header>
             <Table.Row bg="bg.subtle">
@@ -46,7 +41,10 @@ export default function DashboardJobsBlock({
             {jobs.map((item) => (
               <Table.Row key={item.id}>
                 <Table.Cell>{item.title}</Table.Cell>
-                <Table.Cell>{item.status}</Table.Cell>
+                <Table.Cell>
+                  {jobStatusInfoMap.get(item.status)?.title}
+                </Table.Cell>
+
                 <Table.Cell textAlign="end">
                   <OutlineButton onClick={() => openJob(item.id)}>
                     Open

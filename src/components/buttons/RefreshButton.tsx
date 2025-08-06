@@ -1,15 +1,15 @@
 import { type ButtonProps, IconButton, Spinner } from "@chakra-ui/react";
 import { RefreshCcw } from "lucide-react";
 import { queryClient } from "@/app/queryClient";
+import useIsLoading from "@/hooks/useIsLoading";
 import type { AppCacheKey } from "@/lib/apiClient";
 
 type RefreshButtonProps = ButtonProps & {
   queryKey: AppCacheKey;
-  isLoading?: boolean;
 };
 
 export default function RefreshButton(props: RefreshButtonProps) {
-  const isLoading = props.isLoading === undefined ? false : props.isLoading;
+  const isLoading = useIsLoading(props.queryKey);
   const disabled = props.disabled || isLoading;
   return (
     <IconButton

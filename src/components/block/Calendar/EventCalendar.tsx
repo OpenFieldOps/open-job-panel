@@ -1,11 +1,15 @@
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import "./style.scss";
+import "./style.css";
 import { HStack, Text, VStack } from "@chakra-ui/react";
-import type { DatesSetArg, EventInput } from "@fullcalendar/core/index.js";
+import type {
+  CalendarApi,
+  DatesSetArg,
+  EventInput,
+} from "@fullcalendar/core/index.js";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { type RefObject, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OutlineIconButton } from "@/components/buttons/Button";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { formatSingleDate, formatWeekRange } from "@/utils/time";
@@ -30,10 +34,6 @@ type CalendarProps<T> = {
   displayDate?: boolean;
 };
 
-function getApi(calendarRef: RefObject<FullCalendar | null> | null = null) {
-  return calendarRef?.current?.getApi();
-}
-
 export default function Calendar<T>({
   events,
   onEventUpdate,
@@ -49,29 +49,39 @@ export default function Calendar<T>({
   const color = useColorModeValue("rgb(35, 35, 35)", "rgb(24, 24, 24)");
   const calendarRef = useRef<FullCalendar>(null);
 
+  const [calendarApi, setCalendarApi] = useState<CalendarApi | null>(null);
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      setCalendarApi(calendarRef.current.getApi());
+    }
+  }, []);
+
   return (
     <VStack h={"full"} w={"full"}>
-      <HStack w={"full"} justifyContent={"space-between"}>
-        <HStack>
-          {leftToolbar}
-          {displayDate && (
-            <Text fontSize="lg" fontWeight="bold">
-              {!isOneDay
-                ? formatWeekRange(getApi(calendarRef)?.getDate())
-                : formatSingleDate(getApi(calendarRef)?.getDate())}
-            </Text>
-          )}
+      {calendarApi ? (
+        <HStack w={"full"} justifyContent={"space-between"}>
+          <HStack>
+            {leftToolbar}
+            {displayDate && (
+              <Text fontSize="lg" fontWeight="bold">
+                {!isOneDay
+                  ? formatWeekRange(calendarApi.getDate())
+                  : formatSingleDate(calendarApi.getDate())}
+              </Text>
+            )}
+          </HStack>
+          <HStack>
+            {rightToolbar}
+            <OutlineIconButton onClick={() => calendarApi.prev()}>
+              <ArrowLeft />
+            </OutlineIconButton>
+            <OutlineIconButton onClick={() => calendarApi.next()}>
+              <ArrowRight />
+            </OutlineIconButton>
+          </HStack>
         </HStack>
-        <HStack>
-          {rightToolbar}
-          <OutlineIconButton onClick={() => getApi(calendarRef)?.prev()}>
-            <ArrowLeft />
-          </OutlineIconButton>
-          <OutlineIconButton onClick={() => getApi(calendarRef)?.next()}>
-            <ArrowRight />
-          </OutlineIconButton>
-        </HStack>
-      </HStack>
+      ) : null}
       <FullCalendar
         ref={calendarRef}
         allDaySlot={false}

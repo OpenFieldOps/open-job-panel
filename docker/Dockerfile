@@ -1,22 +1,18 @@
 FROM oven/bun:latest AS builder
 
-
-RUN apt-get update && apt-get install -y git
-
-RUN git clone https://github.com/OpenFieldOps/open-job-api /backend
-
-WORKDIR /backend
-RUN bun install --frozen-lockfile
-
 WORKDIR /app
+
 COPY . .
+
 RUN bun install --frozen-lockfile
 
-RUN bun run build
+COPY .env.production .env
+RUN bun run unsafe-build
 
 FROM nginx:stable-alpine AS production
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/include/nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80

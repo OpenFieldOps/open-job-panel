@@ -29,6 +29,9 @@ export const jobStatusInfo: JobStatusInfo[] = [
   },
 ];
 
+export const jobStatusInfoMap: Map<JobModel.JobStatusString, JobStatusInfo> =
+  new Map(jobStatusInfo.map((status) => [status.status, status]));
+
 export const jobStatusIndexMap: Record<JobModel.JobStatusString, number> = {
   scheduled: 0,
   pending: 1,

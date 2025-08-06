@@ -1,11 +1,11 @@
-import { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/model";
 import type { PropsWithChildren } from "react";
 import { useUserIs } from "@/atoms/userAtom";
 
 function WithRoleGuard(
-  props: PropsWithChildren & { role: UserModel.UserRoleEnum }
+  props: PropsWithChildren & { userRole: UserModel.UserRole }
 ) {
-  if (useUserIs(props.role)) {
+  if (useUserIs(props.userRole)) {
     return props.children;
   }
   return null;
@@ -14,16 +14,10 @@ function WithRoleGuard(
 export const WithRole = {
   operator(props: PropsWithChildren) {
     return (
-      <WithRoleGuard role={UserModel.UserRoleEnum.operator}>
-        {props.children}
-      </WithRoleGuard>
+      <WithRoleGuard userRole={"operator"}>{props.children}</WithRoleGuard>
     );
   },
   admin(props: PropsWithChildren) {
-    return (
-      <WithRoleGuard role={UserModel.UserRoleEnum.admin}>
-        {props.children}
-      </WithRoleGuard>
-    );
+    return <WithRoleGuard userRole={"admin"}>{props.children}</WithRoleGuard>;
   },
 };

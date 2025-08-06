@@ -96,7 +96,7 @@ const JobCalendar = React.memo(
 
 export default function JobListPage() {
   const { openJob, JobEdit } = useJobModal();
-  const { jobs, setPeriod, isLoading } = useJobList();
+  const { jobs, setPeriod } = useJobList();
   const [selectedOperator, setSelectedOperator] = useState<number | null>(null);
 
   const filteredJobs = selectedOperator
@@ -119,7 +119,7 @@ export default function JobListPage() {
               />
             </WithRole.admin>
 
-            <RefreshButton isLoading={isLoading} queryKey={getJobsListKey()} />
+            <RefreshButton queryKey={getJobsListKey()} />
           </HStack>
         }
       />

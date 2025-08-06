@@ -4,6 +4,7 @@ import AdminDashboard from "@/features/admin/pages/AdminDashboard";
 import AdminOperatorsList from "@/features/admin/pages/AdminOperatorsList";
 import { Login } from "@/features/auth/pages/Login";
 import Register from "@/features/auth/pages/Register";
+import DashboardSettings from "@/features/dashboard/pages/DashboardSettings";
 import AuthGuard from "@/features/guard/AuthGuard";
 import RoleGuard from "@/features/guard/RoleGuard";
 import JobList from "@/features/jobs/pages/JobList";
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
           {
             path: "jobs/:jobId",
             element: <JobPage />,
+          },
+          {
+            path: "dashboard-settings",
+            element: <DashboardSettings />,
           },
           {
             path: "admin",

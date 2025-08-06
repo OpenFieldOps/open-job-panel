@@ -4,26 +4,30 @@ import {
   Heading,
   HStack,
   Separator,
+  Spinner,
+  Text,
 } from "@chakra-ui/react";
 
 import type { PropsWithChildren } from "react";
 
 type DashboardBlockProps = {
   title: string;
-  actions?: React.ReactNode;
   toolbar?: React.ReactNode;
+  dataAvailable?: boolean;
+  isLoading?: boolean;
 } & PropsWithChildren &
   CardBodyProps;
 
 export function DashboardBlock({
   title,
   children,
-  actions,
   toolbar,
+  dataAvailable = true,
+  isLoading = false,
   ...props
 }: DashboardBlockProps) {
   return (
-    <Card.Root maxH={"300px"}>
+    <Card.Root pb={0} maxH={"300px"}>
       <Card.Header
         p={2}
         px={4}
@@ -36,10 +40,21 @@ export function DashboardBlock({
         <HStack gap={2}>{toolbar}</HStack>
       </Card.Header>
       <Separator />
-      <Card.Body p={0} h={"full"} w={"full"} {...props}>
-        {children}
+      <Card.Body
+        p={0}
+        h={"calc(100% - 50px)"}
+        w={"full"}
+        overflow={"auto"}
+        {...props}
+      >
+        {isLoading ? (
+          <Spinner />
+        ) : dataAvailable ? (
+          children
+        ) : (
+          <Text p={2}>No data available</Text>
+        )}
       </Card.Body>
-      <Card.Footer>{actions}</Card.Footer>
     </Card.Root>
   );
 }

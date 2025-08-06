@@ -4,7 +4,7 @@ import { QueryCacheKey } from "@/app/queryClient";
 import { apiClient } from "@/lib/apiClient";
 
 export default function useOperators({ enabled = true } = { enabled: true }) {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [QueryCacheKey.OperatorList],
     enabled,
     queryFn: () =>
@@ -17,5 +17,6 @@ export default function useOperators({ enabled = true } = { enabled: true }) {
 
   return {
     operators,
+    isLoading,
   };
 }

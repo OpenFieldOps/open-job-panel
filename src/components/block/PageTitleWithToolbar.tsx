@@ -14,7 +14,7 @@ export default function PageTitleWithToolbar({
 }: PageTitleWithToolbarProps) {
   return (
     <HStack w={"full"} justifyContent={"space-between"}>
-      <Heading hideBelow={noTitleOnMobile ? ["md"] : undefined}>
+      <Heading w={"185px"} hideBelow={noTitleOnMobile ? ["md"] : undefined}>
         {title}
       </Heading>
       {toolbar && (
