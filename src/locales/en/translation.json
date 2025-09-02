@@ -1,0 +1,45 @@
+{
+  "menu": {
+    "profile": "Profile",
+    "invoices": "Invoices",
+    "dashboard": "Dashboard",
+    "operators": "Operators",
+    "clients": "Clients",
+    "supervisors": "Supervisors",
+    "logout": "Logout",
+    "settings": "Settings",
+    "jobs": "Jobs",
+    "signin": "Sign In",
+    "signup": "Sign Up"
+  },
+  "toaster": {
+    "logoutSuccessTitle": "Logout successful",
+    "logoutSuccessDesc": "You have been logged out."
+  },
+  "settings": {
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "english": "English",
+    "french": "French",
+    "title": "Settings"
+  },
+  "adminInvoices": {
+    "title": "Invoices"
+  },
+  "adminUsersList": {
+    "roles": {
+      "operator": "Operator",
+      "client": "Client",
+      "supervisor": "Supervisor"
+    }
+  },
+  "adminDashboard": {
+    "title": "Dashboard",
+    "JobsBlock": {
+      "title": "Jobs in progress"
+    }
+  },
+  "profile": {
+    "title": "Profile"
+  }
+}

@@ -42,6 +42,12 @@ export default function OperatorSelect({
     <Combobox.Root
       lazyMount
       collection={collection}
+      onSelect={(e) => {
+        const operator = collection.items.find(
+          (item) => item.id.toString() === e.itemValue
+        );
+        if (operator?.id) onChange?.(operator.id);
+      }}
       onInputValueChange={(e) => {
         if (e.reason === "clear-trigger") {
           onChange?.(null);
@@ -49,13 +55,7 @@ export default function OperatorSelect({
           return;
         }
 
-        if (e.inputValue.length >= 3) {
-          const operator = operators.find(
-            (item) => item.firstName === e.inputValue
-          );
-          if (operator?.id) onChange?.(operator.id);
-          filter(e.inputValue);
-        }
+        filter(e.inputValue);
       }}
     >
       <Combobox.Control>

@@ -1,22 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { QueryCacheKey } from "@/app/queryClient";
-import { apiClient } from "@/lib/apiClient";
+import useAssignedUsers from "./useAssignedUsers";
 
-export default function useOperators({ enabled = true } = { enabled: true }) {
-  const { data, isLoading } = useQuery({
-    queryKey: [QueryCacheKey.OperatorList],
+type UseOperatorsOptions = {
+  enabled?: boolean;
+  refetchInterval?: number;
+};
+
+export default function useOperators({
+  enabled = true,
+  refetchInterval,
+}: UseOperatorsOptions = {}) {
+  const { users, isLoading } = useAssignedUsers({
     enabled,
-    queryFn: () =>
-      apiClient.user["get-assigned-users"]({
-        role: "operator",
-      }).get(),
+    role: "operator",
+    refetchInterval,
   });
 
-  const operators = useMemo(() => data?.data || [], [data?.data]);
-
   return {
-    operators,
+    operators: users,
     isLoading,
   };
 }

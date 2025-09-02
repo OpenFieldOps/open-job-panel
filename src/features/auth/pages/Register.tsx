@@ -1,31 +1,38 @@
-import { Button, Card, Flex, HStack } from "@chakra-ui/react";
-import type { AuthModel } from "backend/modules/auth/model";
+import { Button, Card, Flex } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { userAtom } from "@/atoms/userAtom";
 import SeparatorWithTitle from "@/components/block/SeparatorWithTitle";
 import { ButtonLink } from "@/components/buttons/Button";
+import HorizontalFields from "@/components/form/HorizontalFields";
 import InputWithLabel from "@/components/form/InputWithLabel";
-import { apiClient, ok } from "@/lib/apiClient";
-
-type Inputs = AuthModel.RegisterUserBody & {
-  confirmPassword: string;
-};
+import { toaster } from "@/components/ui/contants";
+import useMutationForm from "@/hooks/useMutationForm";
+import { apiClient } from "@/lib/apiClient";
 
 export default function Register() {
-  const { register, handleSubmit } = useForm<Inputs>();
   const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
 
-  const onSubmit = (data: Inputs) => {
-    apiClient.auth.register.post(data).then((res) => {
-      if (ok(res) && res.data) {
-        setUser(res.data);
-        navigate("/private/jobs");
-      }
-    });
-  };
+  const { errorHandledRegister, handleSubmit } = useMutationForm({
+    mutationFn: apiClient.auth.register.post,
+    onApiSuccess(data) {
+      setUser(data);
+      toaster.success({
+        title: "Registration successful",
+        description: "You are now registered.",
+      });
+      navigate("/private/jobs");
+    },
+    onError: {
+      409: () => {
+        toaster.error({
+          title: "Registration failed",
+          description: "Username or email already exists.",
+        });
+      },
+    },
+  });
 
   return (
     <Flex justifyContent={"center"}>
@@ -33,7 +40,7 @@ export default function Register() {
         variant="elevated"
         boxShadow="lg"
         as={"form"}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit}
       >
         <Card.Header gap="1">
           <Card.Title>Sign Up</Card.Title>
@@ -42,40 +49,34 @@ export default function Register() {
           </Card.Description>
         </Card.Header>
         <Card.Body gap="2">
-          <HStack>
+          <HorizontalFields>
             <InputWithLabel
               label="Firstname"
               placeholder="Your Firstname"
-              {...register("firstName")}
+              {...errorHandledRegister("firstName")}
             />
             <InputWithLabel
               label="Lastname"
               placeholder="Your Lastname"
-              {...register("lastName")}
+              {...errorHandledRegister("lastName")}
             />
-          </HStack>
+          </HorizontalFields>
           <InputWithLabel
             label="Username"
             placeholder="Your Username"
-            {...register("username")}
+            {...errorHandledRegister("username")}
           />
           <InputWithLabel
             label="E-Mail"
             type="email"
             placeholder="Your E-Mail"
-            {...register("email")}
+            {...errorHandledRegister("email")}
           />
           <InputWithLabel
             label="Password"
             type="password"
             placeholder="Your Password"
-            {...register("password", {})}
-          />
-          <InputWithLabel
-            label="Confirm Password"
-            type="password"
-            placeholder="Confirm Your Password"
-            {...register("confirmPassword")}
+            {...errorHandledRegister("password")}
           />
         </Card.Body>
         <Card.Footer flexDirection={"column"}>

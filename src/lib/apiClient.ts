@@ -9,6 +9,7 @@ type Id = number | string;
 
 export type AppCacheKey = [QueryCacheKey, ...unknown[]];
 
+// @ts-ignore
 export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
   onRequest() {
     const user = appStore.get(userAtom);
@@ -20,11 +21,12 @@ export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
   },
 }).api;
 
-type HttpResponse = {
+type ApiHttpResponse<T> = {
   status: number;
+  data?: T;
 };
 
-export function ok(response: HttpResponse) {
+export function ok<T>(response: ApiHttpResponse<T>) {
   if (response.status === 200) return true;
   return false;
 }

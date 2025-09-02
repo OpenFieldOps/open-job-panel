@@ -4,6 +4,7 @@ import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { QueryCacheKey } from "@/app/queryClient";
 import { apiClient } from "@/lib/apiClient";
+import type { JobEventCalendar } from "./hooks/useJobList";
 
 const defaultAtom = {
   start: dayjs().startOf("day"),
@@ -18,7 +19,7 @@ export function jobAsCalendarEvent(job: JobModel.Job, index: number) {
     start: job.startDate,
     end: job.endDate,
     extendedProps: { ...job, index },
-  };
+  } as JobEventCalendar;
 }
 
 export const jobsAtom = atomWithQuery((get) => {

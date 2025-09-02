@@ -8,12 +8,14 @@ type FieldWithLabelProps<T> = {
   error?: string;
   children: ReactElement<T>;
   rightElement?: ReactElement;
+  required?: boolean;
 } & T;
 
 type FieldWithErrorProps<T> = {
   label?: string;
   error?: string;
   children: ReactElement<T>;
+  required?: boolean;
 } & T;
 
 export function FieldWithError<T>(props: FieldWithErrorProps<T>) {
@@ -21,8 +23,12 @@ export function FieldWithError<T>(props: FieldWithErrorProps<T>) {
   const error = rawError ? errorTypeAsErrorMessage(rawError) : undefined;
 
   return (
-    <Field.Root invalid={!!rawError}>
-      {label && <Field.Label>{label}</Field.Label>}
+    <Field.Root required={props.required} invalid={!!rawError}>
+      {label && (
+        <Field.Label>
+          {label} <Field.RequiredIndicator />
+        </Field.Label>
+      )}
       {cloneElement(children, { ...(inputProps as Partial<T>) })}
       {error && <Field.ErrorText>{error}</Field.ErrorText>}
     </Field.Root>
@@ -35,13 +41,17 @@ export function FieldWithLabel<T>(props: FieldWithLabelProps<T>) {
     error: rawError,
     children,
     rightElement,
+
     ...inputProps
   } = props;
   const error = rawError ? errorTypeAsErrorMessage(rawError) : undefined;
 
   return (
-    <Field.Root invalid={!!rawError}>
-      <Field.Label>{label}</Field.Label>
+    <Field.Root required={props.required} invalid={!!rawError}>
+      <Field.Label>
+        {label}
+        <Field.RequiredIndicator />
+      </Field.Label>
       {rightElement ? (
         <HStack w={"full"}>
           {cloneElement(children, { ...(inputProps as Partial<T>) })}

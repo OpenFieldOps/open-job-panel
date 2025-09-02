@@ -5,7 +5,6 @@ import {
   HStack,
   Separator,
   Spinner,
-  Text,
 } from "@chakra-ui/react";
 
 import type { PropsWithChildren } from "react";
@@ -52,7 +51,9 @@ export function DashboardBlock({
         ) : dataAvailable ? (
           children
         ) : (
-          <Text p={2}>No data available</Text>
+          <HStack justifyContent={"center"} alignItems={"center"} h={"full"}>
+            <Heading p={2}>No data available</Heading>
+          </HStack>
         )}
       </Card.Body>
     </Card.Root>

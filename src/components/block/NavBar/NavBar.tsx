@@ -4,21 +4,23 @@ import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { ButtonLink } from "../../buttons/Button";
 import UserNotificationMenu from "./UserNotificationMenu";
 import { UserProfileMenuButton } from "./UserProfileMenu";
+import type { TranslationKeyWithCategory } from "@/hooks/useTranslation";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type NavBarLink = {
-  name: string;
+  name: TranslationKeyWithCategory<"menu">;
   path: string;
 };
 
 const defaultNavBarLinks: NavBarLink[] = [
   {
-    name: "Sign In",
+    name: "menu.signin",
     path: "/login",
   },
 ];
 const authenticatedNavBarLinks: NavBarLink[] = [
   {
-    name: "Jobs",
+    name: "menu.jobs",
     path: "/private/jobs",
   },
 ];
@@ -36,6 +38,8 @@ export default function NavBar() {
     ? authenticatedNavBarLinks
     : defaultNavBarLinks;
 
+  const { t } = useTranslation();
+
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} p={4}>
       <HStack gap={4}>
@@ -47,7 +51,7 @@ export default function NavBar() {
           {navbarlinks.map(({ name, path }) => {
             return (
               <ButtonLink key={path} to={path}>
-                {name}
+                {t(name)}
               </ButtonLink>
             );
           })}

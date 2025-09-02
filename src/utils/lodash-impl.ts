@@ -1,4 +1,4 @@
-type DebouncedFunction<Args extends unknown[]> = {
+export type DebouncedFunction<Args extends unknown[]> = {
   (...args: Args): void;
   cancel: () => void;
 };

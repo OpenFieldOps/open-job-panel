@@ -1,7 +1,9 @@
 import {
+  Button,
   type ButtonProps,
   CloseButton,
   Dialog,
+  type DialogRootProps,
   IconButton,
   Portal,
   type UseDialogReturn,
@@ -13,6 +15,8 @@ type DialogContentProps = {
   dialogState?: UseDialogReturn;
   open?: boolean;
   setOpen?: (open: boolean) => void;
+  dialogContentprops?: Dialog.ContentProps;
+  dialogRootProps?: Omit<DialogRootProps, "children">;
 } & PropsWithChildren;
 
 export function DialogContent({
@@ -21,6 +25,8 @@ export function DialogContent({
   dialogState,
   open,
   setOpen,
+  dialogContentprops = {},
+  dialogRootProps = {},
 }: DialogContentProps) {
   const content = (
     <>
@@ -28,7 +34,12 @@ export function DialogContent({
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content display={"flex"} flexDirection={"column"} p={4}>
+          <Dialog.Content
+            display={"flex"}
+            flexDirection={"column"}
+            p={4}
+            {...dialogContentprops}
+          >
             {children}
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />
@@ -41,11 +52,14 @@ export function DialogContent({
 
   if (dialogState) {
     return (
-      <Dialog.RootProvider value={dialogState}>{content}</Dialog.RootProvider>
+      <Dialog.RootProvider {...dialogRootProps} value={dialogState}>
+        {content}
+      </Dialog.RootProvider>
     );
   }
   return (
     <Dialog.Root
+      {...dialogRootProps}
       onOpenChange={setOpen ? (details) => setOpen(details.open) : undefined}
       open={open}
     >
@@ -57,15 +71,24 @@ export function DialogContent({
 type TriggeredDialogProps = {
   dialogState?: UseDialogReturn;
   trigger: React.ReactNode;
+  dialogContentprops?: Dialog.ContentProps;
+  dialogRootProps?: Omit<DialogRootProps, "children">;
 } & PropsWithChildren;
 
 export function TriggeredDialog({
   children,
   dialogState,
   trigger,
+  dialogContentprops,
+  dialogRootProps = {},
 }: TriggeredDialogProps) {
   return (
-    <DialogContent dialogState={dialogState} trigger={trigger}>
+    <DialogContent
+      dialogState={dialogState}
+      trigger={trigger}
+      dialogContentprops={dialogContentprops}
+      dialogRootProps={dialogRootProps}
+    >
       {children}
     </DialogContent>
   );
@@ -91,6 +114,33 @@ export function IconButtonDialog({
           {icon}
         </IconButton>
       }
+    >
+      {children}
+    </TriggeredDialog>
+  );
+}
+
+type ButtonDialogProps = {
+  buttonProps?: ButtonProps;
+  title: string;
+  dialogState?: UseDialogReturn;
+} & PropsWithChildren;
+
+export function ButtonDialog({
+  buttonProps,
+  children,
+  title,
+  dialogState,
+}: ButtonDialogProps) {
+  return (
+    <TriggeredDialog
+      dialogState={dialogState}
+      trigger={
+        <Button variant="outline" {...buttonProps}>
+          {title}
+        </Button>
+      }
+      dialogContentprops={{ title }}
     >
       {children}
     </TriggeredDialog>

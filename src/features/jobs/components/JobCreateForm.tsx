@@ -1,4 +1,5 @@
 import type { JobModel } from "backend/modules/job/model";
+import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
 import { useUserId } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
@@ -6,7 +7,7 @@ import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { toaster } from "@/components/ui/contants";
 import useMutationForm from "@/hooks/useMutationForm";
-import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
+import { apiClient, apiQueryCacheListUpdate } from "@/lib/apiClient";
 import { jobAsCalendarEvent, jobSelectedPeriodAtom } from "../atoms";
 import type { JobEventCalendar } from "../hooks/useJobList";
 import { getJobsListKey } from "../query";
@@ -26,50 +27,43 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
 
   const {
     handleSubmit,
-    register,
+    errorHandledRegister,
     formState: { errors },
     isPending,
-  } = useMutationForm<Inputs>({
-    mutationFn: async ({ title, description }: Inputs) => {
-      await apiClient.job
-        .post({
-          title,
-          description,
-          startDate: value.start
-            .clone()
-            .set("hour", 9)
-            .set("second", 0)
-            .set("minute", 0)
-            .toISOString(),
-          endDate: value.start
-            .clone()
-            .set("hour", 14)
-            .set("second", 0)
-            .set("minute", 0)
-            .toISOString(),
-          assignedTo: userId,
-        })
-        .then((res) => {
-          if (ok(res) && res.data) {
-            const job: JobModel.Job = res.data;
-            apiQueryCacheListUpdate(
-              getJobsListKey(),
-              (oldData: JobEventCalendar[]) => [
-                ...oldData,
-                jobAsCalendarEvent(job, oldData.length),
-              ]
-            );
-            toaster.success({
-              title: "Job created",
-            });
-            onCreated();
-          }
-        });
+  } = useMutationForm({
+    mutationFn: ({ title, description }: Inputs) => {
+      return apiClient.job.post({
+        title,
+        description,
+        startDate: dayjs(value.start)
+          .startOf("day")
+          .set("hour", 9)
+          .toISOString(),
+        endDate: dayjs(value.start)
+          .startOf("day")
+          .set("hour", 14)
+          .toISOString(),
+        assignedTo: userId,
+      });
+    },
+    onApiSuccess(data) {
+      const job: JobModel.Job = data;
+      apiQueryCacheListUpdate(
+        getJobsListKey(),
+        (oldData: JobEventCalendar[]) => [
+          ...oldData,
+          jobAsCalendarEvent(job, oldData.length),
+        ]
+      );
+      toaster.success({
+        title: "Job created",
+      });
+      onCreated();
     },
   });
 
   return {
-    register,
+    register: errorHandledRegister,
     errors,
     handleSubmit,
     isPending,
@@ -90,7 +84,7 @@ export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
       <InputWithLabel
         label="Title"
         placeholder="Job title"
-        {...register("title", { required: true, minLength: 3 })}
+        {...register("title")}
         error={errors.title?.type}
       />
       <TextAreaWithLabel

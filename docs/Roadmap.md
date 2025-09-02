@@ -7,9 +7,9 @@
 | Feature             | Description                                              | Status         |
 | ------------------- | -------------------------------------------------------- | -------------- |
 | Authentication      | Admin and technician login system                        | ✅ Done        |
-| Operator Management | Create and manage technician accounts with roles         | 🟨 In Progress |
+| Operator Management | Create and manage technician accounts                    | 🟨 In Progress |
 | Job Creation        | Form to create jobs with type, client, and date          | ✅ Done        |
-| Job Status          | Track jobs: upcoming / in progress / overdue / completed | 🟨 In Progress |
+| Job Status          | Track jobs: upcoming / in progress / overdue / completed | ✅ Done        |
 | Admin Dashboard     | Filterable and sortable job list                         | 🟨 In Progress |
 | Calendar View       | Jobs shown by date and technician                        | ✅ Done        |
 | User Management     | User profle (avatar, password reset, etc...)             | ⬜ To Do       |

@@ -1,12 +1,19 @@
-setTimeout(() => {
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
+import { getCurrentUser } from "@/atoms/userAtom";
+import { apiClient } from "@/lib/apiClient";
+
+setInterval(() => {
+  if (getCurrentUser()) {
+    navigator.geolocation.getCurrentPosition((position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
-      console.log("Latitude:", latitude, "Longitude:", longitude);
-    },
-    (error) => {
-      console.error("Erreur de géolocalisation :", error.message);
-    }
-  );
-}, 1000);
+      apiClient.user.location
+        .put({
+          latitude,
+          longitude,
+        })
+        .catch((error) => {
+          console.error("Error updating location:", error);
+        });
+    });
+  }
+}, 30000);

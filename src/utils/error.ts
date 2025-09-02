@@ -36,5 +36,5 @@ const errorTypeMessageMap: Record<ErrorType, string> = {
 };
 
 export function errorTypeAsErrorMessage(errorType: string): string {
-  return errorTypeMessageMap[errorType as ErrorType] || "Unknown error.";
+  return errorTypeMessageMap[errorType as ErrorType] || errorType;
 }

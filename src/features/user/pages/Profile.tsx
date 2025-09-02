@@ -1,11 +1,13 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
-import { useForm } from "react-hook-form";
 import { type UserAuth, userAtom, useUserAuth } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import PageContainer from "@/components/container/PageContainer";
 import FileInput from "@/components/form/FileInput";
+import HorizontalFields from "@/components/form/HorizontalFields";
 import InputWithLabel from "@/components/form/InputWithLabel";
+import { toaster } from "@/components/ui/contants";
+import useMutationForm from "@/hooks/useMutationForm";
 import useEnabled from "@/hooks/useToggle";
 import { apiClient } from "@/lib/apiClient";
 import { CurrentUserAvatar } from "../components/UserAvatar";
@@ -40,29 +42,53 @@ function ProfileAvatarHeader() {
   );
 }
 
-type Inputs = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
 export default function Profile() {
-  const { firstName, lastName, email } = useUserAuth();
+  const { firstName, lastName, phone } = useUserAuth();
   const { enabled: edit, toggle } = useEnabled(true);
-  const { handleSubmit } = useForm<Inputs>({
-    defaultValues: {
-      firstName,
-      lastName,
-      email,
-    },
-  });
-  const onSubmit = handleSubmit((data: Inputs) => {
-    console.log(data);
-  });
+  const setUser = useSetAtom(userAtom);
+
+  const { handleSubmit, errorHandledRegister, getAllValues, isPending } =
+    useMutationForm({
+      mutationFn: apiClient.user.patch,
+      onApiSuccess() {
+        const values = getAllValues();
+        toaster.success({
+          title: "Profile updated successfully",
+        });
+        setUser((prev) => {
+          const old = prev as UserAuth;
+          return {
+            ...old,
+            user: {
+              ...old.user,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              phone: values.phone,
+            },
+          };
+        });
+        toggle();
+      },
+      onError: {
+        409: () => {
+          toaster.error({
+            title: "Email already exists",
+            description: "Please use a different email address.",
+          });
+        },
+        400: () => {
+          toaster.error({
+            title: "Invalid input",
+            description: "Please check your input and try again.",
+          });
+        },
+      },
+    });
 
   return (
     <PageContainer card>
       <FormTemplate
+        isLoading={isPending}
         trigger={
           <>
             <Button variant={"outline"} onClick={toggle}>
@@ -71,22 +97,29 @@ export default function Profile() {
             <Button type="submit">Save</Button>
           </>
         }
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       >
         <ProfileAvatarHeader />
-        <HStack gap={4}>
+        <HorizontalFields>
           <InputWithLabel
             label="First Name"
             defaultValue={firstName}
             disabled={edit}
+            {...errorHandledRegister("firstName")}
           />
           <InputWithLabel
             label="Last Name"
             defaultValue={lastName}
             disabled={edit}
+            {...errorHandledRegister("lastName")}
           />
-        </HStack>
-        <InputWithLabel label="Email" defaultValue={email} disabled={edit} />
+        </HorizontalFields>
+        <InputWithLabel
+          label="Phone"
+          defaultValue={phone}
+          disabled={edit}
+          {...errorHandledRegister("phone")}
+        />
       </FormTemplate>
     </PageContainer>
   );

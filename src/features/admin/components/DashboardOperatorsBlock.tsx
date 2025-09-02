@@ -4,6 +4,7 @@ import { QueryCacheKey } from "@/app/queryClient";
 import { OutlineButton } from "@/components/buttons/Button";
 import RefreshButton from "@/components/buttons/RefreshButton";
 import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
+import { useAdminDashboardSettingsValue } from "../hooks/useAdminDashboardBlock";
 import useOperators from "../hooks/useOperators";
 
 type DashboardOperatorsBlockProps = {
@@ -13,7 +14,14 @@ type DashboardOperatorsBlockProps = {
 export default function DashboardOperatorsBlock({
   title,
 }: DashboardOperatorsBlockProps) {
-  const { operators, isLoading } = useOperators();
+  const settings = useAdminDashboardSettingsValue("operatorsNotSeen");
+  const { operators, isLoading } = useOperators({
+    refetchInterval: settings.refreshIntervalInMilliseconds,
+  });
+
+  if (settings.hidden) {
+    return null;
+  }
 
   return (
     <DashboardBlock

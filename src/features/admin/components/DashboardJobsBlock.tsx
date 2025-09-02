@@ -6,6 +6,7 @@ import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
 import { jobStatusInfoMap } from "@/features/jobs/constant";
 import { useJobModal } from "@/features/jobs/hooks/useJobModal";
 import { useJobQuery } from "@/features/jobs/hooks/useJobQuery";
+import { useAdminDashboardSettingsValue } from "../hooks/useAdminDashboardBlock";
 
 type DashboardJobsBlockProps = {
   query: Partial<JobModel.JobSelectQuery>;
@@ -16,8 +17,13 @@ export default function DashboardJobsBlock({
   query,
   title,
 }: DashboardJobsBlockProps) {
-  const { jobs, isLoading, key } = useJobQuery(query);
+  const settings = useAdminDashboardSettingsValue("jobs");
+  const { jobs, isLoading, key } = useJobQuery(query, settings.refreshIntervalInMilliseconds);
   const { openJob, JobEdit } = useJobModal();
+
+  if (settings.hidden) {
+    return null;
+  }
 
   return (
     <DashboardBlock

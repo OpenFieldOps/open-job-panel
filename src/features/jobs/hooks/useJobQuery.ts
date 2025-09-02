@@ -3,7 +3,10 @@ import type { JobModel } from "backend/modules/job/model";
 import { QueryCacheKey } from "@/app/queryClient";
 import { type AppCacheKey, apiClient } from "@/lib/apiClient";
 
-export function useJobQuery(query: Partial<JobModel.JobSelectQuery>) {
+export function useJobQuery(
+  query: Partial<JobModel.JobSelectQuery>,
+  refetchInterval?: number
+) {
   const key: AppCacheKey = [QueryCacheKey.JobList, query];
   const { data: jobs, isLoading } = useQuery({
     queryKey: key,
@@ -11,8 +14,7 @@ export function useJobQuery(query: Partial<JobModel.JobSelectQuery>) {
       apiClient.job.get({
         query,
       }),
-    refetchOnMount: true,
-    refetchInterval: 1000 * 60,
+    refetchInterval: refetchInterval || 1000 * 60,
   });
 
   return {

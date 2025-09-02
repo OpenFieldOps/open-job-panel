@@ -9,7 +9,7 @@ import {
 } from "../constant";
 
 type JobStatusStepProps = {
-  onChange: (newStatus: JobModel.JobStatusString) => void;
+  onChange?: (newStatus: JobModel.JobStatusString) => void;
   defaultStatus?: JobModel.JobStatusString;
 };
 
@@ -30,9 +30,11 @@ export function JobStatusStep({ onChange, defaultStatus }: JobStatusStepProps) {
       w={"full"}
       count={jobStatusInfo.length - 1}
       onStepChange={(newStep) => {
-        onChange(
-          jobStatusInfo[newStep.step].status as JobModel.JobStatusString
-        );
+        if (onChange) {
+          onChange(
+            jobStatusInfo[newStep.step].status as JobModel.JobStatusString
+          );
+        }
         setStepIndex(newStep.step);
       }}
       step={stepIndex}
@@ -51,20 +53,22 @@ export function JobStatusStep({ onChange, defaultStatus }: JobStatusStepProps) {
           {step.description}
         </Steps.Content>
       ))}
-      <ButtonGroup size="sm" variant="outline">
-        <Steps.PrevTrigger asChild>
-          <Button>Previous</Button>
-        </Steps.PrevTrigger>
-        <Steps.NextTrigger asChild>
-          <Button>
-            {stepIndex < jobStatusInfo.length - 2
-              ? "Next"
-              : stepIndex === jobStatusInfo.length - 1
-              ? "Completed"
-              : "Finish"}
-          </Button>
-        </Steps.NextTrigger>
-      </ButtonGroup>
+      {onChange ? (
+        <ButtonGroup size="sm" variant="outline">
+          <Steps.PrevTrigger asChild>
+            <Button>Previous</Button>
+          </Steps.PrevTrigger>
+          <Steps.NextTrigger asChild>
+            <Button>
+              {stepIndex < jobStatusInfo.length - 2
+                ? "Next"
+                : stepIndex === jobStatusInfo.length - 1
+                ? "Completed"
+                : "Finish"}
+            </Button>
+          </Steps.NextTrigger>
+        </ButtonGroup>
+      ) : null}
     </Steps.Root>
   );
 }

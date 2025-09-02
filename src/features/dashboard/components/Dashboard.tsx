@@ -14,7 +14,7 @@ export default function Dashboard({ children }: DashboardProps) {
       <PageTitleWithToolbar
         title="Dashboard"
         toolbar={
-          <NavLink to={"/private/dashboard-settings"}>
+          <NavLink to={"/private/admin/dashboard-settings"}>
             <OutlineIconButton>
               <Settings2 />
             </OutlineIconButton>

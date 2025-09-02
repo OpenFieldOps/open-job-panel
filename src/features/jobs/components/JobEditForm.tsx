@@ -1,5 +1,6 @@
 import { HStack, Spinner } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
+import dayjs from "dayjs";
 import FormTemplate from "@/components/block/FormTemplate";
 import { FieldWithLabel } from "@/components/form/FieldWithLabel";
 import InputWithLabel from "@/components/form/InputWithLabel";
@@ -20,16 +21,25 @@ type Inputs = JobModel.JobUpdateBody;
 
 export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
   const { isLoading, job } = useJob({ jobId });
+  const { handleSubmit, errorHandledRegister, setValue, isPending } =
+    useMutationForm({
+      mutationFn: (input: Inputs) => {
+        const transformedInput = {
+          ...input,
+          startDate: input.startDate
+            ? dayjs(input.startDate).toISOString()
+            : input.startDate,
+          endDate: input.endDate
+            ? dayjs(input.endDate).toISOString()
+            : input.endDate,
+        };
 
-  const { handleSubmit, register, setValue, isPending } =
-    useMutationForm<Inputs>({
-      mutationFn: async (input: Inputs) => {
-        if (areObjectLeftKeysEqual(input, job)) {
+        if (areObjectLeftKeysEqual(transformedInput, job)) {
           onSave();
           return;
         }
-        input.id = jobId;
-        await updateJob(input, onSave);
+        transformedInput.id = jobId;
+        return updateJob(transformedInput, onSave);
       },
     });
 
@@ -47,20 +57,38 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
         defaultValue={job.title}
         label="Title"
         placeholder="Job title"
-        {...register("title")}
+        {...errorHandledRegister("title")}
       />
       <TextAreaWithLabel
         defaultValue={job.description}
         label="Description"
         placeholder="Job description"
-        {...register("description")}
+        {...errorHandledRegister("description")}
       />
       <InputWithLabel
         defaultValue={job.location}
         label="Location"
         placeholder="Job location"
-        {...register("location")}
+        {...errorHandledRegister("location")}
       />
+      <HStack w={"full"} gap={4}>
+        <InputWithLabel
+          type="datetime-local"
+          defaultValue={
+            job.startDate ? dayjs(job.startDate).format("YYYY-MM-DDTHH:mm") : ""
+          }
+          label="Start Date"
+          {...errorHandledRegister("startDate")}
+        />
+        <InputWithLabel
+          type="datetime-local"
+          defaultValue={
+            job.endDate ? dayjs(job.endDate).format("YYYY-MM-DDTHH:mm") : ""
+          }
+          label="End Date"
+          {...errorHandledRegister("endDate")}
+        />
+      </HStack>
       <HStack w={"full"} justifyContent="space-between" alignItems={"center"}>
         <FieldWithLabel label="Operator">
           <OperatorSelect

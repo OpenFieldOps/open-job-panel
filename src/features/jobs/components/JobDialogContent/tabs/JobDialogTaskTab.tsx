@@ -1,12 +1,5 @@
-import {
-  Button,
-  CheckboxCard,
-  Heading,
-  Input,
-  Spinner,
-} from "@chakra-ui/react";
+import { Button, CheckboxCard, Input, Spinner } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
-import { useForm } from "react-hook-form";
 import { useUserIs } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import { FieldWithError } from "@/components/form/FieldWithLabel";
@@ -18,6 +11,7 @@ import {
   deleteJobTask,
   toggleJobTask,
 } from "@/features/jobs/query";
+import useMutationForm from "@/hooks/useMutationForm";
 
 type JobDialogTasksTabProps = {
   jobId: number;
@@ -39,17 +33,16 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<CreateJobTaskInputs>({
-    defaultValues: { title: "" },
-  });
-
-  const onSubmit = handleSubmit(({ title }) => {
-    createJobTask(jobId, title, () => {
-      reset();
-      toaster.success({
-        title: "Task created",
+  } = useMutationForm({
+    mutationFn({ title }: CreateJobTaskInputs) {
+      createJobTask(jobId, title, () => {
+        reset();
+        toaster.success({
+          title: "Task created",
+        });
       });
-    });
+    },
+    defaultValues: { title: "" },
   });
 
   const trigger = (
@@ -69,17 +62,14 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
     return <Spinner />;
   }
 
-  if (!tasks || tasks.length === 0) {
-    return (
-      <FormTemplate confirmText="Add" trigger={trigger} onSubmit={onSubmit}>
-        <Heading mb={4}>No tasks found</Heading>
-      </FormTemplate>
-    );
-  }
-
   return (
-    <FormTemplate scrollable trigger={trigger} onSubmit={onSubmit}>
-      {tasks.map((task) => (
+    <FormTemplate
+      noData={!tasks || tasks.length === 0 ? "No tasks found" : undefined}
+      scrollable
+      trigger={trigger}
+      onSubmit={handleSubmit}
+    >
+      {tasks?.map((task) => (
         <TaskCard
           key={task.id}
           task={task}

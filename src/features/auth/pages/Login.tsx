@@ -1,37 +1,43 @@
-import { Button, Card, Field, Flex, Input } from "@chakra-ui/react";
-import type { AuthModel } from "backend/modules/auth/model";
+import { Button, Card, Flex } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { userAtom } from "@/atoms/userAtom";
 import SeparatorWithTitle from "@/components/block/SeparatorWithTitle";
 import { ButtonLink } from "@/components/buttons/Button";
+import InputWithLabel from "@/components/form/InputWithLabel";
 import { toaster } from "@/components/ui/contants";
-import { apiClient, ok } from "@/lib/apiClient";
-
-type Inputs = AuthModel.LoginUserBody;
+import useMutationForm from "@/hooks/useMutationForm";
+import { apiClient } from "@/lib/apiClient";
 
 export function Login() {
   const setUser = useSetAtom(userAtom);
-  const { register, handleSubmit } = useForm<Inputs>();
   const navigate = useNavigate();
 
-  const onSubmit = (data: Inputs) => {
-    apiClient.auth.login.post(data).then((res) => {
-      if (ok(res) && res.data) {
-        setUser(res.data);
-        toaster.success({
-          title: "Login successful",
-          description: "You are now logged in.",
-        });
-        navigate("/private/jobs");
-      } else {
+  const { errorHandledRegister, handleSubmit } = useMutationForm({
+    mutationFn: apiClient.auth.login.post,
+    onApiSuccess(data) {
+      setUser(data);
+      toaster.success({
+        title: "Login successful",
+        description: "You are now logged in.",
+      });
+      navigate("/private/jobs");
+    },
+    onError: {
+      401: () => {
         toaster.error({
-          title: "Email or password is incorrect",
+          title: "Login failed",
+          description: "Invalid email or password.",
         });
-      }
-    });
-  };
+      },
+      404: () => {
+        toaster.error({
+          title: "Login failed",
+          description: "Invalid email or password.",
+        });
+      },
+    },
+  });
 
   return (
     <Flex justifyContent={"center"}>
@@ -39,7 +45,7 @@ export function Login() {
         variant="elevated"
         boxShadow="lg"
         as={"form"}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit}
       >
         <Card.Header gap="1">
           <Card.Title>Sign In</Card.Title>
@@ -48,22 +54,18 @@ export function Login() {
           </Card.Description>
         </Card.Header>
         <Card.Body gap="2">
-          <Field.Root>
-            <Field.Label>E-Mail</Field.Label>
-            <Input
-              type="email"
-              placeholder="Your E-Mail"
-              {...register("email")}
-            />
-          </Field.Root>
-          <Field.Root>
-            <Field.Label>Password</Field.Label>
-            <Input
-              type="password"
-              placeholder="Your Password"
-              {...register("password")}
-            />
-          </Field.Root>
+          <InputWithLabel
+            label="Email"
+            placeholder="Your Email"
+            {...errorHandledRegister("email")}
+          />
+
+          <InputWithLabel
+            label="Password"
+            placeholder="Your Password"
+            type="password"
+            {...errorHandledRegister("password")}
+          />
         </Card.Body>
         <Card.Footer flexDirection={"column"}>
           <Button type="submit" width="full">

@@ -1,16 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import AdminClientList from "@/features/admin/pages/AdminClientList";
 import AdminDashboard from "@/features/admin/pages/AdminDashboard";
-import AdminOperatorsList from "@/features/admin/pages/AdminOperatorsList";
+import AdminDashboardSettings from "@/features/admin/pages/AdminDashboardSettings";
+import AdminInvoices from "@/features/admin/pages/AdminInvoices";
+import AdminUsersList from "@/features/admin/pages/AdminUsersList";
 import { Login } from "@/features/auth/pages/Login";
 import Register from "@/features/auth/pages/Register";
-import DashboardSettings from "@/features/dashboard/pages/DashboardSettings";
 import AuthGuard from "@/features/guard/AuthGuard";
 import RoleGuard from "@/features/guard/RoleGuard";
 import JobList from "@/features/jobs/pages/JobList";
 import JobPage from "@/features/jobs/pages/JobPage";
 import { RootContainer } from "@/features/Root";
 import Profile from "@/features/user/pages/Profile";
+import Settings from "@/features/user/pages/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
             element: <Profile />,
           },
           {
+            path: "settings",
+            element: <Settings />,
+          },
+          {
             path: "jobs",
             element: <JobList />,
           },
@@ -42,16 +47,19 @@ export const router = createBrowserRouter([
             element: <JobPage />,
           },
           {
-            path: "dashboard-settings",
-            element: <DashboardSettings />,
-          },
-          {
             path: "admin",
             element: <RoleGuard userRole="admin" />,
             children: [
-              { path: "operators", element: <AdminOperatorsList /> },
-              { path: "clients", element: <AdminClientList /> },
+              { path: "users/:role", element: <AdminUsersList /> },
               { path: "dashboard", element: <AdminDashboard /> },
+              {
+                path: "dashboard-settings",
+                element: <AdminDashboardSettings />,
+              },
+              {
+                path: "invoices",
+                element: <AdminInvoices />,
+              },
             ],
           },
         ],

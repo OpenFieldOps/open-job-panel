@@ -5,7 +5,7 @@ type UserAvatarProps = AvatarRootProps & {
   userInfo: {
     firstName: string;
     lastName: string;
-    avatar: string | null;
+    avatar: string | null | undefined;
   };
 };
 

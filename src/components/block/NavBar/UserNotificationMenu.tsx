@@ -149,7 +149,7 @@ function UserNotificationMenuContent({
           w={"fit-content"}
           px={4}
         >
-          {notificationFilter === "all" ? "Show Unread" : "Show All"}
+          {notificationFilter === "all" ? "Unread" : "All"}
         </OutlineIconButton>
 
         <ConfirmAlertDialog

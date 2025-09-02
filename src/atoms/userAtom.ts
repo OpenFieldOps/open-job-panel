@@ -20,7 +20,7 @@ function fetchUserFromLocalStorage(): UserAuth | null {
 
   if (content) {
     currentUser = JSON.parse(content);
-    setTimeout(refreshUser, 50);
+    setTimeout(refreshUser, 250);
   }
   return currentUser;
 }
@@ -30,31 +30,34 @@ export const userAtom = atomWithStorage<UserAuth | null>(
   fetchUserFromLocalStorage()
 );
 
-function refreshUser() {
-  apiClient.auth.me
-    .get()
-    .then((response) => {
-      if (ok(response) && response.data) {
-        appStore.set(userAtom, (user) => {
-          if (user) {
-            return {
-              token: user.token,
-              user: response.data,
-            };
-          }
-          return null;
-        });
-      } else {
-        appStore.set(userAtom, null);
-      }
-    })
-    .catch(() => {
+let isRefreshing = false;
+
+async function refreshUser() {
+  if (isRefreshing) return;
+  isRefreshing = true;
+
+  try {
+    const response = await apiClient.auth.me.get();
+    if (ok(response) && response.data) {
+      appStore.set(userAtom, (user) =>
+        user ? { token: user.token, user: response.data } : null
+      );
+    } else {
       appStore.set(userAtom, null);
-    });
+    }
+  } catch {
+    appStore.set(userAtom, null);
+  } finally {
+    isRefreshing = false;
+  }
+}
+
+export function getCurrentUser(): UserAuth | null {
+  return appStore.get(userAtom);
 }
 
 setInterval(() => {
-  if (appStore.get(userAtom)) {
+  if (getCurrentUser()) {
     refreshUser();
   }
 }, 1000 * 60 * 5);

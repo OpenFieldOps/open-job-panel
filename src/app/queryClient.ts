@@ -18,7 +18,11 @@ export enum QueryCacheKey {
   JobTasks = 4,
   Operator = 5,
   OperatorList = 6,
-  Notifications = 7,
+  Supervisor = 7,
+  SupervisorList = 8,
+  Client = 9,
+  ClientList = 10,
+  Notifications = 11,
 }
 
 export function BuildQueryCacheKey(
