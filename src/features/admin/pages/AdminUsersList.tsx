@@ -2,7 +2,6 @@ import { Button, Menu, SimpleGrid } from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/model";
 import { ChevronDown } from "lucide-react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
 import { EmptyWrapperAction } from "@/components/container/EmptyWrapper";
 import PageContainer from "@/components/container/PageContainer";
 import { UserCard } from "@/features/user/components/UserCard";
@@ -76,16 +75,17 @@ export default function AdminUsersList() {
   }
 
   return (
-    <PageContainer>
-      <PageTitleWithToolbar
-        title={titleMap[role]}
-        toolbar={
+    <PageContainer
+      toolbar={{
+        title: titleMap[role],
+        toolbar: (
           <>
             <UserRoleNavigationMenu currentRole={role} />
             <UserCreateDialogIconButtonTrigger userRole={role} />
           </>
-        }
-      />
+        ),
+      }}
+    >
       <SimpleGrid
         w={"full"}
         columns={{ base: 1, md: users.length > 0 ? 2 : 1 }}

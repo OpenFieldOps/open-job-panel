@@ -55,9 +55,7 @@ export function AdminUserCardOperatorToolBar({ userId }: UserCardProps) {
   return (
     <>
       <AdminOperatorJobsModal operatorId={userId}>
-        <Button variant={"outline"} colorPalette={"blue"}>
-          View Active Jobs
-        </Button>
+        <Button>View Active Jobs</Button>
       </AdminOperatorJobsModal>
       <OperatorLocationDialog />
     </>

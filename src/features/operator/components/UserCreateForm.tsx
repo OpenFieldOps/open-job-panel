@@ -9,6 +9,7 @@ import {
   apiClient,
   apiQueryCacheListAdd,
 } from "@/lib/apiClient";
+import { toaster } from "@/components/ui/contants";
 
 type UserCreateProps = {
   onCreated: () => void;
@@ -26,6 +27,7 @@ export default function UserCreateForm({ onCreated, role }: UserCreateProps) {
     mutationFn: apiClient.user["create-user"].post,
     onApiSuccess(data) {
       apiQueryCacheListAdd(roleCacheKeyMap[role], data);
+      toaster.success({ title: "User created successfully" });
       onCreated();
     },
     defaultValues: {

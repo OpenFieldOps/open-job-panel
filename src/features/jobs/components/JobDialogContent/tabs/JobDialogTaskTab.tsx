@@ -1,4 +1,4 @@
-import { Button, CheckboxCard, Input, Spinner } from "@chakra-ui/react";
+import { CheckboxCard, Input, Spinner } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
 import { useUserIs } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
@@ -45,19 +45,6 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
     defaultValues: { title: "" },
   });
 
-  const trigger = (
-    <>
-      <FieldWithError
-        placeholder="Task title"
-        {...register("title", { required: true, minLength: 3 })}
-        error={errors.title?.type}
-      >
-        <Input id="job-task-title" />
-      </FieldWithError>
-      <Button type="submit">Add Task</Button>
-    </>
-  );
-
   if (isLoading) {
     return <Spinner />;
   }
@@ -66,9 +53,17 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
     <FormTemplate
       noData={!tasks || tasks.length === 0 ? "No tasks found" : undefined}
       scrollable
-      trigger={trigger}
+      confirmText="Add Task"
       onSubmit={handleSubmit}
     >
+      <FieldWithError
+        placeholder="Task title"
+        {...register("title", { required: true, minLength: 3 })}
+        error={errors.title?.type}
+      >
+        <Input id="job-task-title" />
+      </FieldWithError>
+
       {tasks?.map((task) => (
         <TaskCard
           key={task.id}

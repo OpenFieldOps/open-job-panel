@@ -1,10 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
-import { type DefaultValues, type Path, useForm } from "react-hook-form";
+import {
+  type DefaultValues,
+  type Path,
+  useForm,
+  type UseFormRegister,
+} from "react-hook-form";
 import { toaster } from "@/components/ui/contants";
 import { ok } from "@/lib/apiClient";
 import { formValidation, withDefaultRules } from "@/utils/form-validation";
+import { useLens } from "@hookform/lenses";
 
-interface ApiResponse<Data> {
+export interface ApiResponse<Data> {
   status: number;
   data: Data;
 }
@@ -35,10 +41,19 @@ export default function useMutationForm<
   onError,
   defaultValues,
 }: UseMutationFormProps<Inputs, Data, Res>) {
-  const { handleSubmit, register, setValue, formState, reset, getValues } =
-    useForm<Inputs>({
-      defaultValues,
-    });
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    formState,
+    reset,
+    getValues,
+    control,
+  } = useForm<Inputs>({
+    defaultValues,
+  });
+
+  const lens = useLens({ control });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: Inputs) => {
@@ -59,12 +74,22 @@ export default function useMutationForm<
     },
   });
 
-  const errorHandledRegister = (name: keyof Inputs) => {
-    const defaultRules = withDefaultRules(
-      register,
-      name as string as Path<Inputs>
-    );
+  type Options = {
+    isNumber?: boolean;
+  };
+
+  const errorHandledRegister = (name: keyof Inputs, options?: Options) => {
+    const func: UseFormRegister<Inputs> = (...oldArgs) => {
+      const args = [
+        oldArgs[0],
+        options?.isNumber ? { valueAsNumber: true } : {},
+      ] as const;
+      return register(...args);
+    };
+
+    const defaultRules = withDefaultRules(func, name as string as Path<Inputs>);
     let required = false;
+
     if (name in formValidation) {
       if (typeof formValidation[name].required === "object") {
         required = formValidation[name].required.value;
@@ -88,5 +113,6 @@ export default function useMutationForm<
     formState,
     reset,
     errorHandledRegister,
+    lens,
   };
 }

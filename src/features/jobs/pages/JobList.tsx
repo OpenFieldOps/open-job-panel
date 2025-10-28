@@ -1,13 +1,11 @@
-import { Flex, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/model";
 import dayjs from "dayjs";
-import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import { BuildQueryCacheKey, QueryCacheKey } from "@/app/queryClient";
 import { useUserIsNot } from "@/atoms/userAtom";
 import Calendar from "@/components/block/Calendar/EventCalendar";
-import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
-import { OutlineIconButton } from "@/components/buttons/Button";
+import AddButton from "@/components/buttons/AddButton";
 import RefreshButton from "@/components/buttons/RefreshButton";
 import PageContainer from "@/components/container/PageContainer";
 import { WithRole } from "@/features/guard/WithRole";
@@ -60,9 +58,7 @@ const JobCalendar = React.memo(
         rightToolbar={
           <WithRole.admin>
             <JobCreateModalTrigger>
-              <OutlineIconButton>
-                <Plus />
-              </OutlineIconButton>
+              <AddButton />
             </JobCreateModalTrigger>
           </WithRole.admin>
         }
@@ -104,11 +100,11 @@ export default function JobListPage() {
     : jobs;
 
   return (
-    <PageContainer>
-      <PageTitleWithToolbar
-        title="Jobs"
-        noTitleOnMobile
-        toolbar={
+    <PageContainer
+      toolbar={{
+        title: "Jobs",
+        noTitleOnMobile: true,
+        toolbar: (
           <HStack maxW={"250px"} justifyContent={"flex-end"}>
             <WithRole.admin>
               <OperatorSelect
@@ -121,17 +117,15 @@ export default function JobListPage() {
 
             <RefreshButton queryKey={getJobsListKey()} />
           </HStack>
-        }
+        ),
+      }}
+    >
+      <JobCalendar
+        onJobClick={openJob}
+        jobs={filteredJobs}
+        setPeriod={setPeriod}
       />
-
-      <Flex maxH="100%" w="100%">
-        <JobCalendar
-          onJobClick={openJob}
-          jobs={filteredJobs}
-          setPeriod={setPeriod}
-        />
-        {JobEdit}
-      </Flex>
+      {JobEdit}
     </PageContainer>
   );
 }

@@ -23,6 +23,8 @@ export enum QueryCacheKey {
   Client = 9,
   ClientList = 10,
   Notifications = 11,
+  PricingModelList = 12,
+  PricingModel = 13,
 }
 
 export function BuildQueryCacheKey(

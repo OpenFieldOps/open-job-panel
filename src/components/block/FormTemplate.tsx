@@ -2,6 +2,7 @@ import { Button, Heading, Spinner, VStack } from "@chakra-ui/react";
 import type { FormEventHandler, PropsWithChildren } from "react";
 import RightContainer from "../container/RightContainer";
 import type React from "react";
+import ConfirmAlertDialog from "../dialog/ConfirmAlertDialog";
 
 type FormTemplateProps = {
   title?: string;
@@ -33,7 +34,6 @@ export default function FormTemplate({
         gap={4}
         overflowY={scrollable ? "auto" : undefined}
         maxH={scrollable ? "50vh" : undefined}
-        py={scrollable ? 4 : undefined}
         w={"full"}
       >
         {title && <Heading size="md">{title}</Heading>}
@@ -47,9 +47,15 @@ export default function FormTemplate({
       ) : null}
       <RightContainer gap={4} mt={4}>
         {onDelete && (
-          <Button variant={"outline"} onClick={onDelete}>
-            Delete
-          </Button>
+          <ConfirmAlertDialog
+            onConfirm={onDelete}
+            title="Delete job"
+            description="Are you sur you want to delete this job ?"
+          >
+            <Button colorPalette={"red"} variant={"outline"}>
+              Delete
+            </Button>
+          </ConfirmAlertDialog>
         )}
         {!disableSubmit && trigger ? (
           isLoading ? (
@@ -60,9 +66,11 @@ export default function FormTemplate({
             trigger
           )
         ) : (
-          <Button disabled={isLoading} type="submit">
-            {isLoading ? <Spinner /> : confirmText}
-          </Button>
+          !disableSubmit && (
+            <Button disabled={isLoading} type="submit">
+              {isLoading ? <Spinner /> : confirmText}
+            </Button>
+          )
         )}
       </RightContainer>
     </form>

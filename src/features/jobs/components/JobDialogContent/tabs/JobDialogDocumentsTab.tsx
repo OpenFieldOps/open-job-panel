@@ -1,7 +1,6 @@
 import {
   Card,
   DownloadTrigger,
-  Heading,
   HStack,
   Input,
   Spinner,
@@ -12,8 +11,6 @@ import { useState } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import { OutlineIconButton } from "@/components/buttons/Button";
-import { ListWrapper } from "@/components/container/EmptyWrapper";
-import VerticalScrollArea from "@/components/container/VScrollArea";
 import FileInput from "@/components/form/FileInput";
 import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
@@ -110,28 +107,27 @@ export function JobDialogDocumentsTab({ jobId }: { jobId: number }) {
   );
 
   return (
-    <FormTemplate trigger={<FileInput mt={2} onUpload={onUploadFile} />}>
+    <FormTemplate
+      trigger={<FileInput mt={2} onUpload={onUploadFile} />}
+      noData={
+        !documents || documents.length === 0 ? "No documents found" : undefined
+      }
+      scrollable
+    >
       <Input
         id="job-documents-search"
         placeholder="Search documents"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <VerticalScrollArea maxH="47vh" gap={2}>
-        <ListWrapper
-          list={filteredDocuments}
-          render={(el) => (
-            <DocumentCard
-              key={el.id}
-              jobId={jobId}
-              fileName={el.fileName}
-              id={el.id}
-            />
-          )}
-        >
-          <Heading size={"lg"}>No documents found.</Heading>
-        </ListWrapper>
-      </VerticalScrollArea>
+      {filteredDocuments?.map((el) => (
+        <DocumentCard
+          key={el.id}
+          jobId={jobId}
+          fileName={el.fileName}
+          id={el.id}
+        />
+      ))}
     </FormTemplate>
   );
 }

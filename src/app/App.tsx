@@ -12,7 +12,6 @@ import { router } from "./router";
 import { appStore } from "./store";
 import "./localisationService";
 import "./app.css";
-import "./i18n";
 
 function HydrateAtoms({ children }: PropsWithChildren) {
   useHydrateAtoms([[queryClientAtom, queryClient]]);

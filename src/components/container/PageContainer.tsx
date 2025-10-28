@@ -1,22 +1,44 @@
-import { Card, VStack } from "@chakra-ui/react";
+import { Card, type StackProps, VStack } from "@chakra-ui/react";
 import type { PropsWithChildren } from "react";
 import type { PageTitleWithToolbarProps } from "../block/PageTitleWithToolbar";
 import PageTitleWithToolbar from "../block/PageTitleWithToolbar";
 
 type PageContainerProps = {
   card?: boolean;
+  fullCard?: boolean;
   toolbar?: PageTitleWithToolbarProps;
-} & PropsWithChildren;
+} & PropsWithChildren &
+  StackProps;
 
 export default function PageContainer({
   children,
   card,
+  fullCard,
   toolbar,
 }: PageContainerProps) {
+  const isCard = card || fullCard;
   return (
-    <VStack gap={4} px={4} pb={4} maxW={"100%"} h={"full"} maxH={"100%"}>
-      {toolbar && <PageTitleWithToolbar {...toolbar} />}
-      {card ? <Card.Root p={6}>{children}</Card.Root> : children}
+    <VStack
+      gap={4}
+      px={4}
+      pb={4}
+      maxW={"100%"}
+      h={"full"}
+      maxH={"100%"}
+      w={fullCard ? "full" : undefined}
+    >
+      {isCard ? (
+        <Card.Root w={fullCard ? "full" : undefined} p={6}>
+          {toolbar && <PageTitleWithToolbar {...toolbar} />}
+
+          {children}
+        </Card.Root>
+      ) : (
+        <>
+          {toolbar && <PageTitleWithToolbar {...toolbar} />}
+          {children}
+        </>
+      )}
     </VStack>
   );
 }

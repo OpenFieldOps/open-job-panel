@@ -94,6 +94,6 @@ export function withDefaultRules<
 >(register: UseFormRegister<T>, key: K) {
   return {
     ...register(key, formValidation[key] as RegisterOptions<T, K> | undefined),
-    ...(formValidation[key].inputProps || {}),
+    ...(formValidation[key]?.inputProps || {}),
   };
 }

@@ -33,7 +33,7 @@ export default defineConfig({
     port: 5174,
     fs: {
       strict: true,
-      allow: [path.resolve(__dirname, "src")],
+      allow: [path.resolve(__dirname, "src"), "index.html"],
     },
   },
 });

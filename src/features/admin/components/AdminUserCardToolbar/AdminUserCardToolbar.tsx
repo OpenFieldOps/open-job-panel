@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/model";
 import type React from "react";
 import { QueryCacheKey } from "@/app/queryClient";
@@ -7,6 +7,7 @@ import { toaster } from "@/components/ui/contants";
 import { apiClient, apiQueryCacheListDelete, ok } from "@/lib/apiClient";
 import { AdminUserCardClientToolBar } from "./AdminUserCardClientToolBar";
 import { AdminUserCardOperatorToolBar } from "./AdminUserCardOperatorToolBar";
+import type { ReactNode } from "react";
 
 type UserCardProps = {
   user: UserModel.UserInfo;
@@ -20,9 +21,9 @@ const roleToolbar: Record<UserModel.UserRole, React.FC<{ userId: number }>> = {
 };
 
 export default function AdminUserCardToolbar({ user }: UserCardProps) {
-  const UserToolbar = roleToolbar[user.role]({ userId: user.id });
+  const UserToolbar = roleToolbar[user.role]({ userId: user.id }) as ReactNode;
   return (
-    <>
+    <HStack alignItems={"flex-end"}>
       <ConfirmAlertDialog
         onConfirm={() => {
           deleteUser(user.id, user.role as UserModel.AssignedUserRole);
@@ -33,7 +34,7 @@ export default function AdminUserCardToolbar({ user }: UserCardProps) {
         </Button>
       </ConfirmAlertDialog>
       {UserToolbar}
-    </>
+    </HStack>
   );
 }
 

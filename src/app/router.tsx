@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import AdminDashboard from "@/features/admin/pages/AdminDashboard";
 import AdminDashboardSettings from "@/features/admin/pages/AdminDashboardSettings";
 import AdminInvoices from "@/features/admin/pages/AdminInvoices";
@@ -12,12 +12,17 @@ import JobPage from "@/features/jobs/pages/JobPage";
 import { RootContainer } from "@/features/Root";
 import Profile from "@/features/user/pages/Profile";
 import Settings from "@/features/user/pages/Settings";
+import PricingModelsListPage from "@/features/pricing-model/pages/PricingModelsListPage";
 
 export const router = createBrowserRouter([
   {
     path: "",
     element: <RootContainer />,
     children: [
+      {
+        path: "/",
+        element: <Navigate to={"/private/profile"} />,
+      },
       {
         path: "login",
         element: <Login />,
@@ -59,6 +64,10 @@ export const router = createBrowserRouter([
               {
                 path: "invoices",
                 element: <AdminInvoices />,
+              },
+              {
+                path: "pricing-models",
+                element: <PricingModelsListPage />,
               },
             ],
           },

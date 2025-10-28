@@ -1,6 +1,7 @@
 import Dashboard from "@/features/dashboard/components/Dashboard";
 import DashboardJobsBlock from "../components/DashboardJobsBlock";
 import DashboardOperatorsBlock from "../components/DashboardOperatorsBlock";
+import DashboardIncomeStatistics from "../components/DashboardIncomeStatistics";
 
 export default function AdminDashboard() {
   return (
@@ -18,6 +19,8 @@ export default function AdminDashboard() {
         }}
       />
       <DashboardOperatorsBlock title="Operators" />
+
+      <DashboardIncomeStatistics />
     </Dashboard>
   );
 }

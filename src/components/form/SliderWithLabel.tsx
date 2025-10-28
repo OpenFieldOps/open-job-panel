@@ -9,7 +9,7 @@ export default function SliderWithLabel({
   ...sliderProps
 }: SliderWithLabelProps) {
   return (
-    <Slider.Root maxW="sm" size="sm" {...sliderProps}>
+    <Slider.Root {...sliderProps}>
       <HStack justify="space-between">
         <Slider.Label>{label}</Slider.Label>
         <Slider.ValueText />
