@@ -1,12 +1,19 @@
-import { Combobox, useFilter, useListCollection } from "@chakra-ui/react";
+import {
+  Combobox,
+  type InputProps,
+  useFilter,
+  useListCollection,
+} from "@chakra-ui/react";
+import { type ReactNode, useEffect, useRef } from "react";
 import type { Entity } from "@/types/entity";
-import { useEffect, type ReactNode } from "react";
 
 type SelectProps<T extends Entity> = {
   items: T[];
   label?: ReactNode;
-  onSelect: (id: string) => void;
+  onSelect: (id: string | null) => void;
   defaultValue?: string;
+  clearable?: boolean;
+  inputProps?: InputProps;
 };
 
 export function SelectWithLabel<T extends Entity>({
@@ -14,7 +21,10 @@ export function SelectWithLabel<T extends Entity>({
   label,
   onSelect,
   defaultValue,
+  clearable = true,
+  inputProps = {},
 }: SelectProps<T>) {
+  const ref = useRef<HTMLInputElement>(null);
   const { contains } = useFilter({ sensitivity: "base" });
 
   const { collection, set } = useListCollection<T>({
@@ -34,18 +44,28 @@ export function SelectWithLabel<T extends Entity>({
       defaultValue={defaultValue ? [defaultValue] : undefined}
       onSelect={(value) => onSelect(value.value[0])}
       collection={collection}
-      width="320px"
     >
       {label && <Combobox.Label>{label}</Combobox.Label>}
       <Combobox.Control>
         <Combobox.Input
+          ref={ref}
           placeholder="Type to search"
           defaultValue={
             items.find((item) => String(item.id) === defaultValue)?.name
           }
+          {...inputProps}
         />
         <Combobox.IndicatorGroup>
-          <Combobox.ClearTrigger />
+          {clearable && (
+            <Combobox.ClearTrigger
+              onClick={() => {
+                onSelect(null);
+                if (ref.current) {
+                  ref.current.value = "";
+                }
+              }}
+            />
+          )}
           <Combobox.Trigger />
         </Combobox.IndicatorGroup>
       </Combobox.Control>

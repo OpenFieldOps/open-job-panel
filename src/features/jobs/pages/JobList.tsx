@@ -1,5 +1,5 @@
 import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { BuildQueryCacheKey, QueryCacheKey } from "@/app/queryClient";

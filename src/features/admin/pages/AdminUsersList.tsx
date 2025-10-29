@@ -1,5 +1,5 @@
 import { Button, Menu, SimpleGrid } from "@chakra-ui/react";
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import { ChevronDown } from "lucide-react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { EmptyWrapperAction } from "@/components/container/EmptyWrapper";

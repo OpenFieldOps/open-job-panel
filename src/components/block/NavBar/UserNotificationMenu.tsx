@@ -8,7 +8,7 @@ import {
   Status,
   VStack,
 } from "@chakra-ui/react";
-import type { UserNotificationModel } from "backend/modules/notification/model";
+import type { UserNotificationModel } from "backend/modules/notification/NotificationModel";
 import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { QueryCacheKey } from "@/app/queryClient";

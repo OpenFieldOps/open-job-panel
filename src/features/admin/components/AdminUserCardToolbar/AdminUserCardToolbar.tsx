@@ -1,13 +1,13 @@
 import { Button, HStack } from "@chakra-ui/react";
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import type React from "react";
+import type { ReactNode } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
 import ConfirmAlertDialog from "@/components/dialog/ConfirmAlertDialog";
 import { toaster } from "@/components/ui/contants";
 import { apiClient, apiQueryCacheListDelete, ok } from "@/lib/apiClient";
 import { AdminUserCardClientToolBar } from "./AdminUserCardClientToolBar";
 import { AdminUserCardOperatorToolBar } from "./AdminUserCardOperatorToolBar";
-import type { ReactNode } from "react";
 
 type UserCardProps = {
   user: UserModel.UserInfo;

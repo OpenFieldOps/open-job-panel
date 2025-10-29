@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import { QueryCacheKey } from "@/app/queryClient";
 import { type AppCacheKey, apiClient } from "@/lib/apiClient";
 

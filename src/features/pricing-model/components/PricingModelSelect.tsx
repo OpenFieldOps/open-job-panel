@@ -15,6 +15,7 @@ export function PricingModelListSelect(props: PricingModelListSelectProps) {
       items={pricingModels}
       label={"Pricing Models"}
       defaultValue={String(props.defaultValue)}
+      inputProps={{ width: "320px" }}
     />
   );
 }

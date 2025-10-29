@@ -1,5 +1,7 @@
-import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
 import { Chart, useChart } from "@chakra-ui/charts";
+import { For } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import {
   Area,
   AreaChart,
@@ -8,24 +10,42 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import PeriodSelect, {
+  PeriodSelectIds,
+} from "@/components/buttons/PeriodSelect";
+import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
+import usePeriod from "@/hooks/usePeriod";
+import { apiClient } from "@/lib/apiClient";
 
 export default function DashboardIncomeStatistics() {
+  const period = usePeriod(PeriodSelectIds.IncomeStatistics);
+
+  const { data } = useQuery({
+    queryKey: ["income-statistics", period.period],
+    queryFn: async () =>
+      await apiClient.job.income.get({
+        query: {
+          startDate: dayjs().subtract(period.period, "day").toISOString(),
+          endDate: dayjs().toISOString(),
+        },
+      }),
+    refetchOnMount: true,
+  });
+
   const chart = useChart({
-    data: [
-      { windows: 186, month: "January" },
-      { windows: 165, month: "February" },
-      { windows: 190, month: "March" },
-      { windows: 195, month: "May" },
-      { windows: 182, month: "June" },
-      { windows: 175, month: "August" },
-      { windows: 180, month: "October" },
-      { windows: 185, month: "November" },
-    ],
-    series: [{ name: "windows", color: "teal.solid" }],
+    data:
+      data?.data?.map((item) => ({
+        day: dayjs(item.date).format("DD MMM"),
+        income: item.income,
+      })) || [],
+    series: [{ name: "income", color: "teal.solid" }],
   });
 
   return (
-    <DashboardBlock title="Income Statistics">
+    <DashboardBlock
+      title="Income Statistics"
+      toolbar={<PeriodSelect id={PeriodSelectIds.IncomeStatistics} />}
+    >
       <Chart.Root maxH="full" chart={chart}>
         <AreaChart
           data={chart.data}
@@ -38,14 +58,17 @@ export default function DashboardIncomeStatistics() {
             strokeDasharray="3 3"
           />
           <XAxis
-            dataKey={chart.key("month")}
+            dataKey={chart.key("day")}
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) => `${value.slice(0, 3)} `}
           />
 
-          <YAxis stroke={chart.color("border")} />
+          <YAxis
+            stroke={chart.color("border")}
+            domain={[0, "dataMax"]}
+            allowDataOverflow={false}
+          />
 
           <Tooltip
             cursor={false}
@@ -53,29 +76,33 @@ export default function DashboardIncomeStatistics() {
             content={<Chart.Tooltip />}
           />
 
-          {chart.series.map((item) => (
-            <defs key={item.name}>
-              <Chart.Gradient
-                id={`${item.name}-gradient`}
-                stops={[
-                  { offset: "0%", color: item.color, opacity: 0.3 },
-                  { offset: "100%", color: item.color, opacity: 0.05 },
-                ]}
-              />
-            </defs>
-          ))}
+          <For each={chart.series}>
+            {(item) => (
+              <defs key={item.name}>
+                <Chart.Gradient
+                  id={`${item.name}-gradient`}
+                  stops={[
+                    { offset: "0%", color: item.color, opacity: 0.3 },
+                    { offset: "100%", color: item.color, opacity: 0.05 },
+                  ]}
+                />
+              </defs>
+            )}
+          </For>
 
-          {chart.series.map((item) => (
-            <Area
-              key={item.name}
-              type="natural"
-              dataKey={chart.key(item.name)}
-              fill={`url(#${item.name}-gradient)`}
-              stroke={chart.color(item.color)}
-              strokeWidth={2}
-              stackId="a"
-            />
-          ))}
+          <For each={chart.series}>
+            {(item) => (
+              <Area
+                key={item.name}
+                type="monotone"
+                dataKey={chart.key(item.name)}
+                fill={`url(#${item.name}-gradient)`}
+                stroke={chart.color(item.color)}
+                strokeWidth={2}
+                stackId="a"
+              />
+            )}
+          </For>
         </AreaChart>
       </Chart.Root>
     </DashboardBlock>

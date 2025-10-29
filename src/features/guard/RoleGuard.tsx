@@ -1,4 +1,4 @@
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import { Outlet } from "react-router-dom";
 import { useUserIs } from "@/atoms/userAtom";
 

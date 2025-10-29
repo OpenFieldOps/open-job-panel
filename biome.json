@@ -28,7 +28,10 @@
       "complexity": {
         "noStaticOnlyClass": "off"
       },
-      "performance": "warn",
+
+      "performance": {
+        "recommended": true
+      },
       "recommended": true,
       "style": {
         "noNamespace": "off",

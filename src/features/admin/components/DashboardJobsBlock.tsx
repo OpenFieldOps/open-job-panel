@@ -1,5 +1,5 @@
 import { Table } from "@chakra-ui/react";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import { OutlineButton } from "@/components/buttons/Button";
 import RefreshButton from "@/components/buttons/RefreshButton";
 import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
@@ -18,7 +18,10 @@ export default function DashboardJobsBlock({
   title,
 }: DashboardJobsBlockProps) {
   const settings = useAdminDashboardSettingsValue("jobs");
-  const { jobs, isLoading, key } = useJobQuery(query, settings.refreshIntervalInMilliseconds);
+  const { jobs, isLoading, key } = useJobQuery(
+    query,
+    settings.refreshIntervalInMilliseconds
+  );
   const { openJob, JobEdit } = useJobModal();
 
   if (settings.hidden) {

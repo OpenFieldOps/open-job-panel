@@ -1,4 +1,4 @@
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";

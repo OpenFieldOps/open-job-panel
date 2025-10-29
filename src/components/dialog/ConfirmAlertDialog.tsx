@@ -39,9 +39,9 @@ export default function ConfirmAlertDialog({
         >
           {cancelText}
         </Button>
+
         <Button
           colorPalette="red"
-          ml={3}
           onClick={() => {
             dialog.setOpen(false);
             onConfirm();

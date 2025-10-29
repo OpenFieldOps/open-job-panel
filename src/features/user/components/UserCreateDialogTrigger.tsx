@@ -1,5 +1,5 @@
 import { useDialog } from "@chakra-ui/react";
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import { Plus } from "lucide-react";
 import {
   ButtonDialog,

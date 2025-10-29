@@ -1,5 +1,5 @@
 import { type DefaultOptions, useQuery } from "@tanstack/react-query";
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import { useMemo } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
 import { apiClient } from "@/lib/apiClient";

@@ -2,13 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import {
   type DefaultValues,
   type Path,
-  useForm,
   type UseFormRegister,
+  useForm,
 } from "react-hook-form";
 import { toaster } from "@/components/ui/contants";
 import { ok } from "@/lib/apiClient";
 import { formValidation, withDefaultRules } from "@/utils/form-validation";
-import { useLens } from "@hookform/lenses";
 
 export interface ApiResponse<Data> {
   status: number;
@@ -52,8 +51,6 @@ export default function useMutationForm<
   } = useForm<Inputs>({
     defaultValues,
   });
-
-  const lens = useLens({ control });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: Inputs) => {
@@ -113,6 +110,6 @@ export default function useMutationForm<
     formState,
     reset,
     errorHandledRegister,
-    lens,
+    control,
   };
 }

@@ -1,5 +1,5 @@
 import { CheckboxCard, Input, Spinner } from "@chakra-ui/react";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import { useUserIs } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import { FieldWithError } from "@/components/form/FieldWithLabel";

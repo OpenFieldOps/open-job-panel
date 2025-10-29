@@ -7,7 +7,7 @@ import {
   useDialog,
   VStack,
 } from "@chakra-ui/react";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import type { PropsWithChildren } from "react";
 import { ListWrapper } from "@/components/container/EmptyWrapper";
 import { TriggeredDialog } from "@/components/dialog/ButtonDialog";

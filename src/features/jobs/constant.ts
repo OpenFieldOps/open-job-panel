@@ -1,4 +1,4 @@
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 
 type JobStatusInfo = {
   title: string;

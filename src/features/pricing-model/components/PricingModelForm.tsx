@@ -1,6 +1,7 @@
 import { Button, Card, Heading, HStack, VStack } from "@chakra-ui/react";
-import type { PricingModel } from "backend/modules/pricing-model/model";
+import type { PricingModel } from "backend/modules/pricing-model/PricingModelModel";
 import { Plus } from "lucide-react";
+import { type UseFieldArrayReturn, useFieldArray } from "react-hook-form";
 import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import { OutlineButton } from "@/components/buttons/Button";
@@ -9,10 +10,6 @@ import InputWithLabel from "@/components/form/InputWithLabel";
 import SliderWithLabel from "@/components/form/SliderWithLabel";
 import useMutationForm, { type ApiResponse } from "@/hooks/useMutationForm";
 import { apiQueryCacheListUpdate } from "@/lib/apiClient";
-import {
-  type UsePricingRangeListReturn,
-  usePricingRangeList,
-} from "../hooks/usePricingRangeList";
 
 type PricingModelFormProps = {
   mutationFn: (
@@ -29,7 +26,7 @@ export default function PricingModelForm({
   defaultValues,
   isEdit,
 }: PricingModelFormProps) {
-  const { handleSubmit, errorHandledRegister, isPending, lens } =
+  const { handleSubmit, errorHandledRegister, isPending, control } =
     useMutationForm({
       mutationFn,
       onApiSuccess(data: PricingModel.PricingModel) {
@@ -52,7 +49,7 @@ export default function PricingModelForm({
       },
     });
 
-  const pricingRangeList = usePricingRangeList(lens.focus("ranges"));
+  const pricingRangeList = useFieldArray({ control, name: "ranges" });
 
   return (
     <FormTemplate
@@ -87,8 +84,14 @@ export default function PricingModelForm({
   );
 }
 
+type UsePricingRangeArray = UseFieldArrayReturn<
+  PricingModel.PricingModelCreate,
+  "ranges",
+  "id"
+>;
+
 type PricingRangesListProps = {
-  usePricingRangeListReturn: UsePricingRangeListReturn;
+  usePricingRangeListReturn: UsePricingRangeArray;
 };
 
 function PricingRangesList({
@@ -120,7 +123,7 @@ function PricingRangesList({
 
 type PricingRangeProps = {
   onDelete: () => void;
-  update: (param: Parameters<UsePricingRangeListReturn["update"]>[1]) => void;
+  update: (param: Parameters<UsePricingRangeArray["update"]>[1]) => void;
 } & PricingModel.PricingRangeCreate & { start: number; end: number };
 
 function PricingRangeForm({

@@ -1,4 +1,4 @@
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import type { PropsWithChildren } from "react";
 import { useUserIs } from "@/atoms/userAtom";
 

@@ -1,15 +1,15 @@
 import { HStack } from "@chakra-ui/react";
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
+import { toaster } from "@/components/ui/contants";
 import useMutationForm from "@/hooks/useMutationForm";
 import {
   type AppCacheKey,
   apiClient,
   apiQueryCacheListAdd,
 } from "@/lib/apiClient";
-import { toaster } from "@/components/ui/contants";
 
 type UserCreateProps = {
   onCreated: () => void;

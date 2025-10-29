@@ -1,4 +1,4 @@
-import { HStack, Menu } from "@chakra-ui/react";
+import { For, HStack, Menu } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import { Moon, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -59,21 +59,25 @@ export function UserProfileMenuButton() {
 
       <Menu.Positioner>
         <Menu.Content>
-          {userLinks.map((link) => (
-            <ProfileMenuItem
-              key={link.label}
-              label={link.label}
-              onClick={() => navigate(link.path)}
-            />
-          ))}
-          <WithRole.admin>
-            {adminLinks.map((link) => (
+          <For each={userLinks}>
+            {(link) => (
               <ProfileMenuItem
                 key={link.label}
                 label={link.label}
                 onClick={() => navigate(link.path)}
               />
-            ))}
+            )}
+          </For>
+          <WithRole.admin>
+            <For each={adminLinks}>
+              {(link) => (
+                <ProfileMenuItem
+                  key={link.label}
+                  label={link.label}
+                  onClick={() => navigate(link.path)}
+                />
+              )}
+            </For>
           </WithRole.admin>
 
           <Menu.Separator />

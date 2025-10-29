@@ -1,4 +1,4 @@
-import type { UserModel } from "backend/modules/user/model";
+import type { UserModel } from "backend/modules/user/UserModel";
 import { atom, useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { appStore } from "@/app/store";

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { UserNotificationModel } from "backend/modules/notification/model";
+import type { UserNotificationModel } from "backend/modules/notification/NotificationModel";
 import { QueryCacheKey } from "@/app/queryClient";
 import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
 

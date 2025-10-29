@@ -29,7 +29,7 @@ export function DashboardBlock({
     <Card.Root pb={0} maxH={"300px"}>
       <Card.Header
         p={2}
-        px={4}
+        px={2}
         h={"50px"}
         alignItems={"center"}
         justifyContent={"space-between"}

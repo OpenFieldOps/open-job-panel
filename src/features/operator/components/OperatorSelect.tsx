@@ -1,85 +1,35 @@
-import {
-  Combobox,
-  type InputProps,
-  useFilter,
-  useListCollection,
-} from "@chakra-ui/react";
-import type { UserModel } from "backend/modules/user/model";
-import { useEffect, useMemo } from "react";
+import type { InputProps } from "@chakra-ui/react";
+import { SelectWithLabel } from "@/components/form/SelectWithLabel";
 import useOperators from "../../admin/hooks/useOperators";
 
 type OperatorSelectProps = {
-  onChange?: (userId: number | null) => void;
+  onChange: (userId: number | null) => void;
   defaultValue?: number;
+  clearable?: boolean;
   inputProps?: InputProps;
 };
 
 export default function OperatorSelect({
   onChange,
   defaultValue,
+  clearable,
   inputProps,
 }: OperatorSelectProps) {
-  const { contains } = useFilter({ sensitivity: "base" });
-
-  const { collection, filter, set } = useListCollection({
-    initialItems: [] as UserModel.UserInfo[],
-    filter: contains,
-    itemToString: (item) => item.firstName,
-    itemToValue: (item) => item.id.toString(),
-  });
-
   const { operators } = useOperators({ enabled: true });
-
-  useEffect(() => {
-    set(operators);
-  }, [operators, set]);
-
-  const defaultOperatorFirstName = useMemo(() => {
-    return operators.find((item) => item.id === defaultValue)?.firstName;
-  }, [operators, defaultValue]);
-
   return (
-    <Combobox.Root
-      lazyMount
-      collection={collection}
-      onSelect={(e) => {
-        const operator = collection.items.find(
-          (item) => item.id.toString() === e.itemValue
-        );
-        if (operator?.id) onChange?.(operator.id);
+    <SelectWithLabel
+      defaultValue={String(defaultValue)}
+      items={operators.map((el) => ({
+        ...el,
+        name: `${el.firstName} ${el.lastName}`,
+      }))}
+      onSelect={(item) => onChange?.(item ? Number(item) : null)}
+      clearable={clearable}
+      inputProps={{
+        width: "100%",
+        placeholder: "Select Operator",
+        ...inputProps,
       }}
-      onInputValueChange={(e) => {
-        if (e.reason === "clear-trigger") {
-          onChange?.(null);
-          filter("");
-          return;
-        }
-
-        filter(e.inputValue);
-      }}
-    >
-      <Combobox.Control>
-        <Combobox.Input
-          placeholder="Type to search"
-          defaultValue={defaultOperatorFirstName}
-          {...inputProps}
-        />
-        <Combobox.IndicatorGroup>
-          <Combobox.ClearTrigger />
-          <Combobox.Trigger />
-        </Combobox.IndicatorGroup>
-      </Combobox.Control>
-      <Combobox.Positioner>
-        <Combobox.Content>
-          <Combobox.Empty>No items found</Combobox.Empty>
-          {collection.items.map((item) => (
-            <Combobox.Item item={item} key={item.id}>
-              {item.firstName}
-              <Combobox.ItemIndicator />
-            </Combobox.Item>
-          ))}
-        </Combobox.Content>
-      </Combobox.Positioner>
-    </Combobox.Root>
+    />
   );
 }

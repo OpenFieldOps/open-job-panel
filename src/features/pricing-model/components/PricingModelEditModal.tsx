@@ -1,9 +1,9 @@
 import type { UseDialogReturn } from "@chakra-ui/react";
-import type { PricingModel } from "backend/modules/pricing-model/model";
+import type { PricingModel } from "backend/modules/pricing-model/PricingModelModel";
 import { DialogContent } from "@/components/dialog/ButtonDialog";
+import { toaster } from "@/components/ui/contants";
 import { apiClient } from "@/lib/apiClient";
 import PricingModelForm from "./PricingModelForm";
-import { toaster } from "@/components/ui/contants";
 
 type PricingModelEditModalProps = {
   dialog: UseDialogReturn;

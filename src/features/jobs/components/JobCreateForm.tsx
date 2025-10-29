@@ -1,4 +1,4 @@
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
 import { useUserId } from "@/atoms/userAtom";

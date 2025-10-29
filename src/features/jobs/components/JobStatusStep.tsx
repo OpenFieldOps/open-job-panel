@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Steps } from "@chakra-ui/react";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import { CheckCircle, Clock, Loader2, SquareCheck } from "lucide-react";
 import { useState } from "react";
 import {

@@ -9,7 +9,7 @@ type Id = number | string;
 
 export type AppCacheKey = [QueryCacheKey, ...unknown[]];
 
-// @ts-ignore
+// @ts-expect-error FIXME: elysiajs/eden types are broken
 export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
   onRequest() {
     const user = appStore.get(userAtom);

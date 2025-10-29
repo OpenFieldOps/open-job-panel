@@ -1,4 +1,4 @@
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import { useAtom, useAtomValue } from "jotai";
 import { jobSelectedPeriodAtom, jobsAtom } from "../atoms";
 

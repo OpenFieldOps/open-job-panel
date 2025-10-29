@@ -30,7 +30,12 @@ export default function DashboardOperatorsBlock({
       title={title}
       toolbar={<RefreshButton queryKey={[QueryCacheKey.OperatorList]} />}
     >
-      <Table.ScrollArea borderWidth="1px" rounded="md" h={"full"}>
+      <Table.ScrollArea
+        borderWidth="1px"
+        rounded="md"
+        h={"full"}
+        borderTopRadius={0}
+      >
         <Table.Root size="sm" stickyHeader>
           <Table.Header>
             <Table.Row bg="bg.subtle">

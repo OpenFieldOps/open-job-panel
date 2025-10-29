@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import type { JobModel } from "backend/modules/job/model";
+import type { JobModel } from "backend/modules/job/JobModel";
 import { useForm } from "react-hook-form";
 import FormTemplate from "@/components/block/FormTemplate";
 import { JobStatusStep } from "@/features/jobs/components/JobStatusStep";

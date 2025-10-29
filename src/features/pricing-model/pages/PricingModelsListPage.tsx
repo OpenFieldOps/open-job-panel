@@ -1,6 +1,7 @@
 import { Button, Card, useDialog, VStack } from "@chakra-ui/react";
-import type { PricingModel } from "backend/modules/pricing-model/model";
+import type { PricingModel } from "backend/modules/pricing-model/PricingModelModel";
 import { useState } from "react";
+import { EntityCard } from "@/components/block/EntityCard";
 import PageTitleWithToolbar from "@/components/block/PageTitleWithToolbar";
 import AddButton from "@/components/buttons/AddButton";
 import { EmptyWrapperAction } from "@/components/container/EmptyWrapper";
@@ -10,7 +11,6 @@ import PricingModelCreateModal from "../components/PricingModelCreateModal";
 import PricingModelEditModal from "../components/PricingModelEditModal";
 import usePricingModelsList from "../hooks/usePricingModelsList";
 import { deletePricingModel } from "../query";
-import { EntityCard } from "@/components/block/EntityCard";
 
 export default function PricingModelsListPage() {
   const dialog = useDialog();
