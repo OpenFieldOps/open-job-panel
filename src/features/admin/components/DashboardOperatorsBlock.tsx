@@ -51,7 +51,12 @@ export default function DashboardOperatorsBlock({
                   {item.firstName} {item.lastName}
                 </Table.Cell>
                 <Table.Cell textAlign="end">
-                  <OutlineButton>
+                  <OutlineButton
+                    as="a"
+                    onClick={() => {
+                      window.location.href = `tel:${item.phone}`;
+                    }}
+                  >
                     <Phone /> Call
                   </OutlineButton>
                 </Table.Cell>

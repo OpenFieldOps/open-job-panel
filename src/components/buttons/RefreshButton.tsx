@@ -1,15 +1,19 @@
 import { type ButtonProps, IconButton, Spinner } from "@chakra-ui/react";
+import { useIsFetching } from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
 import { queryClient } from "@/app/queryClient";
-import useIsLoading from "@/hooks/useIsLoading";
 import type { AppCacheKey } from "@/lib/apiClient";
 
 type RefreshButtonProps = ButtonProps & {
-  queryKey: AppCacheKey;
+  queryKey: AppCacheKey | [string, number];
 };
 
 export default function RefreshButton(props: RefreshButtonProps) {
-  const isLoading = useIsLoading(props.queryKey);
+  const isLoading =
+    useIsFetching({
+      queryKey: props.queryKey,
+    }) > 0;
+  console.log("isLoading", isLoading);
   const disabled = props.disabled || isLoading;
   return (
     <IconButton

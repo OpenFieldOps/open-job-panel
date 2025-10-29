@@ -58,9 +58,16 @@ export default function UserCreateForm({ onCreated, role }: UserCreateProps) {
       <InputWithLabel
         label="Email"
         type="email"
-        placeholder="operator email"
+        placeholder="email"
         autoComplete="email"
         {...errorHandledRegister("email")}
+      />
+      <InputWithLabel
+        label="Phone Number"
+        type="tel"
+        placeholder="phone number"
+        autoComplete="tel"
+        {...errorHandledRegister("phone")}
       />
       <InputWithLabel
         label="Username"

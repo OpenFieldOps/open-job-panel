@@ -13,6 +13,7 @@ import {
 import PeriodSelect, {
   PeriodSelectIds,
 } from "@/components/buttons/PeriodSelect";
+import RefreshButton from "@/components/buttons/RefreshButton";
 import { DashboardBlock } from "@/features/dashboard/components/DashboardBlock";
 import usePeriod from "@/hooks/usePeriod";
 import { apiClient } from "@/lib/apiClient";
@@ -44,7 +45,12 @@ export default function DashboardIncomeStatistics() {
   return (
     <DashboardBlock
       title="Income Statistics"
-      toolbar={<PeriodSelect id={PeriodSelectIds.IncomeStatistics} />}
+      toolbar={
+        <>
+          <PeriodSelect id={PeriodSelectIds.IncomeStatistics} />
+          <RefreshButton queryKey={["income-statistics", period.period]} />
+        </>
+      }
     >
       <Chart.Root maxH="full" chart={chart}>
         <AreaChart
