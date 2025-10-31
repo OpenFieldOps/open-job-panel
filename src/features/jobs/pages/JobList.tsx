@@ -1,4 +1,4 @@
-import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
 import React, { useState } from "react";
@@ -52,16 +52,19 @@ const JobCalendar = React.memo(
     const isMobile = useIsMobile();
     const isNotAdmin = useUserIsNot("admin");
 
+    const AddIntervention = (
+      <WithRole.admin>
+        <JobCreateModalTrigger>
+          <AddButton />
+        </JobCreateModalTrigger>
+      </WithRole.admin>
+    );
+
     return (
       <Calendar
         displayDate={!isMobile}
-        rightToolbar={
-          <WithRole.admin>
-            <JobCreateModalTrigger>
-              <AddButton />
-            </JobCreateModalTrigger>
-          </WithRole.admin>
-        }
+        rightToolbar={!isMobile ? AddIntervention : undefined}
+        leftToolbar={isMobile ? AddIntervention : undefined}
         isOneDay={isMobile}
         isReadOnly={isNotAdmin}
         events={jobs}
@@ -105,18 +108,30 @@ export default function JobListPage() {
         title: "Jobs",
         noTitleOnMobile: true,
         toolbar: (
-          <HStack maxW={"250px"} justifyContent={"flex-end"}>
+          <Flex
+            minW={{
+              md: "full",
+              base: "full",
+            }}
+            gap={2}
+            justifyContent={{
+              md: "flex-end",
+              base: "space-between",
+            }}
+          >
             <WithRole.admin>
-              <OperatorSelect
-                onChange={setSelectedOperator}
-                inputProps={{
-                  placeholder: "Select Operator",
-                }}
-              />
+              <Box>
+                <OperatorSelect
+                  onChange={setSelectedOperator}
+                  inputProps={{
+                    placeholder: "Select Operator",
+                  }}
+                />
+              </Box>
             </WithRole.admin>
 
             <RefreshButton queryKey={getJobsListKey()} />
-          </HStack>
+          </Flex>
         ),
       }}
     >

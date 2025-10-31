@@ -13,7 +13,7 @@ export function Login() {
   const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
 
-  const { errorHandledRegister, handleSubmit } = useMutationForm({
+  const { errorHandledRegister, handleSubmit, isPending } = useMutationForm({
     mutationFn: apiClient.auth.login.post,
     onApiSuccess(data) {
       setUser(data);
@@ -68,7 +68,7 @@ export function Login() {
           />
         </Card.Body>
         <Card.Footer flexDirection={"column"}>
-          <Button type="submit" width="full">
+          <Button type="submit" width="full" loading={isPending}>
             Sign In
           </Button>
           <SeparatorWithTitle title="or sign up" />

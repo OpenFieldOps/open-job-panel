@@ -1,7 +1,7 @@
 import { Button, Heading, Spinner, VStack } from "@chakra-ui/react";
+import type React from "react";
 import type { FormEventHandler, PropsWithChildren } from "react";
 import RightContainer from "../container/RightContainer";
-import type React from "react";
 import ConfirmAlertDialog from "../dialog/ConfirmAlertDialog";
 
 type FormTemplateProps = {
@@ -41,7 +41,7 @@ export default function FormTemplate({
       </VStack>
 
       {noData ? (
-        <Heading mb={8} textAlign={"center"}>
+        <Heading mt={2} mb={8} textAlign={"center"}>
           {noData}
         </Heading>
       ) : null}

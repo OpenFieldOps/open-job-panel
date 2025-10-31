@@ -55,7 +55,7 @@ export default function DashboardIncomeStatistics() {
       <Chart.Root maxH="full" chart={chart}>
         <AreaChart
           data={chart.data}
-          margin={{ left: -25, right: 1, top: 10, bottom: 5 }}
+          margin={{ left: -20, right: 1, top: 10, bottom: 5 }}
         >
           <CartesianGrid
             stroke={chart.color("border")}

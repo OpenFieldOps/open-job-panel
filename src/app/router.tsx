@@ -1,5 +1,5 @@
+import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import AdminDashboard from "@/features/admin/pages/AdminDashboard";
 import AdminDashboardSettings from "@/features/admin/pages/AdminDashboardSettings";
 import AdminInvoices from "@/features/admin/pages/AdminInvoices";
 import AdminUsersList from "@/features/admin/pages/AdminUsersList";
@@ -9,10 +9,14 @@ import AuthGuard from "@/features/guard/AuthGuard";
 import RoleGuard from "@/features/guard/RoleGuard";
 import JobList from "@/features/jobs/pages/JobList";
 import JobPage from "@/features/jobs/pages/JobPage";
+import PricingModelsListPage from "@/features/pricing-model/pages/PricingModelsListPage";
 import { RootContainer } from "@/features/Root";
 import Profile from "@/features/user/pages/Profile";
 import Settings from "@/features/user/pages/Settings";
-import PricingModelsListPage from "@/features/pricing-model/pages/PricingModelsListPage";
+
+const AdminDashboard = lazy(
+  () => import("@/features/admin/pages/AdminDashboard")
+);
 
 export const router = createBrowserRouter([
   {

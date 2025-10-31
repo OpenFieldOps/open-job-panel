@@ -1,9 +1,10 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/UserModel";
 import type React from "react";
 import type { ReactNode } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
 import ConfirmAlertDialog from "@/components/dialog/ConfirmAlertDialog";
+import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
 import { apiClient, apiQueryCacheListDelete, ok } from "@/lib/apiClient";
 import { AdminUserCardClientToolBar } from "./AdminUserCardClientToolBar";
@@ -29,9 +30,7 @@ export default function AdminUserCardToolbar({ user }: UserCardProps) {
           deleteUser(user.id, user.role as UserModel.AssignedUserRole);
         }}
       >
-        <Button variant={"outline"} colorPalette={"red"}>
-          Delete
-        </Button>
+        <OutlineTrashIconButton colorPalette={"red"} />
       </ConfirmAlertDialog>
       {UserToolbar}
     </HStack>

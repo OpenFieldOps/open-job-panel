@@ -1,21 +1,22 @@
 import { SelectWithLabel } from "@/components/form/SelectWithLabel";
 import usePricingModelsList from "../hooks/usePricingModelsList";
 
-type PricingModelListSelectProps = {
-  onSelect: (id: number) => void;
+type PricingModelSelectProps = {
+  onSelect: (id: number | null) => void;
   defaultValue?: number;
 };
 
-export function PricingModelListSelect(props: PricingModelListSelectProps) {
+export function PricingModelSelect(props: PricingModelSelectProps) {
   const { data: pricingModels } = usePricingModelsList();
 
   return (
     <SelectWithLabel
-      onSelect={(id) => props.onSelect(Number(id))}
+      onSelect={(id) => {
+        props.onSelect(id === null ? null : Number(id));
+      }}
       items={pricingModels}
       label={"Pricing Models"}
       defaultValue={String(props.defaultValue)}
-      inputProps={{ width: "320px" }}
     />
   );
 }

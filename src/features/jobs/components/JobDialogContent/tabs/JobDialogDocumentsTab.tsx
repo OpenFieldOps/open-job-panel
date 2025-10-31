@@ -5,12 +5,14 @@ import {
   Input,
   Spinner,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import type { FileModel } from "backend/modules/models/FileModel";
 import { Download } from "lucide-react";
 import { useState } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import { OutlineIconButton } from "@/components/buttons/Button";
+import ConfirmAlertDialog from "@/components/dialog/ConfirmAlertDialog";
 import FileInput from "@/components/form/FileInput";
 import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
@@ -32,6 +34,7 @@ function deleteJobFile(jobId: number, fileId: string) {
     .then((res) => {
       if (ok(res)) {
         apiQueryCacheListDelete([QueryCacheKey.JobDocuments, jobId], fileId);
+        toaster.success({ title: "File deleted successfully" });
       }
     });
 }
@@ -60,9 +63,12 @@ function DocumentCard({
           {fileName}
           <HStack gap={2}>
             <WithRole.admin>
-              <OutlineTrashIconButton
-                onClick={() => deleteJobFile(jobId, id)}
-              />
+              <ConfirmAlertDialog
+                title="Delete Document"
+                onConfirm={() => deleteJobFile(jobId, id)}
+              >
+                <OutlineTrashIconButton />
+              </ConfirmAlertDialog>
             </WithRole.admin>
             <DownloadTrigger
               data={data}
@@ -86,21 +92,20 @@ export function JobDialogDocumentsTab({ jobId }: { jobId: number }) {
 
   const [search, setSearch] = useState("");
 
-  if (isLoading) return <Spinner />;
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (file: File) => {
+      const res = await apiClient.job.documents({ jobId }).post({ file });
 
-  const onUploadFile = (file: File) => {
-    apiClient.job
-      .documents({ jobId })
-      .post({ file })
-      .then((res) => {
-        if (ok(res)) {
-          apiQueryCacheListAdd<FileModel.DbFile>(
-            [QueryCacheKey.JobDocuments, jobId],
-            res.data as FileModel.DbFile
-          );
-        }
-      });
-  };
+      if (ok(res)) {
+        apiQueryCacheListAdd<FileModel.DbFile>(
+          [QueryCacheKey.JobDocuments, jobId],
+          res.data as FileModel.DbFile
+        );
+      }
+    },
+  });
+
+  if (isLoading) return <Spinner />;
 
   const filteredDocuments = documents?.filter((doc) =>
     doc.fileName.toLowerCase().includes(search.toLowerCase())
@@ -108,7 +113,7 @@ export function JobDialogDocumentsTab({ jobId }: { jobId: number }) {
 
   return (
     <FormTemplate
-      trigger={<FileInput mt={2} onUpload={onUploadFile} />}
+      trigger={<FileInput mt={2} onUpload={mutate} loading={isPending} />}
       noData={
         !documents || documents.length === 0 ? "No documents found" : undefined
       }

@@ -3,6 +3,7 @@ import type { App } from "backend/main";
 import { type QueryCacheKey, queryClient } from "@/app/queryClient";
 import { appStore } from "@/app/store";
 import { userAtom } from "@/atoms/userAtom";
+import { toaster } from "@/components/ui/contants";
 import type { ApiSucessResponse } from "@/types/api";
 
 type Id = number | string;
@@ -20,6 +21,38 @@ export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
     };
   },
 }).api;
+
+export async function downloadBuffer(
+  path: string,
+  fileName: string,
+  body: string
+) {
+  const user = appStore.get(userAtom);
+
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: user ? user.token : "",
+    },
+    body: body,
+  });
+
+  if (!res.ok) {
+    toaster.error({ title: "Failed to download file" });
+    return;
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+
+  toaster.success({ title: "File downloaded" });
+}
 
 type ApiHttpResponse<T> = {
   status: number;

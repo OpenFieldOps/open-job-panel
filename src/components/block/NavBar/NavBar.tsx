@@ -1,4 +1,4 @@
-import { Alert, Flex, Heading, HStack } from "@chakra-ui/react";
+import { Alert, Flex, HStack } from "@chakra-ui/react";
 import { useIsUserAuthenticated } from "@/atoms/userAtom";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { ButtonLink } from "../../buttons/Button";
@@ -39,7 +39,6 @@ export default function NavBar() {
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} p={4}>
       <HStack gap={4}>
-        <Heading>Planned Service</Heading>
         {isUserAuthenticated ? <UserNotificationMenu /> : null}
       </HStack>
       {isOnline ? (

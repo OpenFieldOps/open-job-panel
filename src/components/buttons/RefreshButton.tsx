@@ -13,7 +13,7 @@ export default function RefreshButton(props: RefreshButtonProps) {
     useIsFetching({
       queryKey: props.queryKey,
     }) > 0;
-  console.log("isLoading", isLoading);
+
   const disabled = props.disabled || isLoading;
   return (
     <IconButton

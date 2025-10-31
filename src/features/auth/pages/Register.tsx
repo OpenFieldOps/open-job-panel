@@ -14,7 +14,7 @@ export default function Register() {
   const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
 
-  const { errorHandledRegister, handleSubmit } = useMutationForm({
+  const { errorHandledRegister, handleSubmit, isPending } = useMutationForm({
     mutationFn: apiClient.auth.register.post,
     onApiSuccess(data) {
       setUser(data);
@@ -80,7 +80,7 @@ export default function Register() {
           />
         </Card.Body>
         <Card.Footer flexDirection={"column"}>
-          <Button type="submit" width="full">
+          <Button type="submit" width="full" loading={isPending}>
             Create Account
           </Button>
           <SeparatorWithTitle title="or sign in" />

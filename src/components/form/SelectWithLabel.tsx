@@ -4,7 +4,7 @@ import {
   useFilter,
   useListCollection,
 } from "@chakra-ui/react";
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import type { Entity } from "@/types/entity";
 
 type SelectProps<T extends Entity> = {
@@ -34,14 +34,28 @@ export function SelectWithLabel<T extends Entity>({
     filter: contains,
   });
 
+  const itemNameMap = useMemo(() => {
+    const map = new Map<string, T>();
+    items.forEach((item) => {
+      map.set(String(item.name), item);
+    });
+    return map;
+  }, [items]);
+
   useEffect(() => {
     set(items);
   }, [items, set]);
+
+  const [inputValue, setInputValue] = useState("");
+
+  const lowerCaseInput = inputValue.toLowerCase();
 
   return (
     <Combobox.Root
       openOnClick
       defaultValue={defaultValue ? [defaultValue] : undefined}
+      inputValue={inputValue}
+      onInputValueChange={(value) => setInputValue(value.inputValue)}
       onSelect={(value) => onSelect(value.value[0])}
       collection={collection}
     >
@@ -72,12 +86,29 @@ export function SelectWithLabel<T extends Entity>({
       <Combobox.Positioner>
         <Combobox.Content>
           <Combobox.Empty>No items found</Combobox.Empty>
-          {collection.items.map((item) => (
-            <Combobox.Item item={item} key={item.id}>
-              {item.name}
+          {collection.items.map((item) =>
+            !lowerCaseInput ||
+            item.name.toLowerCase().includes(lowerCaseInput) ? (
+              <Combobox.Item item={item} key={item.id}>
+                {item.name}
+                <Combobox.ItemIndicator />
+              </Combobox.Item>
+            ) : null
+          )}
+          {lowerCaseInput && !itemNameMap.has(inputValue) && (
+            <Combobox.Item
+              key="__create_new__"
+              item={{ id: "__create_new__", name: inputValue } as T}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log("Create new item:", inputValue);
+              }}
+            >
+              Create "{inputValue}"
               <Combobox.ItemIndicator />
             </Combobox.Item>
-          ))}
+          )}
         </Combobox.Content>
       </Combobox.Positioner>
     </Combobox.Root>

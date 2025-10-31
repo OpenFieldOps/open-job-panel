@@ -23,7 +23,7 @@ export default function PeriodSelectWithLocalStorage({
         setPeriod(newValue);
       }}
       size="sm"
-      width="220px"
+      width="120px"
     >
       <Select.HiddenSelect />
       <Select.Control>
