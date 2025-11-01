@@ -1,13 +1,20 @@
 import { HStack, Input, Separator } from "@chakra-ui/react";
+import type { UserModel } from "backend/modules/user/UserModel";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
+import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import { OutlineButton } from "@/components/buttons/Button";
 import { TriggeredDialog } from "@/components/dialog/ButtonDialog";
 import { FieldWithLabel } from "@/components/form/FieldWithLabel";
 import { toaster } from "@/components/ui/contants";
 import { PricingModelSelect } from "@/features/pricing-model/components/PricingModelSelect";
-import { apiClient, downloadBuffer, ok } from "@/lib/apiClient";
+import {
+  apiClient,
+  apiQueryCacheSingleUpdateList,
+  downloadBuffer,
+  ok,
+} from "@/lib/apiClient";
 import useUser from "../../hooks/useUser";
 
 type UserCardProps = {
@@ -66,6 +73,15 @@ export function AdminUserCardClientToolBar({ userId }: UserCardProps) {
                   toaster.success({
                     title: "Pricing model updated",
                   });
+                  apiQueryCacheSingleUpdateList<UserModel.UserInfo>(
+                    [QueryCacheKey.ClientList],
+                    userId,
+                    (old) =>
+                      ({
+                        ...old,
+                        pricingModel: value,
+                      } as UserModel.UserInfo)
+                  );
                 } else {
                   toaster.error({
                     title: "Failed to update pricing model",

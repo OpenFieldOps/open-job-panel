@@ -79,7 +79,7 @@ export default function useMutationForm<
     const func: UseFormRegister<Inputs> = (...oldArgs) => {
       const args = [
         oldArgs[0],
-        options?.isNumber ? { valueAsNumber: true } : {},
+        options?.isNumber ? { valueAsNumber: true } : oldArgs[1],
       ] as const;
       return register(...args);
     };

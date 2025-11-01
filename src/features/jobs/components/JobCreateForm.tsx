@@ -1,7 +1,6 @@
 import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
-import { useUserId } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
@@ -26,7 +25,6 @@ type JobCreateFormProps = {
 
 function useJobCreate({ onCreated }: JobCreateFormProps) {
   const value = useAtomValue(jobSelectedPeriodAtom);
-  const userId = useUserId();
 
   const {
     handleSubmit,

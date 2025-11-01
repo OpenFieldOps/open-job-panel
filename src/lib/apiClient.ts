@@ -100,6 +100,7 @@ export function apiQueryCacheSingleUpdateList<T extends { id: Id }>(
     if (!oldData) {
       throw new Error("Data not found in cache");
     }
+
     return {
       ...oldData,
       data: oldData.data.map((el) => {

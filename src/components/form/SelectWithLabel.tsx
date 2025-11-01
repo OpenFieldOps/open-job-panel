@@ -14,6 +14,7 @@ type SelectProps<T extends Entity> = {
   defaultValue?: string;
   clearable?: boolean;
   inputProps?: InputProps;
+  creatable?: boolean;
 };
 
 export function SelectWithLabel<T extends Entity>({
@@ -23,11 +24,12 @@ export function SelectWithLabel<T extends Entity>({
   defaultValue,
   clearable = true,
   inputProps = {},
+  creatable = false,
 }: SelectProps<T>) {
   const ref = useRef<HTMLInputElement>(null);
   const { contains } = useFilter({ sensitivity: "base" });
 
-  const { collection, set } = useListCollection<T>({
+  const { collection, set, filter } = useListCollection<T>({
     initialItems: items,
     itemToString: (item) => item.name,
     itemToValue: (item) => String(item.id),
@@ -55,7 +57,10 @@ export function SelectWithLabel<T extends Entity>({
       openOnClick
       defaultValue={defaultValue ? [defaultValue] : undefined}
       inputValue={inputValue}
-      onInputValueChange={(value) => setInputValue(value.inputValue)}
+      onInputValueChange={(value) => {
+        filter(value.inputValue);
+        setInputValue(value.inputValue);
+      }}
       onSelect={(value) => onSelect(value.value[0])}
       collection={collection}
     >
@@ -86,16 +91,13 @@ export function SelectWithLabel<T extends Entity>({
       <Combobox.Positioner>
         <Combobox.Content>
           <Combobox.Empty>No items found</Combobox.Empty>
-          {collection.items.map((item) =>
-            !lowerCaseInput ||
-            item.name.toLowerCase().includes(lowerCaseInput) ? (
-              <Combobox.Item item={item} key={item.id}>
-                {item.name}
-                <Combobox.ItemIndicator />
-              </Combobox.Item>
-            ) : null
-          )}
-          {lowerCaseInput && !itemNameMap.has(inputValue) && (
+          {collection.items.map((item) => (
+            <Combobox.Item item={item} key={item.id}>
+              {item.name}
+              <Combobox.ItemIndicator />
+            </Combobox.Item>
+          ))}
+          {creatable && lowerCaseInput && !itemNameMap.has(inputValue) && (
             <Combobox.Item
               key="__create_new__"
               item={{ id: "__create_new__", name: inputValue } as T}

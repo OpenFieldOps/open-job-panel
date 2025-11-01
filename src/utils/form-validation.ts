@@ -25,8 +25,8 @@ export const formValidation: Record<
     required: { value: true, message: "Username required" },
     minLength: { value: 3, message: "Min 3 characters" },
     pattern: {
-      value: /^[a-zA-Z0-9_]+$/,
       message: "Username can only contain letters, numbers, and underscores",
+      value: /^[a-zA-Z0-9_]+$/,
     },
   },
   email: {

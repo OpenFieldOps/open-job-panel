@@ -29,11 +29,11 @@ export default function FormTemplate({
   noData = undefined,
 }: FormTemplateProps) {
   return (
-    <form onSubmit={onSubmit} style={{ width: "100%", maxHeight: "72vh" }}>
+    <form onSubmit={onSubmit} style={{ width: "100%", maxHeight: "80vh" }}>
       <VStack
         gap={4}
         overflowY={scrollable ? "auto" : undefined}
-        maxH={scrollable ? "50vh" : undefined}
+        maxH={scrollable ? "60vh" : undefined}
         w={"full"}
       >
         {title && <Heading size="md">{title}</Heading>}

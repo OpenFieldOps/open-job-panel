@@ -65,8 +65,6 @@ setInterval(() => {
 // Atom derive
 const isUserAuthenticatedAtom = atom((get) => !!get(userAtom));
 
-const userIdAtom = atom((get) => get(userAtom)?.user.id as number);
-
 const userRoleAtom = atom((get) => {
   return get(userAtom)?.user.role as UserModel.UserRole;
 });
@@ -74,8 +72,6 @@ const userRoleAtom = atom((get) => {
 // React Hooks
 export const useIsUserAuthenticated = () =>
   useAtomValue(isUserAuthenticatedAtom);
-
-export const useUserId = () => useAtomValue(userIdAtom);
 
 export const useUserIs = (role: UserModel.UserRole) => {
   return useAtomValue(userRoleAtom) === role;

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Box,
   Combobox,
@@ -7,11 +6,12 @@ import {
   useListCollection,
 } from "@chakra-ui/react";
 import { MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   getAutoCompletionLocalisation,
   type LocationProperty,
 } from "@/lib/apiLocation";
-import { useDebounce } from "@/hooks/useDebounce";
 
 interface LocationSelectProps {
   value?: string;
@@ -114,25 +114,23 @@ export default function LocationSelect({
       <Combobox.Positioner>
         <Combobox.Content>
           {results.length > 0 ? (
-            <>
-              {results.map((result) => (
-                <Combobox.Item key={result.citycode} item={result}>
-                  <Box display="flex" alignItems="center" gap="2" width="full">
-                    <MapPin size={16} />
-                    <Text
-                      flex="1"
-                      fontSize="sm"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      whiteSpace="nowrap"
-                    >
-                      {result.label}
-                    </Text>
-                  </Box>
-                  <Combobox.ItemIndicator />
-                </Combobox.Item>
-              ))}
-            </>
+            results.map((result) => (
+              <Combobox.Item key={result.citycode} item={result}>
+                <Box display="flex" alignItems="center" gap="2" width="full">
+                  <MapPin size={16} />
+                  <Text
+                    flex="1"
+                    fontSize="sm"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                  >
+                    {result.label}
+                  </Text>
+                </Box>
+                <Combobox.ItemIndicator />
+              </Combobox.Item>
+            ))
           ) : inputValue.length >= 4 && !isLoading ? (
             <Combobox.Empty>
               <Text fontSize="sm" color="gray.500">

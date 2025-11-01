@@ -1,7 +1,7 @@
-import { Box, Flex, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React from "react";
 import { BuildQueryCacheKey, QueryCacheKey } from "@/app/queryClient";
 import { useUserIsNot } from "@/atoms/userAtom";
 import Calendar from "@/components/block/Calendar/EventCalendar";
@@ -9,7 +9,6 @@ import AddButton from "@/components/buttons/AddButton";
 import RefreshButton from "@/components/buttons/RefreshButton";
 import PageContainer from "@/components/container/PageContainer";
 import { WithRole } from "@/features/guard/WithRole";
-import OperatorSelect from "@/features/operator/components/OperatorSelect";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { setQueryDataIfNotExist } from "@/lib/apiClient";
 import JobCreateModalTrigger from "../components/JobCreateModalTrigger";
@@ -53,18 +52,23 @@ const JobCalendar = React.memo(
     const isNotAdmin = useUserIsNot("admin");
 
     const AddIntervention = (
-      <WithRole.admin>
-        <JobCreateModalTrigger>
-          <AddButton />
-        </JobCreateModalTrigger>
-      </WithRole.admin>
+      <>
+        <RefreshButton queryKey={getJobsListKey()} />
+        <WithRole.admin>
+          <JobCreateModalTrigger>
+            <AddButton />
+          </JobCreateModalTrigger>
+        </WithRole.admin>
+      </>
     );
 
     return (
       <Calendar
         displayDate={!isMobile}
         rightToolbar={!isMobile ? AddIntervention : undefined}
-        leftToolbar={isMobile ? AddIntervention : undefined}
+        leftToolbar={
+          isMobile ? AddIntervention : <Heading>Jobs Calendar: </Heading>
+        }
         isOneDay={isMobile}
         isReadOnly={isNotAdmin}
         events={jobs}
@@ -96,50 +100,10 @@ const JobCalendar = React.memo(
 export default function JobListPage() {
   const { openJob, JobEdit } = useJobModal();
   const { jobs, setPeriod } = useJobList();
-  const [selectedOperator, setSelectedOperator] = useState<number | null>(null);
-
-  const filteredJobs = selectedOperator
-    ? jobs.filter((job) => job.extendedProps.assignedTo === selectedOperator)
-    : jobs;
 
   return (
-    <PageContainer
-      toolbar={{
-        title: "Jobs",
-        noTitleOnMobile: true,
-        toolbar: (
-          <Flex
-            minW={{
-              md: "full",
-              base: "full",
-            }}
-            gap={2}
-            justifyContent={{
-              md: "flex-end",
-              base: "space-between",
-            }}
-          >
-            <WithRole.admin>
-              <Box>
-                <OperatorSelect
-                  onChange={setSelectedOperator}
-                  inputProps={{
-                    placeholder: "Select Operator",
-                  }}
-                />
-              </Box>
-            </WithRole.admin>
-
-            <RefreshButton queryKey={getJobsListKey()} />
-          </Flex>
-        ),
-      }}
-    >
-      <JobCalendar
-        onJobClick={openJob}
-        jobs={filteredJobs}
-        setPeriod={setPeriod}
-      />
+    <PageContainer>
+      <JobCalendar onJobClick={openJob} jobs={jobs} setPeriod={setPeriod} />
       {JobEdit}
     </PageContainer>
   );
