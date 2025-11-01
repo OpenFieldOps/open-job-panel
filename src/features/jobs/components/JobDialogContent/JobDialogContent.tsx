@@ -1,10 +1,11 @@
 import { Tabs } from "@chakra-ui/react";
-import { Edit, Folder, SquareCheck } from "lucide-react";
+import { Edit, Folder, SquareCheck, Users } from "lucide-react";
 import { WithRole } from "@/features/guard/WithRole";
 import OperatorJobEditForm from "@/features/operator/components/OperatorJobEdit";
 import { JobEditForm } from "../JobEditForm";
 import { JobDialogDocumentsTab } from "./tabs/JobDialogDocumentsTab";
 import { JobDialogTasksTab } from "./tabs/JobDialogTaskTab";
+import { JobDialogAssignementTab } from "./tabs/JobDialogAssignmentTab";
 
 type JobDialogContantProps = {
   jobId: number;
@@ -22,6 +23,10 @@ export default function JobDialogContent({
           <Edit />
           Edit
         </Tabs.Trigger>
+        <Tabs.Trigger value="assignment">
+          <Users />
+          Assignments
+        </Tabs.Trigger>
         <Tabs.Trigger value="documents">
           <Folder />
           Documents
@@ -35,9 +40,15 @@ export default function JobDialogContent({
         <WithRole.admin>
           <JobEditForm jobId={jobId} onSave={onSave} />
         </WithRole.admin>
+
         <WithRole.operator>
           <OperatorJobEditForm jobId={jobId} onSave={onSave} />
         </WithRole.operator>
+      </Tabs.Content>
+      <Tabs.Content value="assignment">
+        <WithRole.admin>
+          <JobDialogAssignementTab jobId={jobId} />
+        </WithRole.admin>
       </Tabs.Content>
       <Tabs.Content value="documents">
         <JobDialogDocumentsTab jobId={jobId} />

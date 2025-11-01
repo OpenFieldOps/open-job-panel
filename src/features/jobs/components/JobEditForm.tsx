@@ -5,13 +5,13 @@ import FormTemplate from "@/components/block/FormTemplate";
 import { FieldWithLabel } from "@/components/form/FieldWithLabel";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
-import ClientSelect from "@/features/admin/components/ClientSelect";
-import OperatorSelect from "@/features/operator/components/OperatorSelect";
 import useMutationForm from "@/hooks/useMutationForm";
 import { areObjectLeftKeysEqual } from "@/utils/object";
 import useJob from "../hooks/useJob";
 import { deleteJob, updateJob } from "../query";
 import { JobStatusStep } from "./JobStatusStep";
+import LocationSelect from "@/components/form/LocationSelect";
+import { Controller } from "react-hook-form";
 
 type JobEditFormProps = {
   jobId: number;
@@ -33,19 +33,13 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
     setValue,
     isPending,
     getAllValues,
+    control,
   } = useMutationForm({
-    defaultValues: {
-      assignedTo: job?.assignedTo,
-      assignedClient: job?.assignedClient,
-    } as Inputs,
     mutationFn: (input: Inputs) => {
       const allValues = getAllValues() as Inputs;
       const transformedInput: JobUpdateBodyWithNull = {
         ...input,
         ...allValues,
-        // Convertir undefined en null pour que l'API puisse mettre à NULL dans la DB
-        assignedTo: allValues.assignedTo ?? null,
-        assignedClient: allValues.assignedClient ?? null,
         startDate: input.startDate
           ? dayjs(input.startDate).toISOString()
           : input.startDate,
@@ -85,12 +79,16 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
         placeholder="Job description"
         {...errorHandledRegister("description")}
       />
-      <InputWithLabel
-        defaultValue={job.location}
-        label="Location"
-        placeholder="Job location"
-        {...errorHandledRegister("location")}
-      />
+      <FieldWithLabel label="Location">
+        <Controller
+          name="location"
+          control={control}
+          defaultValue={job.location}
+          render={({ field }) => (
+            <LocationSelect value={field.value} onChange={field.onChange} />
+          )}
+        />
+      </FieldWithLabel>
       <HStack w={"full"} gap={4}>
         <InputWithLabel
           type="datetime-local"
@@ -109,7 +107,7 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
           {...errorHandledRegister("endDate")}
         />
       </HStack>
-      <HStack w={"full"} justifyContent="space-between" alignItems={"center"}>
+      {/* <HStack w={"full"} justifyContent="space-between" alignItems={"center"}>
         <FieldWithLabel label="Operator">
           <OperatorSelect
             clearable={false}
@@ -123,7 +121,7 @@ export function JobEditForm({ jobId, onSave }: JobEditFormProps) {
             defaultValue={job.assignedClient || 0}
           />
         </FieldWithLabel>
-      </HStack>
+      </HStack> */}
 
       <JobStatusStep
         onChange={(status) => setValue("status", status)}

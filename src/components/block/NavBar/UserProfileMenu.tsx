@@ -28,11 +28,11 @@ type MenuLink = {
 };
 const userLinks: MenuLink[] = [
   { label: "Profile", path: "/private/profile" },
-  { label: "Settings", path: "/private/settings" },
+  // { label: "Settings", path: "/private/settings" },
 ];
 
 const adminLinks: MenuLink[] = [
-  { label: "Invoices", path: "/private/admin/invoices" },
+  // { label: "Invoices", path: "/private/admin/invoices" },
   { label: "Dashboard", path: "/private/admin/dashboard" },
   { label: "Pricing Models", path: "/private/admin/pricing-models" },
   { label: "Users", path: "/private/admin/users/operator" },

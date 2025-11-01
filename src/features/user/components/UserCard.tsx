@@ -36,7 +36,7 @@ export function UserCard({
         <Card.Description p={0} m={0}>
           {lastSeen ? (
             <span>
-              <strong>Last Seen:</strong>
+              <strong>Last Seen: </strong>
               {dayjs(lastSeen).format("DD MMM YYYY, HH:mm")}
             </span>
           ) : (
@@ -52,6 +52,34 @@ export function UserCard({
           {toolbar}
         </HStack>
       </Card.Body>
+    </Card.Root>
+  );
+}
+
+export function UserCardMinimal({
+  firstName,
+  lastName,
+  avatar,
+  right,
+}: {
+  firstName: string;
+  lastName: string;
+  avatar?: string | null;
+  right?: React.ReactNode;
+}) {
+  return (
+    <Card.Root p={4} w={"full"}>
+      <HStack justifyContent={"space-between"}>
+        <HStack>
+          <UserAvatar
+            size={"sm"}
+            cursor={"pointer"}
+            userInfo={{ firstName, lastName, avatar }}
+          />
+          <span>{`${firstName} ${lastName}`}</span>
+        </HStack>
+        {right}
+      </HStack>
     </Card.Root>
   );
 }

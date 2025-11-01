@@ -11,10 +11,13 @@ import { apiClient, apiQueryCacheListUpdate } from "@/lib/apiClient";
 import { jobAsCalendarEvent, jobSelectedPeriodAtom } from "../atoms";
 import type { JobEventCalendar } from "../hooks/useJobList";
 import { getJobsListKey } from "../query";
+import { Checkbox, HStack } from "@chakra-ui/react";
+import { Controller } from "react-hook-form";
 
 type Inputs = {
   title: string;
   description: string;
+  broadcast: boolean;
 };
 
 type JobCreateFormProps = {
@@ -30,11 +33,13 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
     errorHandledRegister,
     formState: { errors },
     isPending,
+    control,
   } = useMutationForm({
-    mutationFn: ({ title, description }: Inputs) => {
+    mutationFn: ({ title, description, broadcast }: Inputs) => {
       return apiClient.job.post({
         title,
         description,
+        broadcast: broadcast,
         startDate: dayjs(value.start)
           .startOf("day")
           .set("hour", 9)
@@ -43,7 +48,7 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
           .startOf("day")
           .set("hour", 14)
           .toISOString(),
-        assignedTo: userId,
+        operatorIds: [],
       });
     },
     onApiSuccess(data) {
@@ -67,11 +72,12 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
     errors,
     handleSubmit,
     isPending,
+    control,
   };
 }
 
 export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
-  const { register, errors, handleSubmit, isPending } = useJobCreate({
+  const { register, errors, handleSubmit, isPending, control } = useJobCreate({
     onCreated,
   });
 
@@ -87,12 +93,29 @@ export default function JobCreateForm({ onCreated }: JobCreateFormProps) {
         {...register("title")}
         error={errors.title?.type}
       />
+
       <TextAreaWithLabel
         label="Description"
         placeholder="Job description"
         {...register("description")}
         error={errors.description?.type}
       />
+      <HStack justifyContent={"flex-start"} w={"full"}>
+        <Controller
+          name="broadcast"
+          control={control}
+          render={({ field }) => (
+            <Checkbox.Root
+              onCheckedChange={() => field.onChange(!field.value)}
+              checked={field.value}
+            >
+              <Checkbox.HiddenInput />
+              <Checkbox.Control />
+              <Checkbox.Label>Broadcast ?</Checkbox.Label>
+            </Checkbox.Root>
+          )}
+        />
+      </HStack>
     </FormTemplate>
   );
 }
