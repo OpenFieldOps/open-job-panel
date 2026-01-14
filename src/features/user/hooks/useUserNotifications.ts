@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { UserNotificationModel } from "backend/modules/notification/NotificationModel";
 import { QueryCacheKey } from "@/app/queryClient";
+import { toaster } from "@/components/ui/contants";
 import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
 
 export default function useUserNotifications() {
@@ -8,15 +9,16 @@ export default function useUserNotifications() {
     queryKey: [QueryCacheKey.Notifications],
     queryFn: async () => await apiClient.notification.get(),
     refetchOnMount: true,
-    refetchInterval: 10000 * 3, // Refetch every 30 seconds
+    refetchInterval: 10000 * 3,
   });
+
   const haveNewNotifications = data?.data?.some(
     (notification) => !notification.isRead
   );
+
   const readAllNotifications = async () => {
     const response = await apiClient.notification.read.put();
     if (ok(response)) {
-      // Invalidate the query to refetch notifications
       apiQueryCacheListUpdate<UserNotificationModel.UserNotification[]>(
         [QueryCacheKey.Notifications],
         (oldData) => {
@@ -26,6 +28,9 @@ export default function useUserNotifications() {
           }));
         }
       );
+      toaster.success({
+        title: "All notifications marked as read",
+      });
     }
   };
   return {

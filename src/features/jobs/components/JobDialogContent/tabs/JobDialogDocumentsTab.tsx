@@ -1,9 +1,9 @@
 import {
-  Card,
-  DownloadTrigger,
-  HStack,
-  Input,
-  Spinner,
+	Card,
+	DownloadTrigger,
+	HStack,
+	Input,
+	Spinner,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import type { FileModel } from "backend/modules/models/FileModel";
@@ -19,120 +19,128 @@ import { toaster } from "@/components/ui/contants";
 import { WithRole } from "@/features/guard/WithRole";
 import { useJobDocuments } from "@/features/jobs/hooks/useJobDocument";
 import {
-  apiClient,
-  apiQueryCacheListAdd,
-  apiQueryCacheListDelete,
-  ok,
+	apiClient,
+	apiQueryCacheListAdd,
+	apiQueryCacheListDelete,
+	ok,
 } from "@/lib/apiClient";
 
 function deleteJobFile(jobId: number, fileId: string) {
-  apiClient.job["delete-document"]
-    .delete({
-      fileId,
-      jobId,
-    })
-    .then((res) => {
-      if (ok(res)) {
-        apiQueryCacheListDelete([QueryCacheKey.JobDocuments, jobId], fileId);
-        toaster.success({ title: "File deleted successfully" });
-      }
-    });
+	apiClient.job["delete-document"]
+		.delete({
+			fileId,
+			jobId,
+		})
+		.then((res) => {
+			if (ok(res)) {
+				apiQueryCacheListDelete([QueryCacheKey.JobDocuments, jobId], fileId);
+				toaster.success({ title: "File deleted successfully" });
+			}
+		});
 }
 
 function DocumentCard({
-  fileName,
-  id,
-  jobId,
+	fileName,
+	id,
+	jobId,
 }: FileModel.DbFile & { jobId: number }) {
-  const data = async () => {
-    const res = await apiClient.file({ id }).get();
+	const data = async () => {
+		const res = await apiClient.file({ id }).get();
 
-    if (ok(res)) {
-      const fetchResult = await fetch(res.data as string);
-      if (ok(fetchResult)) {
-        return fetchResult.blob();
-      }
-    }
-    toaster.error({ title: "unable to download the file" });
-    return undefined as never;
-  };
-  return (
-    <Card.Root w={"full"} size="sm">
-      <Card.Body color="fg.muted">
-        <HStack gap={4} justify={"space-between"}>
-          {fileName}
-          <HStack gap={2}>
-            <WithRole.admin>
-              <ConfirmAlertDialog
-                title="Delete Document"
-                onConfirm={() => deleteJobFile(jobId, id)}
-              >
-                <OutlineTrashIconButton />
-              </ConfirmAlertDialog>
-            </WithRole.admin>
-            <DownloadTrigger
-              data={data}
-              fileName={fileName}
-              mimeType="image/jpeg"
-              asChild
-            >
-              <OutlineIconButton>
-                <Download />
-              </OutlineIconButton>
-            </DownloadTrigger>
-          </HStack>
-        </HStack>
-      </Card.Body>
-    </Card.Root>
-  );
+		if (ok(res)) {
+			const fetchResult = await fetch(res.data as string);
+			if (ok(fetchResult)) {
+				return fetchResult.blob();
+			}
+		}
+		toaster.error({ title: "unable to download the file" });
+		return undefined as never;
+	};
+	return (
+		<Card.Root w={"full"} size="sm">
+			<Card.Body color="fg.muted">
+				<HStack gap={4} justify={"space-between"}>
+					{fileName}
+					<HStack gap={2}>
+						<WithRole.admin>
+							<ConfirmAlertDialog
+								title="Delete Document"
+								onConfirm={() => deleteJobFile(jobId, id)}
+							>
+								<OutlineTrashIconButton />
+							</ConfirmAlertDialog>
+						</WithRole.admin>
+						<DownloadTrigger
+							data={data}
+							fileName={fileName}
+							mimeType="image/jpeg"
+							asChild
+						>
+							<OutlineIconButton>
+								<Download />
+							</OutlineIconButton>
+						</DownloadTrigger>
+					</HStack>
+				</HStack>
+			</Card.Body>
+		</Card.Root>
+	);
 }
 
 export function JobDialogDocumentsTab({ jobId }: { jobId: number }) {
-  const { documents, isLoading } = useJobDocuments({ jobId });
+	const { documents, isLoading } = useJobDocuments({ jobId });
 
-  const [search, setSearch] = useState("");
+	const [search, setSearch] = useState("");
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (file: File) => {
-      const res = await apiClient.job.documents({ jobId }).post({ file });
+	const { mutate, isPending } = useMutation({
+		mutationFn: async (file: File) => {
+			const res = await apiClient.job.documents({ jobId }).post({ file });
 
-      if (ok(res)) {
-        apiQueryCacheListAdd<FileModel.DbFile>(
-          [QueryCacheKey.JobDocuments, jobId],
-          res.data as FileModel.DbFile
-        );
-      }
-    },
-  });
+			if (ok(res)) {
+				apiQueryCacheListAdd<FileModel.DbFile>(
+					[QueryCacheKey.JobDocuments, jobId],
+					res.data as FileModel.DbFile,
+				);
+				toaster.success({ title: "File uploaded successfully" });
+			}
+		},
+	});
 
-  if (isLoading) return <Spinner />;
+	if (isLoading) return <Spinner />;
 
-  const filteredDocuments = documents?.filter((doc) =>
-    doc.fileName.toLowerCase().includes(search.toLowerCase())
-  );
+	const filteredDocuments = documents?.filter((doc) =>
+		doc.fileName.toLowerCase().includes(search.toLowerCase()),
+	);
 
-  return (
-    <FormTemplate
-      trigger={<FileInput mt={2} onUpload={mutate} loading={isPending} />}
-      noData={
-        !documents || documents.length === 0 ? "No documents found" : undefined
-      }
-      scrollable
-    >
-      <Input
-        id="job-documents-search"
-        placeholder="Search documents"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      {filteredDocuments?.map((el) => (
-        <DocumentCard
-          key={el.id}
-          jobId={jobId}
-          fileName={el.fileName}
-          id={el.id}
-        />
-      ))}
-    </FormTemplate>
-  );
+	return (
+		<FormTemplate
+			trigger={
+				<FileInput
+					accept={["image/*", "application/*", "text/*"]}
+					mt={2}
+					onUpload={mutate}
+					loading={isPending}
+				/>
+			}
+			noData={
+				!documents || documents.length === 0 ? "No documents found" : undefined
+			}
+			scrollable
+		>
+			<Input
+				id="job-documents-search"
+				placeholder="Search documents"
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+			/>
+			{filteredDocuments?.map((el) => (
+				<DocumentCard
+					key={el.id}
+					jobId={jobId}
+					fileName={el.fileName}
+					id={el.id}
+				/>
+			))}
+		</FormTemplate>
+	);
 }

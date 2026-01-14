@@ -2,8 +2,8 @@ import type { UseDialogReturn } from "@chakra-ui/react";
 import type { PricingModel } from "backend/modules/pricing-model/PricingModelModel";
 import { DialogContent } from "@/components/dialog/ButtonDialog";
 import { toaster } from "@/components/ui/contants";
-import { apiClient } from "@/lib/apiClient";
 import PricingModelForm from "./PricingModelForm";
+import { apiClient } from "@/lib/apiClient";
 
 type PricingModelEditModalProps = {
   dialog: UseDialogReturn;
@@ -30,12 +30,14 @@ export default function PricingModelEditModal({
           });
           dialog.setOpen(false);
         }}
-        mutationFn={async (data) =>
-          apiClient["pricing-model"]({ id: model.id }).patch({
+        mutationFn={async (data) => {
+          return await apiClient["pricing-model"]({ id: model.id }).patch({
             id: model.id,
-            ...data,
-          })
-        }
+            baseRate: data.baseRate,
+            name: data.name,
+            ranges: data.ranges,
+          });
+        }}
       />
     </DialogContent>
   );

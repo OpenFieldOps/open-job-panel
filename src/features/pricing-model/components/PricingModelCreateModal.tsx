@@ -27,7 +27,9 @@ export default function PricingModelCreateModal({
           });
           dialog.setOpen(false);
         }}
-        mutationFn={(data) => apiClient["pricing-model"].post(data)}
+        mutationFn={(data) => {
+          return apiClient["pricing-model"].post(data);
+        }}
       />
     </TriggeredDialog>
   );

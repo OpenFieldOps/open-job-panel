@@ -1,75 +1,75 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on",
-        "recommended": true
-      }
-    },
-    "enabled": true
-  },
-  "files": {
-    "ignoreUnknown": false
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "tab"
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "double"
-    }
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "a11y": "error",
-      "complexity": {
-        "noStaticOnlyClass": "off"
-      },
+	"$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on",
+				"recommended": true
+			}
+		},
+		"enabled": true
+	},
+	"files": {
+		"ignoreUnknown": false
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"a11y": "error",
+			"complexity": {
+				"noStaticOnlyClass": "off"
+			},
 
-      "performance": {
-        "recommended": true
-      },
-      "recommended": true,
-      "style": {
-        "noNamespace": "off",
-        "noUnusedTemplateLiteral": "warn",
-        "noUselessElse": "warn",
-        "useConst": "warn",
-        "useEnumInitializers": "error",
-        "useNamingConvention": {
-          "level": "error",
-          "options": {
-            "conventions": [
-              {
-                "selector": {
-                  "kind": "variable"
-                },
-                "formats": ["camelCase", "CONSTANT_CASE", "PascalCase"]
-              },
-              {
-                "selector": {
-                  "kind": "function"
-                },
-                "formats": ["camelCase", "PascalCase"]
-              },
-              {
-                "selector": {
-                  "kind": "objectLiteralProperty"
-                },
-                "formats": ["camelCase", "PascalCase"]
-              }
-            ]
-          }
-        }
-      }
-    }
-  },
-  "vcs": {
-    "clientKind": "git",
-    "enabled": false,
-    "useIgnoreFile": false
-  }
+			"performance": {
+				"recommended": true
+			},
+			"recommended": true,
+			"style": {
+				"noNamespace": "off",
+				"noUnusedTemplateLiteral": "error",
+				"noUselessElse": "error",
+				"useConst": "error",
+				"useEnumInitializers": "error",
+				"useNamingConvention": {
+					"level": "error",
+					"options": {
+						"conventions": [
+							{
+								"selector": {
+									"kind": "variable"
+								},
+								"formats": ["camelCase", "CONSTANT_CASE", "PascalCase"]
+							},
+							{
+								"selector": {
+									"kind": "function"
+								},
+								"formats": ["camelCase", "PascalCase"]
+							},
+							{
+								"selector": {
+									"kind": "objectLiteralProperty"
+								},
+								"formats": ["camelCase", "PascalCase"]
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"vcs": {
+		"clientKind": "git",
+		"enabled": false,
+		"useIgnoreFile": false
+	}
 }

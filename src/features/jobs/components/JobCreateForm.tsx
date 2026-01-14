@@ -1,17 +1,22 @@
+import { Checkbox, HStack } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/JobModel";
 import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
+import { Controller } from "react-hook-form";
+import { QueryCacheKey } from "@/app/queryClient";
 import FormTemplate from "@/components/block/FormTemplate";
 import InputWithLabel from "@/components/form/InputWithLabel";
 import TextAreaWithLabel from "@/components/form/TextAreaWithLabel";
 import { toaster } from "@/components/ui/contants";
 import useMutationForm from "@/hooks/useMutationForm";
-import { apiClient, apiQueryCacheListUpdate } from "@/lib/apiClient";
+import {
+  apiClient,
+  apiQueryCacheListAdd,
+  apiQueryCacheListUpdate,
+} from "@/lib/apiClient";
 import { jobAsCalendarEvent, jobSelectedPeriodAtom } from "../atoms";
 import type { JobEventCalendar } from "../hooks/useJobList";
 import { getJobsListKey } from "../query";
-import { Checkbox, HStack } from "@chakra-ui/react";
-import { Controller } from "react-hook-form";
 
 type Inputs = {
   title: string;
@@ -50,7 +55,7 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
       });
     },
     onApiSuccess(data) {
-      const job: JobModel.Job = data;
+      const job: JobModel.Job = data.job;
       apiQueryCacheListUpdate(
         getJobsListKey(),
         (oldData: JobEventCalendar[]) => [
@@ -58,6 +63,8 @@ function useJobCreate({ onCreated }: JobCreateFormProps) {
           jobAsCalendarEvent(job, oldData.length),
         ]
       );
+
+      apiQueryCacheListAdd([QueryCacheKey.ChatList], data.chat);
       toaster.success({
         title: "Job created",
       });

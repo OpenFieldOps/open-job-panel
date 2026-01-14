@@ -5,6 +5,7 @@ import AdminInvoices from "@/features/admin/pages/AdminInvoices";
 import AdminUsersList from "@/features/admin/pages/AdminUsersList";
 import { Login } from "@/features/auth/pages/Login";
 import Register from "@/features/auth/pages/Register";
+import ChatPage from "@/features/chat/components/ChatPage";
 import AuthGuard from "@/features/guard/AuthGuard";
 import RoleGuard from "@/features/guard/RoleGuard";
 import JobList from "@/features/jobs/pages/JobList";
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
           {
             path: "settings",
             element: <Settings />,
+          },
+          {
+            path: "chat/:id",
+            element: <ChatPage />,
           },
           {
             path: "jobs",

@@ -4,6 +4,7 @@ import { Upload } from "lucide-react";
 type FileInputProps = {
   onUpload: (file: File) => void;
   loading?: boolean;
+  accept: FileUpload.FileMimeType[];
 } & FileUploadRootProps;
 
 export default function FileInput({
@@ -21,7 +22,6 @@ export default function FileInput({
       onFileChange={(file) => onFileAccept(file.acceptedFiles)}
       maxFiles={10}
       w={"fit"}
-      accept={["image/png"]}
       {...props}
     >
       <FileUpload.HiddenInput />

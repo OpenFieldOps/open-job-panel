@@ -13,7 +13,7 @@ docker-build-no-cache:
 docker-push:
 	cp ./docker/Dockerfile ./
 	docker buildx build \
-		--platform linux/amd64,linux/arm64/v8 \
+		--platform linux/amd64 \
 		--pull \
 		--tag suleymanrs/$(NAME):latest \
 		--push \

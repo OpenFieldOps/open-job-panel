@@ -24,8 +24,10 @@ export default function PageContainer({
       pb={4}
       maxW={"100%"}
       h={"full"}
-      maxH={"100%"}
+      minH={"full"}
+      maxH={"full"}
       w={"full"}
+      flex={1}
     >
       {isCard ? (
         <Card.Root w={fullCard ? "full" : undefined} p={6}>

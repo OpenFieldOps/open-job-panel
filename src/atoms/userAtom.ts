@@ -20,7 +20,6 @@ function fetchUserFromLocalStorage(): UserAuth | null {
 
   if (content) {
     currentUser = JSON.parse(content);
-    setTimeout(refreshUser, 250);
   }
   return currentUser;
 }
@@ -38,7 +37,7 @@ async function refreshUser() {
 
   try {
     const response = await apiClient.auth.me.get();
-    if (ok(response) && response.data) {
+    if (ok(response)) {
       appStore.set(userAtom, (user) =>
         user ? { token: user.token, user: response.data } : null
       );

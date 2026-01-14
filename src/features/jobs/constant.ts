@@ -1,9 +1,11 @@
+import type { ColorPalette } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/JobModel";
 
 type JobStatusInfo = {
   title: string;
   status: JobModel.JobStatusString;
   description?: string;
+  color: ColorPalette;
 };
 
 export const jobStatusInfo: JobStatusInfo[] = [
@@ -11,21 +13,25 @@ export const jobStatusInfo: JobStatusInfo[] = [
     status: "scheduled",
     title: "Scheduled",
     description: "The Job is scheduled and waiting to start.",
+    color: "blue",
   },
   {
     status: "pending",
     title: "Pending",
     description: "The Job is pending and awaiting action.",
+    color: "orange",
   },
   {
     status: "inProgress",
     title: "In Progress",
     description: "The Job is currently in progress.",
+    color: "yellow",
   },
   {
     status: "completed",
     title: "Completed",
     description: "The Job has been completed successfully.",
+    color: "green",
   },
 ];
 

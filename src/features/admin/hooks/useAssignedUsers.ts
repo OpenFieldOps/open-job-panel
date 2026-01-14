@@ -6,15 +6,16 @@ import { apiClient } from "@/lib/apiClient";
 
 type UseAssignedUsersOptions = {
   enabled?: boolean;
-  role: UserModel.UserRole;
+  role: UserModel.UserRole | "any";
   refetchInterval?: number;
 } & DefaultOptions;
 
-const userRoleQueryCacheKey: Map<UserModel.UserRole, QueryCacheKey> = new Map();
+const userRoleQueryCacheKey: Map<UserModel.UserRole | "any", QueryCacheKey> = new Map();
 
 userRoleQueryCacheKey.set("operator", QueryCacheKey.OperatorList);
 userRoleQueryCacheKey.set("supervisor", QueryCacheKey.SupervisorList);
 userRoleQueryCacheKey.set("client", QueryCacheKey.ClientList);
+userRoleQueryCacheKey.set("any", QueryCacheKey.AnyUserList);
 
 export default function useAssignedUsers({
   enabled = true,

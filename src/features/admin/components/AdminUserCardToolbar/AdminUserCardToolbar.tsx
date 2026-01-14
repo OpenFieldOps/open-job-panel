@@ -1,8 +1,11 @@
 import { HStack } from "@chakra-ui/react";
 import type { UserModel } from "backend/modules/user/UserModel";
+import { MessageSquareText } from "lucide-react";
 import type React from "react";
 import type { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 import { QueryCacheKey } from "@/app/queryClient";
+import { OutlineIconButton } from "@/components/buttons/Button";
 import ConfirmAlertDialog from "@/components/dialog/ConfirmAlertDialog";
 import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
@@ -32,6 +35,11 @@ export default function AdminUserCardToolbar({ user }: UserCardProps) {
       >
         <OutlineTrashIconButton colorPalette={"red"} />
       </ConfirmAlertDialog>
+      <NavLink to={`/private/chat/${user.chatId}`}>
+        <OutlineIconButton>
+          <MessageSquareText />
+        </OutlineIconButton>
+      </NavLink>
       {UserToolbar}
     </HStack>
   );

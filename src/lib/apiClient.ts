@@ -12,150 +12,165 @@ export type AppCacheKey = [QueryCacheKey, ...unknown[]];
 
 // @ts-expect-error FIXME: elysiajs/eden types are broken
 export const apiClient = treaty<App>(import.meta.env.VITE_BACKEND_URL, {
-  onRequest() {
-    const user = appStore.get(userAtom);
-    return {
-      headers: {
-        authorization: user ? user.token : "",
-      },
-    };
-  },
+	onRequest() {
+		const user = appStore.get(userAtom);
+		return {
+			headers: {
+				authorization: user ? user.token : "",
+			},
+		};
+	},
+	onResponse(response) {
+		if (response.status === 401) {
+			console.warn("Unauthorized access - perhaps redirect to login?");
+		}
+	},
 }).api;
 
 export async function downloadBuffer(
-  path: string,
-  fileName: string,
-  body: string
+	path: string,
+	fileName: string,
+	body: string,
 ) {
-  const user = appStore.get(userAtom);
+	const user = appStore.get(userAtom);
 
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${path}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: user ? user.token : "",
-    },
-    body: body,
-  });
+	const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${path}`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			authorization: user ? user.token : "",
+		},
+		body: body,
+	});
 
-  if (!res.ok) {
-    toaster.error({ title: "Failed to download file" });
-    return;
-  }
+	if (!res.ok) {
+		toaster.error({ title: "Failed to download file" });
+		return;
+	}
 
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  link.click();
-  URL.revokeObjectURL(url);
+	const blob = await res.blob();
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = fileName;
+	link.click();
+	URL.revokeObjectURL(url);
 
-  toaster.success({ title: "File downloaded" });
+	toaster.success({ title: "File downloaded" });
 }
 
 type ApiHttpResponse<T> = {
-  status: number;
-  data?: T;
+	status: number;
+	data?: T;
 };
 
-export function ok<T>(response: ApiHttpResponse<T>) {
-  if (response.status === 200) return true;
-  return false;
+type ApiHttpResponseWithData<T> = {
+	status: number;
+	data: NonNullable<T>;
+};
+
+export function ok<T>(
+	response: ApiHttpResponse<T>,
+): response is ApiHttpResponseWithData<T> {
+	if (response.status === 200) return true;
+	return false;
 }
 
 export function apiQueryCacheListUpdate<T>(
-  key: AppCacheKey,
-  update: (oldData: T) => T
+	key: AppCacheKey,
+	update: (oldData: T) => T,
 ) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
-    return {
-      ...oldData,
-      data: update(oldData.data),
-    };
-  });
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
+		return {
+			...oldData,
+			data: update(oldData.data),
+		};
+	});
 }
 
 export function apiQueryCacheSingleUpdate<T>(
-  key: AppCacheKey,
-  update: (oldData: T) => T
+	key: AppCacheKey,
+	update: (oldData: T) => T,
 ) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
-    if (!oldData) {
-      return oldData;
-    }
-    return {
-      ...oldData,
-      data: update(oldData.data),
-    };
-  });
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
+		if (!oldData) {
+			return oldData;
+		}
+		return {
+			...oldData,
+			data: update(oldData.data),
+		};
+	});
 }
 
 export function apiQueryCacheSingleUpdateList<T extends { id: Id }>(
-  key: AppCacheKey,
-  id: Id,
-  update: (oldData?: T) => T
+	key: AppCacheKey,
+	id: Id,
+	update: (oldData?: T) => T,
 ) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
-    if (!oldData) {
-      throw new Error("Data not found in cache");
-    }
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
+		if (!oldData) {
+			throw new Error("Data not found in cache");
+		}
 
-    return {
-      ...oldData,
-      data: oldData.data.map((el) => {
-        return el.id === id ? update(el) : el;
-      }),
-    };
-  });
+		return {
+			...oldData,
+			data: oldData.data.map((el) => {
+				return el.id === id ? update(el) : el;
+			}),
+		};
+	});
 }
 
 export function apiQueryCacheListAdd<T extends { id: Id }>(
-  key: AppCacheKey,
-  newData: T
+	key: AppCacheKey,
+	newData: T,
 ) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
-    return {
-      ...oldData,
-      data: [...oldData.data, newData],
-    };
-  });
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
+		if (!oldData) {
+			return;
+		}
+		return {
+			...oldData,
+			data: [...oldData.data, newData],
+		};
+	});
 }
 
 export function apiQueryCacheListDelete<T extends { id: Id }>(
-  key: AppCacheKey,
-  id: Id
+	key: AppCacheKey,
+	id: Id,
 ) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
-    return {
-      ...oldData,
-      data: [...oldData.data.filter((el) => el.id !== id)],
-    };
-  });
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T[]>) => {
+		return {
+			...oldData,
+			data: [...oldData.data.filter((el) => el.id !== id)],
+		};
+	});
 }
 
 export function apiQueryCacheListDeleteAll(key: AppCacheKey) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<unknown[]>) => {
-    return {
-      ...oldData,
-      data: [],
-    };
-  });
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<unknown[]>) => {
+		return {
+			...oldData,
+			data: [],
+		};
+	});
 }
 
 export function structuredUpdateFunc<T, N>(newData: N) {
-  return (old: T) => ({
-    ...old,
-    ...newData,
-  });
+	return (old: T) => ({
+		...old,
+		...newData,
+	});
 }
 
 export function setQueryDataIfNotExist<T>(key: AppCacheKey, newData: T) {
-  queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
-    if (!oldData) {
-      return {
-        data: newData,
-      };
-    }
-  });
+	queryClient.setQueryData(key, (oldData: ApiSucessResponse<T>) => {
+		if (!oldData) {
+			return {
+				data: newData,
+			};
+		}
+	});
 }

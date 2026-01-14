@@ -1,5 +1,5 @@
 import { For, Heading, HStack, Spinner } from "@chakra-ui/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { QueryCacheKey } from "@/app/queryClient";
@@ -14,12 +14,12 @@ import useJob from "@/features/jobs/hooks/useJob";
 import { updateJob } from "@/features/jobs/query";
 import OperatorSelect from "@/features/operator/components/OperatorSelect";
 import { UserCardMinimal } from "@/features/user/components/UserCard";
-import { apiClient, ok } from "@/lib/apiClient";
+import { apiClient, apiQueryCacheListUpdate, ok } from "@/lib/apiClient";
 
 function useAssignedOperators(jobId: number) {
   const { data, isLoading } = useQuery({
     queryKey: [QueryCacheKey.JobOperators, jobId],
-    queryFn: apiClient.job.operators({ jobId }).get,
+    queryFn: () => apiClient.job.operators({ jobId }).get(),
   });
 
   return {
@@ -29,8 +29,6 @@ function useAssignedOperators(jobId: number) {
 }
 
 export function JobDialogAssignementTab({ jobId }: { jobId: number }) {
-  const queryClient = useQueryClient();
-
   const job = useJob({ jobId }).job;
 
   const { data: operators, isLoading } = useAssignedOperators(jobId);
@@ -50,12 +48,16 @@ export function JobDialogAssignementTab({ jobId }: { jobId: number }) {
     },
     onSuccess: (res) => {
       if (ok(res)) {
-        queryClient.invalidateQueries({
-          queryKey: [QueryCacheKey.JobOperators, jobId],
-        });
         toaster.success({ title: "Operator assigned successfully" });
         setSelectedOperatorId(null);
         setSelectKey((prev) => prev + 1);
+        const users = res.data;
+        if (users) {
+          apiQueryCacheListUpdate(
+            [QueryCacheKey.JobOperators, jobId],
+            () => users
+          );
+        }
       }
     },
   });
@@ -71,11 +73,13 @@ export function JobDialogAssignementTab({ jobId }: { jobId: number }) {
         operatorIds: newOperatorIds,
       });
     },
-    onSuccess: (res) => {
+    onSuccess: (res, operatorId) => {
       if (ok(res)) {
-        queryClient.invalidateQueries({
-          queryKey: [QueryCacheKey.JobOperators, jobId],
-        });
+        apiQueryCacheListUpdate(
+          [QueryCacheKey.JobOperators, jobId],
+          (oldData: typeof operators) =>
+            oldData.filter((op) => op.id !== operatorId)
+        );
         toaster.success({ title: "Operator removed successfully" });
       }
     },
@@ -107,6 +111,7 @@ export function JobDialogAssignementTab({ jobId }: { jobId: number }) {
         <HStack>
           <OperatorSelect
             key={selectKey}
+            excludes={operators.map((el) => el.id)}
             clearable={true}
             onChange={(id) => setSelectedOperatorId(id)}
           />

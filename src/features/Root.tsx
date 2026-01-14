@@ -10,7 +10,8 @@ export function RootContainer() {
   return (
     <Flex
       direction={"column"}
-      h={"100%"}
+      h={"full"}
+      minH={"100vh"}
       w={"100%"}
       maxW={"100vw"}
       maxH={"100vh"}

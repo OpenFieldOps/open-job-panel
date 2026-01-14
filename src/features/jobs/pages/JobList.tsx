@@ -18,93 +18,92 @@ import { useJobModal } from "../hooks/useJobModal";
 import { getJobsListKey, updateJob } from "../query";
 
 function JobCard({ job }: { job: JobModel.Job }) {
-  return (
-    <VStack
-      cursor="pointer"
-      h="full"
-      p={2}
-      alignItems="left"
-      justifyContent="space-between"
-      overflowY="hidden"
-    >
-      <VStack alignItems="left" gap={2} h="full">
-        <Heading size="sm">{job.title}</Heading>
-        <Text fontSize="sm" color="gray.300">
-          {job.description || "No description provided."}
-        </Text>
-      </VStack>
-      <HStack justifyContent="flex-end">
-        <JobStatusBadge status={job.status} />
-      </HStack>
-    </VStack>
-  );
+	return (
+		<VStack
+			cursor="pointer"
+			h="full"
+			p={2}
+			alignItems="left"
+			justifyContent="space-between"
+			overflowY="hidden"
+		>
+			<VStack alignItems="left" gap={2} h="full">
+				<Heading size="sm">{job.title}</Heading>
+				<Text fontSize="sm" color="gray.300">
+					{job.description || "No description provided."}
+				</Text>
+			</VStack>
+			<HStack justifyContent="flex-end">
+				<JobStatusBadge status={job.status} />
+			</HStack>
+		</VStack>
+	);
 }
 
 type JobCalendarProps = {
-  jobs: JobEventCalendar[];
-  setPeriod: (period: { start: dayjs.Dayjs; end: dayjs.Dayjs }) => void;
-  onJobClick: (jobId: number) => void;
+	jobs: JobEventCalendar[];
+	setPeriod: (period: { start: dayjs.Dayjs; end: dayjs.Dayjs }) => void;
+	onJobClick: (jobId: number) => void;
 };
 
 const JobCalendar = React.memo(
-  ({ onJobClick, jobs, setPeriod }: JobCalendarProps) => {
-    const isMobile = useIsMobile();
-    const isNotAdmin = useUserIsNot("admin");
+	({ onJobClick, jobs, setPeriod }: JobCalendarProps) => {
+		const isMobile = useIsMobile();
+		const isNotAdmin = useUserIsNot("admin");
 
-    const AddIntervention = (
-      <>
-        <RefreshButton queryKey={getJobsListKey()} />
-        <WithRole.admin>
-          <JobCreateModalTrigger>
-            <AddButton />
-          </JobCreateModalTrigger>
-        </WithRole.admin>
-      </>
-    );
+		const Refresh = <RefreshButton queryKey={getJobsListKey()} />;
 
-    return (
-      <Calendar
-        displayDate={!isMobile}
-        rightToolbar={!isMobile ? AddIntervention : undefined}
-        leftToolbar={
-          isMobile ? AddIntervention : <Heading>Jobs Calendar: </Heading>
-        }
-        isOneDay={isMobile}
-        isReadOnly={isNotAdmin}
-        events={jobs}
-        renderEvent={(event: JobEventCalendar) => {
-          return <JobCard job={event.extendedProps} />;
-        }}
-        onEventClick={(event) => {
-          setQueryDataIfNotExist(
-            BuildQueryCacheKey(QueryCacheKey.Job, event.extendedProps.id),
-            event.extendedProps
-          );
-          onJobClick(event.extendedProps.id);
-        }}
-        onEventUpdate={(index, startDate, endDate) => {
-          updateJob({
-            id: jobs[index].extendedProps.id,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          });
-        }}
-        onDateSet={({ start, end }) => {
-          setPeriod({ start: dayjs(start), end: dayjs(end) });
-        }}
-      />
-    );
-  }
+		const AddIntervention = (
+			<>
+				{Refresh}
+				<WithRole.admin>
+					<JobCreateModalTrigger>
+						<AddButton />
+					</JobCreateModalTrigger>
+				</WithRole.admin>
+			</>
+		);
+
+		return (
+			<Calendar
+				displayDate={!isMobile}
+				rightToolbar={!isMobile ? AddIntervention : Refresh}
+				isOneDay={isMobile}
+				isReadOnly={isNotAdmin}
+				events={jobs}
+				renderEvent={(event: JobEventCalendar) => {
+					return <JobCard job={event.extendedProps} />;
+				}}
+				onEventClick={(event) => {
+					setQueryDataIfNotExist(
+						BuildQueryCacheKey(QueryCacheKey.Job, event.extendedProps.id),
+						event.extendedProps,
+					);
+					onJobClick(event.extendedProps.id);
+				}}
+				onEventUpdate={(index, startDate, endDate) => {
+					updateJob({
+						id: jobs[index].extendedProps.id,
+						startDate: startDate.toISOString(),
+						endDate: endDate.toISOString(),
+					});
+				}}
+				onDateSet={({ start, end }) => {
+					setPeriod({ start: dayjs(start), end: dayjs(end) });
+				}}
+			/>
+		);
+	},
 );
 
 export default function JobListPage() {
-  const { openJob, JobEdit } = useJobModal();
-  const { jobs, setPeriod } = useJobList();
+	const { openJob, JobEdit } = useJobModal();
+	const { jobs, setPeriod } = useJobList();
 
-  return (
-    <PageContainer>
-      <JobCalendar onJobClick={openJob} jobs={jobs} setPeriod={setPeriod} />
-      {JobEdit}
-    </PageContainer>
-  );
+	return (
+		<PageContainer>
+			<JobCalendar onJobClick={openJob} jobs={jobs} setPeriod={setPeriod} />
+			{JobEdit}
+		</PageContainer>
+	);
 }

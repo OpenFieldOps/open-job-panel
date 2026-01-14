@@ -1,17 +1,20 @@
 import { CheckboxCard, Input, Spinner } from "@chakra-ui/react";
 import type { JobModel } from "backend/modules/job/JobModel";
+import { QueryCacheKey } from "@/app/queryClient";
 import { useUserIs } from "@/atoms/userAtom";
 import FormTemplate from "@/components/block/FormTemplate";
 import { FieldWithError } from "@/components/form/FieldWithLabel";
 import { OutlineTrashIconButton } from "@/components/icons-button/Trash";
 import { toaster } from "@/components/ui/contants";
 import { useJobTasks } from "@/features/jobs/hooks/useJobTasks";
-import {
-  createJobTask,
-  deleteJobTask,
-  toggleJobTask,
-} from "@/features/jobs/query";
+import { createJobTask, deleteJobTask } from "@/features/jobs/query";
 import useMutationForm from "@/hooks/useMutationForm";
+import {
+  apiClient,
+  apiQueryCacheSingleUpdateList,
+  ok,
+  structuredUpdateFunc,
+} from "@/lib/apiClient";
 
 type JobDialogTasksTabProps = {
   jobId: number;
@@ -33,14 +36,16 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
     handleSubmit,
     formState: { errors },
     reset,
+    isPending,
   } = useMutationForm({
-    mutationFn({ title }: CreateJobTaskInputs) {
-      createJobTask(jobId, title, () => {
+    async mutationFn({ title }: CreateJobTaskInputs) {
+      const res = await createJobTask(jobId, title);
+      if (res !== "error") {
         reset();
         toaster.success({
           title: "Task created",
         });
-      });
+      }
     },
     defaultValues: { title: "" },
   });
@@ -54,6 +59,7 @@ export function JobDialogTasksTab({ jobId }: JobDialogTasksTabProps) {
       noData={!tasks || tasks.length === 0 ? "No tasks found" : undefined}
       scrollable
       confirmText="Add Task"
+      isLoading={isPending}
       onSubmit={handleSubmit}
     >
       <FieldWithError
@@ -82,19 +88,38 @@ type TaskCardProps = {
   jobId: number;
 };
 
+async function toggleJobTask(
+  taskId: number,
+  jobId: number,
+  completed: boolean
+) {
+  const res = await apiClient.job.task.patch({
+    completed,
+    id: taskId,
+    jobId,
+  });
+
+  if (ok(res)) {
+    apiQueryCacheSingleUpdateList<JobModel.JobTask>(
+      [QueryCacheKey.JobTasks, jobId],
+      taskId,
+      structuredUpdateFunc({
+        completed,
+      })
+    );
+    toaster.success({
+      title: completed ? "Task uncompleted" : "Task completed",
+    });
+  }
+}
+
 function TaskCard({ task, jobId, canDelete }: TaskCardProps) {
   return (
     <CheckboxCard.Root
       w="full"
       variant={"surface"}
       defaultChecked={task.completed}
-      onCheckedChange={(e) =>
-        toggleJobTask(task.id, jobId, !!e.checked, () => {
-          toaster.success({
-            title: task.completed ? "Task uncompleted" : "Task completed",
-          });
-        })
-      }
+      onCheckedChange={(e) => toggleJobTask(task.id, jobId, !!e.checked)}
     >
       <CheckboxCard.HiddenInput />
       <CheckboxCard.Control>

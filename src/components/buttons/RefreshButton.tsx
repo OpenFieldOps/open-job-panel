@@ -20,7 +20,7 @@ export default function RefreshButton(props: RefreshButtonProps) {
       disabled={disabled}
       onClick={() =>
         queryClient.invalidateQueries({
-          queryKey: props.queryKey,
+          queryKey: props.queryKey as unknown[],
         })
       }
       variant={"outline"}

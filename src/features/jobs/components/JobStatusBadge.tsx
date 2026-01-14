@@ -6,16 +6,19 @@ type JobStatusBadgeProps = {
   status: JobModel.JobStatusString;
 };
 
-function getBadgeText(status: JobModel.JobStatusString): string {
-  return (
-    jobStatusInfo.find((info) => info.status === status)?.title || "Unknown"
-  );
+function getBadgeInfo(status: JobModel.JobStatusString) {
+  return jobStatusInfo.find((info) => info.status === status);
 }
 
 export function JobStatusBadge({ status }: JobStatusBadgeProps) {
+  const badgeInfo = getBadgeInfo(status);
   return (
-    <Badge bg={"Background"} variant={"outline"}>
-      {getBadgeText(status)}
+    <Badge
+      bg={"Background"}
+      variant={"outline"}
+      colorPalette={badgeInfo?.color}
+    >
+      {badgeInfo?.title || "Unknown"}
     </Badge>
   );
 }

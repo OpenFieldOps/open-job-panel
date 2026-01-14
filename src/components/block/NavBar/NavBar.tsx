@@ -1,7 +1,10 @@
 import { Alert, Flex, HStack } from "@chakra-ui/react";
-import { useIsUserAuthenticated } from "@/atoms/userAtom";
+import { MessageSquareText } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { useIsUserAuthenticated, useUserAuth } from "@/atoms/userAtom";
+import { WithRole } from "@/features/guard/WithRole";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
-import { ButtonLink } from "../../buttons/Button";
+import { ButtonLink, OutlineIconButton } from "../../buttons/Button";
 import UserNotificationMenu from "./UserNotificationMenu";
 import { UserProfileMenuButton } from "./UserProfileMenu";
 
@@ -36,13 +39,26 @@ export default function NavBar() {
     ? authenticatedNavBarLinks
     : defaultNavBarLinks;
 
+  const user = useUserAuth();
+
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} p={4}>
-      <HStack gap={4}>
-        {isUserAuthenticated ? <UserNotificationMenu /> : null}
+      <HStack gap={2}>
+        {isUserAuthenticated ? (
+          <>
+            <UserNotificationMenu />
+            <WithRole.operator>
+              <NavLink to={`/private/chat/${user.chatId}`}>
+                <OutlineIconButton>
+                  <MessageSquareText />
+                </OutlineIconButton>
+              </NavLink>
+            </WithRole.operator>
+          </>
+        ) : null}
       </HStack>
       {isOnline ? (
-        <Flex gap={4}>
+        <Flex gap={2}>
           {navbarlinks.map(({ name, path }) => {
             return (
               <ButtonLink key={path} to={path}>

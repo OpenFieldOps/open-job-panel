@@ -8,7 +8,7 @@ if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
       <App />
-    </StrictMode>
+    </StrictMode>,
   );
 } else {
   throw new Error('Root element with id "root" not found');

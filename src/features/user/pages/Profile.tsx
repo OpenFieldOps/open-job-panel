@@ -9,7 +9,7 @@ import InputWithLabel from "@/components/form/InputWithLabel";
 import { toaster } from "@/components/ui/contants";
 import useMutationForm from "@/hooks/useMutationForm";
 import useEnabled from "@/hooks/useToggle";
-import { apiClient } from "@/lib/apiClient";
+import { apiClient, ok } from "@/lib/apiClient";
 import { CurrentUserAvatar } from "../components/UserAvatar";
 
 function ProfileAvatarHeader() {
@@ -20,7 +20,7 @@ function ProfileAvatarHeader() {
         file,
       })
       .then((res) => {
-        if (res.data) {
+        if (ok(res)) {
           setUser((prev) => {
             const old = prev as UserAuth;
             return {
@@ -31,13 +31,16 @@ function ProfileAvatarHeader() {
               },
             };
           });
+          toaster.success({
+            title: "Avatar updated successfully",
+          });
         }
       });
   };
   return (
     <>
       <CurrentUserAvatar size={"xl"} />
-      <FileInput onUpload={onUploadAvatar} />
+      <FileInput accept={["image/png", "image/jpeg", "image/webp"]} onUpload={onUploadAvatar} />
     </>
   );
 }

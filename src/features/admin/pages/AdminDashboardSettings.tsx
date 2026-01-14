@@ -22,7 +22,7 @@ function AdminDashboardJobsSettingsBlock() {
         }
         defaultValue={[settings.refreshIntervalInMilliseconds / 1000]}
         step={1}
-        min={1}
+        min={10}
         max={240}
       />
       <Separator />
@@ -55,7 +55,7 @@ function AdminDashboardOperatorsNotSeenSettingsBlock() {
         }
         defaultValue={[settings.refreshIntervalInMilliseconds / 1000]}
         step={1}
-        min={1}
+        min={10}
         max={240}
       />
       <Separator />
@@ -69,7 +69,7 @@ function AdminDashboardOperatorsNotSeenSettingsBlock() {
         }
         defaultValue={[settings.notSeenThresholdHours]}
         step={1}
-        min={1}
+        min={10}
         max={72}
       />
       <Separator />
